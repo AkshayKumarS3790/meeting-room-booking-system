@@ -1,22 +1,10 @@
-# Python
+# Frontend
+frontend/my-app/node_modules/
+frontend/my-app/.next/
+
+# Backend
 venv/
 __pycache__/
-*.pyc
 
-# Node
-frontend/my-app/node_modules/
-node_modules/
-
-# Next.js
-.next/
-
-# Environment files
+# Env
 .env
-
-# Build files
-.next/
-dist/
-
-# OS files
-.DS_Store
-Thumbs.dbs
