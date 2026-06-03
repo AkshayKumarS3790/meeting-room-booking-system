@@ -46,7 +46,18 @@ def get_booking(booking_id: int, db: Session = Depends(get_db)):
     return booking
 
 
-# API 4 - Delete booking
+# API 4 - Post or Update booking
+@router.put("/{booking_id}", response_model=BookingResponse)
+def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depends(get_db)):
+    updated_booking = booking_crud.update_booking(db, booking_id, booking)
+
+    if not updated_booking:
+        raise booking_not_found(booking_id)
+
+    return updated_booking
+
+
+# API 5 - Delete booking
 # This API delete a booking from the database
 @router.delete("/{booking_id}")
 def delete_booking(booking_id: int, db: Session = Depends(get_db)):

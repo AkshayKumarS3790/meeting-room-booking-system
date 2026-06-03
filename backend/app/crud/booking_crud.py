@@ -138,6 +138,61 @@ def get_booking(db: Session, booking_id: int):
         "required_capacity": booking.required_capacity,
     }
 
+def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
+    
+    booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
+
+    if not booking:
+        return None
+
+    start_date_time = datetime.strptime(booking_data.start_date_time, "%Y-%m-%d %H:%M")
+    end_date_time = datetime.strptime(booking_data.end_date_time, "%Y-%m-%d %H:%M")
+
+    if start_date_time >= end_date_time:
+        raise invalid_time_range()
+
+    room = db.query(Room).filter(Room.room_name == booking_data.room_name).first()
+    if not room:
+        raise room_not_found()
+
+    existing_booking = (
+        db.query(Booking)
+        .filter(
+            Booking.room_name == booking_data.room_name,
+            Booking.booking_id != booking_id, 
+            Booking.start_date_time < end_date_time,
+            Booking.end_date_time > start_date_time,
+        )
+        .first()
+    )
+
+    if existing_booking:
+        raise room_already_booked(booking_data.room_name)
+
+    booking.room_name = booking_data.room_name
+    booking.user_id = booking_data.user_id
+    booking.purpose = booking_data.purpose
+    booking.start_date_time = start_date_time
+    booking.end_date_time = end_date_time
+    booking.required_capacity = booking_data.required_capacity
+
+    user = db.query(User).filter(User.user_id == booking_data.user_id).first()
+    booking.booked_by = user.user_name if user else None
+
+    db.commit()
+    db.refresh(booking)
+
+    return {
+        "booking_id": booking.booking_id,
+        "user_id": booking.user_id,
+        "booked_by": booking.booked_by,
+        "room_name": booking.room_name,
+        "purpose": booking.purpose,
+        "start_date_time": booking.start_date_time.strftime("%Y-%m-%d %H:%M"),
+        "end_date_time": booking.end_date_time.strftime("%Y-%m-%d %H:%M"),
+        "required_capacity": booking.required_capacity,
+    }
+
 
 def delete_booking(db: Session, booking_id: int):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
