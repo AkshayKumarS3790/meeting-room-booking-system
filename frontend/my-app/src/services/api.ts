@@ -22,7 +22,7 @@ type User = {
   user_name: string;
 };
 
-type Booking = {
+export type Booking = {
   booking_id: number;
   user_id: number;
   booked_by: string;
@@ -82,6 +82,15 @@ export const api = createApi({
       invalidatesTags: ["Bookings"],
     }),
 
+    updateBooking: builder.mutation({
+      query: ({ booking_id, ...body }) => ({
+        url: `bookings/${booking_id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Bookings"],
+    }),
+
     deleteBooking: builder.mutation({
       query: (id: number) => ({
         url: `/bookings/${id}`,
@@ -127,4 +136,5 @@ export const {
   useAddRoomMutation,
   useUpdateRoomMutation,
   useDeleteRoomMutation,
+  useUpdateBookingMutation,
 } = api;

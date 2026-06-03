@@ -14,11 +14,19 @@ import {
   Alert,
 } from "@mui/material";
 
-import { useGetBookingsQuery, useDeleteBookingMutation } from "../services/api";
+import {
+  Booking,
+  Room,
+  useGetBookingsQuery,
+  useDeleteBookingMutation,
+  useGetRoomsQuery,
+} from "../services/api";
 import { useState } from "react";
+import EditBookingForm from "./EditBookingForm";
 
 export default function BookingList() {
   const { data, isLoading, error } = useGetBookingsQuery();
+  const { data: rooms } = useGetRoomsQuery();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -28,6 +36,9 @@ export default function BookingList() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   const bookings = Array.isArray(data) ? data : [];
 
@@ -99,21 +110,35 @@ export default function BookingList() {
                 <b>Capacity:</b> {b.required_capacity}
               </Typography>
 
-              <Button
-                variant="outlined"
-                color="error"
-                sx={{
-                  mt: 2,
-                  borderRadius: 2,
-                  alignSelf: "flex-start",
-                }}
-                onClick={() => {
-                  setSelectedId(b.booking_id);
-                  setOpenDialog(true);
-                }}
-              >
-                Delete Booking
-              </Button>
+              <Box display="flex" gap={1} mt={1}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{ mt: 2, borderRadius: 2 }}
+                  onClick={() => {
+                    setSelectedBooking(b);
+                    setOpenEditDialog(true);
+                  }}
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    mt: 2,
+                    borderRadius: 2,
+                    alignSelf: "flex-start",
+                  }}
+                  onClick={() => {
+                    setSelectedId(b.booking_id);
+                    setOpenDialog(true);
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
             </CardContent>
           </Card>
         ))}
@@ -156,6 +181,30 @@ export default function BookingList() {
             {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openEditDialog}
+        onClose={() => setOpenEditDialog(false)}
+        fullWidth
+      >
+        <DialogTitle>Edit Booking</DialogTitle>
+
+        <DialogContent>
+          {selectedBooking && (
+            <EditBookingForm
+              booking={selectedBooking}
+              onClose={() => setOpenEditDialog(false)}
+              room_capacity={
+                Array.isArray(rooms)
+                  ? rooms.find(
+                      (r: Room) => r.room_name === selectedBooking.room_name,
+                    )?.capacity || 0
+                  : 0
+              }
+            />
+          )}
+        </DialogContent>
       </Dialog>
 
       <Snackbar
