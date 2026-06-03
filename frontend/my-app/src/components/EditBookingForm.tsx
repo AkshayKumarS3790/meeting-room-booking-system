@@ -31,11 +31,56 @@ export default function EditBookingForm({
 
   const capacityExceeded = Number(form.required_capacity) > room_capacity;
 
+  const now = new Date();
+
+  const newStart =
+    form.date && form.start_time
+      ? new Date(`${form.date}T${form.start_time}`)
+      : null;
+
+  const newEnd =
+    form.date && form.end_time
+      ? new Date(`${form.date}T${form.end_time}`)
+      : null;
+
+  const isInvalidTimeRange =
+    newStart !== null && newEnd !== null && newEnd <= newStart;
+
+  const isPastTime = newStart !== null && newStart <= now;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const selectedDate = form.date ? new Date(form.date) : null;
+
+  const isPastDate = selectedDate !== null && selectedDate < today;
+
   const handleSubmit = async () => {
     if (capacityExceeded) {
       setMsg(
         `Room ${booking.room_name} cannot accommodate more than ${room_capacity} people`,
       );
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (isPastDate) {
+      setMsg("Cannot select a past date");
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (isPastTime) {
+      setMsg("Cannot book room for past time");
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (isInvalidTimeRange) {
+      setMsg("End time must be after start time");
       setSeverity("error");
       setOpenSnackbar(true);
       return;
@@ -72,6 +117,11 @@ export default function EditBookingForm({
         label="Purpose"
         required
         value={form.purpose}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
         onChange={(e) => setForm({ ...form, purpose: e.target.value })}
       />
 
@@ -80,8 +130,17 @@ export default function EditBookingForm({
         type="date"
         required
         value={form.date}
+        slotProps={{
+          inputLabel: { shrink: true },
+        }}
         onChange={(e) => setForm({ ...form, date: e.target.value })}
-        InputLabelProps={{ shrink: true }}
+        error={isPastDate}
+        helperText={isPastDate ? "Cannot select a past date" : ""}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
 
       <Box display="flex" gap={2}>
@@ -92,7 +151,22 @@ export default function EditBookingForm({
           value={form.start_time}
           onChange={(e) => setForm({ ...form, start_time: e.target.value })}
           fullWidth
-          InputLabelProps={{ shrink: true }}
+          slotProps={{
+            inputLabel: { shrink: true },
+          }}
+          error={isPastTime || isInvalidTimeRange}
+          helperText={
+            isPastTime
+              ? "Cannot select past time"
+              : isInvalidTimeRange
+                ? "Start time must be before end time"
+                : ""
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
         />
 
         <TextField
@@ -102,7 +176,18 @@ export default function EditBookingForm({
           value={form.end_time}
           onChange={(e) => setForm({ ...form, end_time: e.target.value })}
           fullWidth
-          InputLabelProps={{ shrink: true }}
+          slotProps={{
+            inputLabel: { shrink: true },
+          }}
+          error={isInvalidTimeRange}
+          helperText={
+            isInvalidTimeRange ? "End time must be after start time" : ""
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
         />
       </Box>
 
@@ -110,6 +195,11 @@ export default function EditBookingForm({
         label="Capacity"
         required
         value={form.required_capacity}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
         onChange={(e) =>
           setForm({
             ...form,
@@ -124,7 +214,11 @@ export default function EditBookingForm({
         }
       />
 
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button
+        variant="contained"
+        onClick={handleSubmit}
+        sx={{ borderRadius: 2, textTransform: "none", alignSelf: "flex-start" }}
+      >
         Update Booking
       </Button>
 

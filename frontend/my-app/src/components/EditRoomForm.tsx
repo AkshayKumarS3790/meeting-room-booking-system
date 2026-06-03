@@ -85,7 +85,12 @@ export default function EditRoomForm({
         fullWidth
         disabled
         value={room.room_name}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
       <TextField
         label="Capacity"
@@ -93,7 +98,12 @@ export default function EditRoomForm({
         required
         value={form.capacity}
         onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
       <TextField
         label="Location"
@@ -101,7 +111,12 @@ export default function EditRoomForm({
         required
         value={form.location}
         onChange={(e) => setForm({ ...form, location: e.target.value })}
-        sx={{ mb: 1 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
 
       <Box display="flex" gap={2} mt={1}>
@@ -110,6 +125,7 @@ export default function EditRoomForm({
           fullWidth
           disabled={!isValid || isLoading}
           onClick={handleSubmit}
+          sx={{ borderRadius: 2, textTransform: "none" }}
         >
           {isLoading ? "Updating..." : "Update Room"}
         </Button>
@@ -120,6 +136,7 @@ export default function EditRoomForm({
           color="error"
           disabled={isDeleting}
           onClick={() => setConfirmDelete(true)}
+          sx={{ borderRadius: 2, textTransform: "none" }}
         >
           {isDeleting ? "Deleting..." : "Delete Room"}
         </Button>

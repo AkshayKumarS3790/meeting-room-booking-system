@@ -114,13 +114,13 @@ export default function BookingList() {
                 <Button
                   variant="outlined"
                   color="primary"
-                  sx={{ mt: 2, borderRadius: 2 }}
+                  sx={{ mt: 2, borderRadius: 2, textTransform: "none" }}
                   onClick={() => {
                     setSelectedBooking(b);
                     setOpenEditDialog(true);
                   }}
                 >
-                  Edit
+                  Edit Booking
                 </Button>
 
                 <Button
@@ -130,13 +130,14 @@ export default function BookingList() {
                     mt: 2,
                     borderRadius: 2,
                     alignSelf: "flex-start",
+                    textTransform: "none",
                   }}
                   onClick={() => {
                     setSelectedId(b.booking_id);
                     setOpenDialog(true);
                   }}
                 >
-                  Delete
+                  Delete Booking
                 </Button>
               </Box>
             </CardContent>

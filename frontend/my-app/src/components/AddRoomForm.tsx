@@ -52,7 +52,12 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         fullWidth
         value={form.room_name}
         onChange={(e) => setForm({ ...form, room_name: e.target.value })}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
 
       <TextField
@@ -62,7 +67,12 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         value={form.capacity}
         onChange={(e) => setForm({ ...form, capacity: e.target.value })}
         inputProps={{ min: 1 }}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
 
       <TextField
@@ -71,23 +81,32 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         fullWidth
         value={form.location}
         onChange={(e) => setForm({ ...form, location: e.target.value })}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
 
-      <Button
-        variant="contained"
-        fullWidth
-        disabled={!isValid}
-        onClick={handleSubmit}
-        sx={{ mb: 1 }}
-      >
-        Add Room
-      </Button>
+      <Box display="flex" gap={2} mt={1}>
+        <Button
+          variant="contained"
+          disabled={!isValid}
+          onClick={handleSubmit}
+          sx={{ mb: 2, borderRadius: 2, textTransform: "none" }}
+        >
+          Add Room
+        </Button>
 
-      <Button onClick={onClose} variant="outlined" fullWidth>
-        Cancel
-      </Button>
-
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          sx={{ mb: 2, borderRadius: 2, textTransform: "none" }}
+        >
+          Cancel
+        </Button>
+      </Box>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

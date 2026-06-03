@@ -45,7 +45,7 @@ export default function BookingForm({
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  // const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,11 +65,12 @@ export default function BookingForm({
       ? new Date(`${form.date}T${form.end_time}`)
       : null;
 
-  const isInvalidTimeRange = newStart && newEnd && newEnd <= newStart;
+  const isInvalidTimeRange =
+    newStart !== null && newEnd !== null && newEnd <= newStart;
 
   const isOverlapping =
-    newStart &&
-    newEnd &&
+    newStart !== null &&
+    newEnd !== null &&
     Array.isArray(bookings) &&
     bookings.some((b) => {
       if (b.room_name !== room_name) return false;
@@ -82,19 +83,28 @@ export default function BookingForm({
 
   const isPastTime = newStart !== null && newStart <= now;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const selectedDate = form.date ? new Date(form.date) : null;
+
+  const isPastDate = selectedDate !== null && selectedDate < today;
+
   const isFormValid =
     form.user_id > 0 &&
     form.purpose.trim() !== "" &&
     form.date !== "" &&
     form.start_time !== "" &&
     form.end_time !== "" &&
-    Number(form.required_capacity) > 0 &&
-    !capacityExceeded &&
-    !isPastTime &&
-    !isOverlapping &&
-    !isInvalidTimeRange;
+    Number(form.required_capacity) > 0;
+  // !capacityExceeded &&
+  // !isPastTime &&
+  // !isOverlapping &&
+  // !isInvalidTimeRange;
 
   const handleSubmit = async () => {
+    // setHasSubmitted(true);
+
     if (
       !form.user_id ||
       !form.purpose ||
@@ -105,16 +115,32 @@ export default function BookingForm({
       setSnackbarMsg("Please fill all fields");
       setSeverity("error");
       setOpenSnackbar(true);
-      setHasSubmitted(true);
+      // setHasSubmitted(true);
+      return;
+    }
+
+    if (isPastDate) {
+      setSnackbarMsg("Cannot select a past date");
+      setSeverity("error");
+      setOpenSnackbar(true);
       return;
     }
 
     if (isPastTime) {
-      setSnackbarMsg("Cannot book room for time that has already passed");
+      setSnackbarMsg("Cannot book room for past time");
       setSeverity("error");
       setOpenSnackbar(true);
       return;
-    } else if (isOverlapping) {
+    }
+
+    if (isInvalidTimeRange) {
+      setSnackbarMsg("End time must be after start time");
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (isOverlapping) {
       setSnackbarMsg("This room is already booked during this time");
       setSeverity("error");
       setOpenSnackbar(true);
@@ -136,7 +162,7 @@ export default function BookingForm({
       setSnackbarMsg("Booking successful");
       setSeverity("success");
       setOpenSnackbar(true);
-      setHasSubmitted(false);
+      // setHasSubmitted(false);
 
       setTimeout(() => {
         onSuccess();
@@ -157,7 +183,7 @@ export default function BookingForm({
           name="user_id"
           value={form.user_id || ""}
           label="Select User"
-          sx={{ mb: 1 }}
+          sx={{ mb: 1, borderRadius: 2 }}
           onChange={(e) =>
             setForm({ ...form, user_id: Number(e.target.value) })
           }
@@ -176,7 +202,12 @@ export default function BookingForm({
         variant="outlined"
         fullWidth
         onChange={handleChange}
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
       <TextField
         label="Date"
@@ -189,7 +220,18 @@ export default function BookingForm({
           inputLabel: { shrink: true },
         }}
         onChange={handleChange}
-        sx={{ mb: 2 }}
+        // error={hasSubmitted && isPastDate}
+        error={isPastDate}
+        helperText={
+          // hasSubmitted &&
+          isPastDate ? "Cannot select a past date" : ""
+        }
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
       <Box display="flex" gap={2} mb={2}>
         <TextField
@@ -201,6 +243,21 @@ export default function BookingForm({
           value={form.start_time}
           slotProps={{ inputLabel: { shrink: true } }}
           onChange={handleChange}
+          // error={hasSubmitted && (isPastTime || isInvalidTimeRange)}
+          error={isPastTime || isInvalidTimeRange}
+          helperText={
+            // hasSubmitted &&
+            isPastTime
+              ? "Cannot select past time"
+              : isInvalidTimeRange
+                ? "Start time must be before end time"
+                : ""
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
         />
 
         <TextField
@@ -212,26 +269,26 @@ export default function BookingForm({
           value={form.end_time}
           slotProps={{ inputLabel: { shrink: true } }}
           onChange={handleChange}
+          // error={hasSubmitted && isInvalidTimeRange}
+          error={isInvalidTimeRange}
+          helperText={
+            // hasSubmitted &&
+            isInvalidTimeRange ? "End time must be after start time" : ""
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
         />
       </Box>
 
-      {hasSubmitted && isPastTime && (
-        <Box color="error.main" mb={2}>
-          Cannot book room for time that has already passed
-        </Box>
-      )}
-
-      {hasSubmitted && isOverlapping && (
+      {/* {hasSubmitted && isOverlapping && ( */}
+      {/* {isOverlapping && (
         <Box color="error.main" mb={2}>
           This room is already booked for the selected time
         </Box>
-      )}
-
-      {hasSubmitted && isInvalidTimeRange && (
-        <Box color="error.main" mb={2}>
-          End time must be after start time
-        </Box>
-      )}
+      )} */}
 
       <TextField
         label="Capacity"
@@ -248,12 +305,18 @@ export default function BookingForm({
             ? `Room ${room_name} cannot accomodate more than ${room_capacity} people`
             : ""
         }
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
       />
       <Button
         variant="contained"
         onClick={handleSubmit}
         disabled={!isFormValid}
+        sx={{ borderRadius: 2, textTransform: "none" }}
       >
         Confirm Booking
       </Button>

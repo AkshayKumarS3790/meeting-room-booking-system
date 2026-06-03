@@ -122,7 +122,7 @@ export const api = createApi({
         url: `rooms/${room_name}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Rooms"],
+      invalidatesTags: ["Rooms", "Bookings"],
     }),
   }),
 });

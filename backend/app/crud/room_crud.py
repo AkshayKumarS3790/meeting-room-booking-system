@@ -6,7 +6,6 @@ from app.schemas.room_schema import RoomCreate
 from app.models.booking import Booking  # importing booking table
 from typing import Optional
 
-
 def get_available_rooms(
     db: Session, start_date_time, end_date_time, required_capacity: int
 ):
@@ -68,11 +67,21 @@ def update_room(db: Session, room_name: str, updated_room: RoomCreate):
 
 
 def delete_room(db: Session, room_name: str):
-    room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
-    if room:  # If room exists
-        db.delete(room)  # Delete the room
-        db.commit()  # Then save changes
-    return room
+    try: 
+        room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
+        
+        if room:  # If room exists
+            db.query(Booking).filter(
+                Booking.room_name == room_name
+            ).delete(synchronize_session=False) # Delete all bookings for this room
+            db.delete(room)  # Delete the room
+            db.commit()  # Then save changes
+        return room
+
+    except Exception as e:
+        print(e)
+        db.rollback()
+        raise
 
 
 def filter_rooms(
