@@ -9,16 +9,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 
 export default function EditRoomForm({
   room,
   onClose,
+  onSuccess,
 }: {
   room: Room;
   onClose: () => void;
+  onSuccess: (msg: string, type: "success" | "error") => void;
 }) {
   const [form, setForm] = useState({
     capacity: room.capacity,
@@ -32,10 +32,6 @@ export default function EditRoomForm({
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [severity, setSeverity] = useState<"success" | "error">("success");
-
   const isValid = Number(form.capacity) > 0 && form.location.trim() !== "";
 
   const handleSubmit = async () => {
@@ -46,17 +42,13 @@ export default function EditRoomForm({
         location: form.location,
       }).unwrap();
 
-      setMsg("Room updated successfully");
-      setSeverity("success");
-      setOpenSnackbar(true);
+      onSuccess("Room updated successfully", "success");
 
       setTimeout(() => {
         onClose();
       }, 1500);
     } catch {
-      setMsg("Update failed");
-      setSeverity("error");
-      setOpenSnackbar(true);
+      onSuccess("Update failed", "error");
     }
   };
 
@@ -64,17 +56,17 @@ export default function EditRoomForm({
     try {
       await deleteRoom(room.room_name).unwrap();
 
-      setMsg("Room deleted successfully");
-      setSeverity("success");
-      setOpenSnackbar(true);
+      console.log("DELETE SUCCESS");
+
+      setConfirmDelete(false);
 
       setTimeout(() => {
         onClose();
-      }, 1500);
-    } catch {
-      setMsg("Delete failed");
-      setSeverity("error");
-      setOpenSnackbar(true);
+      }, 500);
+    } catch (err) {
+      console.log("DELETE FAILED", err);
+
+      onSuccess("Delete failed", "error");
     }
   };
 
@@ -152,28 +144,11 @@ export default function EditRoomForm({
         <DialogActions>
           <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
 
-          <Button
-            color="error"
-            onClick={async () => {
-              await handleDelete();
-              setConfirmDelete(false);
-            }}
-          >
+          <Button color="error" onClick={handleDelete}>
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity={severity} variant="filled">
-          {msg}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

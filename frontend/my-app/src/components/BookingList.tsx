@@ -137,7 +137,7 @@ export default function BookingList() {
                     setOpenDialog(true);
                   }}
                 >
-                  Delete Booking
+                  Delete
                 </Button>
               </Box>
             </CardContent>
@@ -153,12 +153,19 @@ export default function BookingList() {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button
+            variant="outlined"
+            sx={{ borderRadius: 2, textTransform: "none" }}
+            onClick={() => setOpenDialog(false)}
+          >
+            Cancel
+          </Button>
 
           <Button
             color="error"
             variant="contained"
             disabled={isDeleting}
+            sx={{ borderRadius: 2, textTransform: "none" }}
             onClick={async () => {
               try {
                 if (selectedId) {

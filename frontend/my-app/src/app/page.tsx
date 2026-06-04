@@ -8,6 +8,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useGetRoomsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
@@ -18,6 +20,11 @@ import { useState } from "react";
 export default function Home() {
   const { data, error, isLoading } = useGetRoomsQuery(undefined, {});
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+
   const sortedRooms = Array.isArray(data)
     ? [...data].sort((a, b) =>
         a.room_name.localeCompare(b.room_name, undefined, {
@@ -94,7 +101,15 @@ export default function Home() {
           }}
         >
           {sortedRooms.map((room) => (
-            <RoomCard key={room.room_name} room={room} />
+            <RoomCard
+              key={room.room_name}
+              room={room}
+              onAction={(message: string, type: "success" | "error") => {
+                setSnackbarMsg(message);
+                setSeverity(type);
+                setSnackbarOpen(true);
+              }}
+            />
           ))}
         </Box>
       ) : (
@@ -108,6 +123,16 @@ export default function Home() {
 
         <BookingList />
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert severity={severity} variant="filled">
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

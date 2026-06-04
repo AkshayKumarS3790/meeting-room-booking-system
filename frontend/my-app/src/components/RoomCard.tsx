@@ -21,7 +21,13 @@ export type Room = {
   location: string;
 };
 
-export default function RoomCard({ room }: { room: Room }) {
+export default function RoomCard({
+  room,
+  onAction,
+}: {
+  room: Room;
+  onAction: (msg: string, type: "success" | "error") => void;
+}) {
   const [showForm, setShowForm] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -88,7 +94,11 @@ export default function RoomCard({ room }: { room: Room }) {
           <DialogTitle>Edit Room</DialogTitle>
 
           <DialogContent>
-            <EditRoomForm room={room} onClose={() => setOpenEdit(false)} />
+            <EditRoomForm
+              room={room}
+              onClose={() => setOpenEdit(false)}
+              onSuccess={onAction}
+            />
           </DialogContent>
         </Dialog>
       </CardContent>
