@@ -11,7 +11,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { useGetRoomsQuery } from "@/services/api";
+import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
 import BookingList from "@/components/BookingList";
 import AddRoomForm from "@/components/AddRoomForm";
@@ -19,6 +19,7 @@ import { useState } from "react";
 
 export default function Home() {
   const { data, error, isLoading } = useGetRoomsQuery(undefined, {});
+  const { data: bookings } = useGetBookingsQuery();
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -104,6 +105,7 @@ export default function Home() {
             <RoomCard
               key={room.room_name}
               room={room}
+              bookings={bookings}
               onAction={(message: string, type: "success" | "error") => {
                 setSnackbarMsg(message);
                 setSeverity(type);

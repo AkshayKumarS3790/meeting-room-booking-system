@@ -13,8 +13,7 @@ import {
 } from "@mui/material";
 import BookingForm from "./BookingForm";
 import EditRoomForm from "./EditRoomForm";
-
-import { useGetBookingsQuery } from "@/services/api";
+import { Booking } from "@/services/api";
 
 export type Room = {
   room_name: string;
@@ -24,17 +23,25 @@ export type Room = {
 
 export default function RoomCard({
   room,
+  bookings,
   onAction,
 }: {
   room: Room;
+  bookings: Booking[] | undefined;
   onAction: (msg: string, type: "success" | "error") => void;
 }) {
   const [showForm, setShowForm] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const { data: bookings } = useGetBookingsQuery();
+
+  const now = new Date();
 
   const bookingCount = Array.isArray(bookings)
-    ? bookings.filter((b) => b.room_name === room.room_name).length
+    ? bookings.filter((b) => {
+        if (b.room_name !== room.room_name) return false;
+
+        const endTime = new Date(b.end_date_time);
+        return endTime > now;
+      }).length
     : 0;
 
   return (
