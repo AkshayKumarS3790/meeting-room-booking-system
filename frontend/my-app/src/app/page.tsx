@@ -117,10 +117,6 @@ export default function Home() {
       )}
 
       <Box mt={5}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
-          Bookings
-        </Typography>
-
         <BookingList />
       </Box>
       <Snackbar

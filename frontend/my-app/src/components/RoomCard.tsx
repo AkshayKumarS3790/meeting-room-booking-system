@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
   Button,
+  Box,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -13,7 +14,7 @@ import {
 import BookingForm from "./BookingForm";
 import EditRoomForm from "./EditRoomForm";
 
-// import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import { useGetBookingsQuery } from "@/services/api";
 
 export type Room = {
   room_name: string;
@@ -30,6 +31,11 @@ export default function RoomCard({
 }) {
   const [showForm, setShowForm] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const { data: bookings } = useGetBookingsQuery();
+
+  const bookingCount = Array.isArray(bookings)
+    ? bookings.filter((b) => b.room_name === room.room_name).length
+    : 0;
 
   return (
     <Card
@@ -43,11 +49,35 @@ export default function RoomCard({
         },
       }}
     >
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight="bold" gutterBottom>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ mb: 0.2, p: 2, pb: 0.5 }}
+      >
+        <Typography sx={{ mb: 0 }} variant="h6" fontWeight="bold">
           {room.room_name}
         </Typography>
 
+        <Box display="flex" alignItems="center" gap={0.5} sx={{ mr: 0.5 }}>
+          <Box
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              backgroundColor: bookingCount > 0 ? "green" : "red",
+            }}
+          />
+
+          <Typography variant="caption" fontWeight="medium">
+            {bookingCount > 0
+              ? `${bookingCount} booking${bookingCount > 1 ? "s" : ""}`
+              : "No bookings"}
+          </Typography>
+        </Box>
+      </Box>
+
+      <CardContent sx={{ pt: 1 }}>
         <Typography>Capacity: {room.capacity}</Typography>
         <Typography>Location: {room.location}</Typography>
 

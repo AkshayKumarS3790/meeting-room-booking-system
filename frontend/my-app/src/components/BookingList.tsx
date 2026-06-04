@@ -12,6 +12,10 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 
 import {
@@ -40,6 +44,8 @@ export default function BookingList() {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
+  const [selectedRoom, setSelectedRoom] = useState("all");
+
   const bookings = Array.isArray(data) ? data : [];
 
   const sortedBookings = [...bookings].sort(
@@ -52,6 +58,11 @@ export default function BookingList() {
     return endTime > now;
   });
 
+  const filteredBookings =
+    selectedRoom === "all"
+      ? validBookings
+      : validBookings.filter((b) => b.room_name === selectedRoom);
+
   if (isLoading) return <Typography>Loading bookings...</Typography>;
 
   if (error) return <Typography>Error loading bookings</Typography>;
@@ -61,6 +72,70 @@ export default function BookingList() {
 
   return (
     <>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5" fontWeight="bold">
+          Bookings
+        </Typography>
+
+        <FormControl
+          variant="outlined"
+          sx={{
+            minWidth: 100,
+            "& .MuiOutlinedInput-root": {
+              color: "lightgray",
+              borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#c3c3c3",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#c3c3c3",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#c3c3c3",
+                borderWidth: 2,
+              },
+            },
+
+            "& .MuiSvgIcon-root": {
+              color: "lightgray",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#c3c3c3",
+            },
+          }}
+        >
+          <InputLabel>Select Room</InputLabel>
+
+          <Select
+            value={selectedRoom}
+            label="Select Room"
+            onChange={(e) => setSelectedRoom(e.target.value)}
+            MenuProps={{
+              disableScrollLock: true,
+            }}
+          >
+            <MenuItem value="all">All Rooms</MenuItem>
+
+            {Array.from(new Set(validBookings.map((b) => b.room_name))).map(
+              (roomName) => (
+                <MenuItem key={roomName} value={roomName}>
+                  {roomName}
+                </MenuItem>
+              ),
+            )}
+          </Select>
+        </FormControl>
+      </Box>
+
       <Box
         mt={3}
         sx={{
@@ -74,7 +149,7 @@ export default function BookingList() {
           alignItems: "start",
         }}
       >
-        {validBookings.map((b) => (
+        {filteredBookings.map((b) => (
           <Card
             key={b.booking_id}
             sx={{
