@@ -59,66 +59,93 @@ export default function Home() {
       </Typography>
 
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
+        sx={{
+          height: 2,
+          backgroundColor: "#4387db",
+          mb: 3,
+        }}
+      />
+
+      <Box
+        sx={{
+          p: 2,
+          borderRadius: 2,
+          backgroundColor: "#383838",
+          mb: 4,
+        }}
       >
-        <Typography variant="h5" fontWeight="bold">
-          Rooms
-        </Typography>
-
-        <Dialog open={openRoomDialog} onClose={() => setOpenRoomDialog(false)}>
-          <DialogTitle>Add Room</DialogTitle>
-
-          <DialogContent>
-            <AddRoomForm onClose={() => setOpenRoomDialog(false)} />
-          </DialogContent>
-        </Dialog>
-
-        <Button
-          variant="contained"
-          sx={{
-            borderRadius: 2,
-            textTransform: "none",
-          }}
-          onClick={() => setOpenRoomDialog(true)}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
         >
-          Add Room
-        </Button>
+          <Typography variant="h5" fontWeight="bold">
+            Rooms
+          </Typography>
+
+          <Dialog
+            open={openRoomDialog}
+            onClose={() => setOpenRoomDialog(false)}
+          >
+            <DialogTitle fontWeight="bold">Add Room</DialogTitle>
+
+            <DialogContent>
+              <AddRoomForm onClose={() => setOpenRoomDialog(false)} />
+            </DialogContent>
+          </Dialog>
+
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+            }}
+            onClick={() => setOpenRoomDialog(true)}
+          >
+            Add Room
+          </Button>
+        </Box>
+
+        {data && data.length > 0 ? (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr", // mobile
+                sm: "1fr 1fr", // tablet
+                md: "1fr 1fr 1fr", // desktop
+              },
+              gap: 3,
+              alignItems: "start",
+            }}
+          >
+            {sortedRooms.map((room) => (
+              <RoomCard
+                key={room.room_name}
+                room={room}
+                bookings={bookings}
+                onAction={(message: string, type: "success" | "error") => {
+                  setSnackbarMsg(message);
+                  setSeverity(type);
+                  setSnackbarOpen(true);
+                }}
+              />
+            ))}
+          </Box>
+        ) : (
+          <Typography sx={{ opacity: 0.7 }}>No rooms available</Typography>
+        )}
       </Box>
 
-      {data && data.length > 0 ? (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr", // mobile
-              sm: "1fr 1fr", // tablet
-              md: "1fr 1fr 1fr", // desktop
-            },
-            gap: 3,
-            alignItems: "start",
-          }}
-        >
-          {sortedRooms.map((room) => (
-            <RoomCard
-              key={room.room_name}
-              room={room}
-              bookings={bookings}
-              onAction={(message: string, type: "success" | "error") => {
-                setSnackbarMsg(message);
-                setSeverity(type);
-                setSnackbarOpen(true);
-              }}
-            />
-          ))}
-        </Box>
-      ) : (
-        <Typography>No rooms available</Typography>
-      )}
-
-      <Box mt={5}>
+      <Box
+        sx={{
+          p: 2,
+          borderRadius: 2,
+          backgroundColor: "#383838",
+          mt: 4,
+        }}
+      >
         <BookingList />
       </Box>
       <Snackbar

@@ -67,9 +67,6 @@ export default function BookingList() {
 
   if (error) return <Typography>Error loading bookings</Typography>;
 
-  if (validBookings.length === 0)
-    return <Typography>No bookings yet</Typography>;
-
   return (
     <>
       <Box
@@ -87,21 +84,30 @@ export default function BookingList() {
           sx={{
             minWidth: 100,
             "& .MuiOutlinedInput-root": {
+              height: 40,
+              display: "flex",
+              alignItems: "center",
+
               color: "lightgray",
               borderRadius: 2,
 
               "& fieldset": {
-                borderColor: "#c3c3c3",
+                borderColor: "#afafaf",
               },
 
               "&:hover fieldset": {
-                borderColor: "#c3c3c3",
+                borderColor: "#afafaf",
               },
 
               "&.Mui-focused fieldset": {
-                borderColor: "#c3c3c3",
+                borderColor: "#afafaf",
                 borderWidth: 2,
               },
+            },
+
+            "& .MuiSelect-select": {
+              paddingTop: "10px",
+              paddingBottom: "10px",
             },
 
             "& .MuiSvgIcon-root": {
@@ -109,7 +115,7 @@ export default function BookingList() {
             },
 
             "& .MuiInputLabel-root": {
-              color: "#c3c3c3",
+              color: "#afafaf",
             },
           }}
         >
@@ -136,90 +142,93 @@ export default function BookingList() {
         </FormControl>
       </Box>
 
-      <Box
-        mt={3}
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "1fr 1fr",
-            md: "1fr 1fr 1fr",
-          },
-          gap: 3,
-          alignItems: "start",
-        }}
-      >
-        {filteredBookings.map((b) => (
-          <Card
-            key={b.booking_id}
-            sx={{
-              width: "100%",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
-          >
-            <CardContent
+      {filteredBookings.length === 0 ? (
+        <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
+      ) : (
+        <Box
+          mt={3}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr",
+            },
+            gap: 3,
+            alignItems: "start",
+          }}
+        >
+          {filteredBookings.map((b) => (
+            <Card
+              key={b.booking_id}
               sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
+                width: "100%",
+                borderRadius: 2,
+                boxShadow: 2,
               }}
             >
-              <Typography>
-                <b>Room:</b> {b.room_name}
-              </Typography>
+              <CardContent
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography>
+                  <b>Room:</b> {b.room_name}
+                </Typography>
 
-              <Typography>
-                <b>Booked By:</b> {b.booked_by}
-              </Typography>
+                <Typography>
+                  <b>Booked By:</b> {b.booked_by}
+                </Typography>
 
-              <Typography>
-                <b>Purpose:</b> {b.purpose}
-              </Typography>
+                <Typography>
+                  <b>Purpose:</b> {b.purpose}
+                </Typography>
 
-              <Typography>
-                <b>Time:</b> {b.start_date_time} → {b.end_date_time}
-              </Typography>
+                <Typography>
+                  <b>Time:</b> {b.start_date_time} → {b.end_date_time}
+                </Typography>
 
-              <Typography>
-                <b>Capacity:</b> {b.required_capacity}
-              </Typography>
+                <Typography>
+                  <b>Capacity:</b> {b.required_capacity}
+                </Typography>
 
-              <Box display="flex" gap={1} mt={1}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  sx={{ mt: 2, borderRadius: 2, textTransform: "none" }}
-                  onClick={() => {
-                    setSelectedBooking(b);
-                    setOpenEditDialog(true);
-                  }}
-                >
-                  Edit Booking
-                </Button>
+                <Box display="flex" gap={1} mt={1}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    sx={{ mt: 2, borderRadius: 2, textTransform: "none" }}
+                    onClick={() => {
+                      setSelectedBooking(b);
+                      setOpenEditDialog(true);
+                    }}
+                  >
+                    Edit Booking
+                  </Button>
 
-                <Button
-                  variant="contained"
-                  color="error"
-                  sx={{
-                    mt: 2,
-                    borderRadius: 2,
-                    alignSelf: "flex-start",
-                    textTransform: "none",
-                  }}
-                  onClick={() => {
-                    setSelectedId(b.booking_id);
-                    setOpenDialog(true);
-                  }}
-                >
-                  Delete
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{
+                      mt: 2,
+                      borderRadius: 2,
+                      alignSelf: "flex-start",
+                      textTransform: "none",
+                    }}
+                    onClick={() => {
+                      setSelectedId(b.booking_id);
+                      setOpenDialog(true);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Delete Booking</DialogTitle>
 
