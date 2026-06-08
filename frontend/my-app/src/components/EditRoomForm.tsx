@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Typography,
 } from "@mui/material";
 
 export default function EditRoomForm({
@@ -135,16 +136,31 @@ export default function EditRoomForm({
       </Box>
 
       <Dialog open={confirmDelete} onClose={() => setConfirmDelete(false)}>
-        <DialogTitle>Delete Room</DialogTitle>
+        <DialogTitle sx={{ fontWeight: "bold" }}>Delete Room</DialogTitle>
 
         <DialogContent>
-          Are you sure you want to delete this room?
+          <Typography>Are you sure you want to delete this room?</Typography>
+
+          <Typography sx={{ color: "red" }}>
+            ⚠️ All bookings for this room will also be deleted.
+          </Typography>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button
+            onClick={() => setConfirmDelete(false)}
+            variant="outlined"
+            sx={{ borderRadius: 2, textTransform: "none" }}
+          >
+            Cancel
+          </Button>
 
-          <Button color="error" onClick={handleDelete}>
+          <Button
+            color="error"
+            variant="contained"
+            sx={{ borderRadius: 2, textTransform: "none" }}
+            onClick={handleDelete}
+          >
             Delete
           </Button>
         </DialogActions>

@@ -117,7 +117,9 @@ export default function RoomCard({
         </Button>
 
         <Dialog open={showForm} onClose={() => setShowForm(false)} fullWidth>
-          <DialogTitle>Book {room.room_name}</DialogTitle>
+          <DialogTitle sx={{ fontWeight: "bold" }}>
+            Book {room.room_name}
+          </DialogTitle>
           <DialogContent>
             <BookingForm
               room_name={room.room_name}
@@ -128,7 +130,7 @@ export default function RoomCard({
         </Dialog>
 
         <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
-          <DialogTitle>Edit Room</DialogTitle>
+          <DialogTitle sx={{ fontWeight: "bold" }}>Edit Room</DialogTitle>
 
           <DialogContent>
             <EditRoomForm

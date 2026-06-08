@@ -194,7 +194,7 @@ export default function BookingList() {
                   <b>Capacity:</b> {b.required_capacity}
                 </Typography>
 
-                <Box display="flex" gap={1} mt={1}>
+                <Box display="flex" gap={2}>
                   <Button
                     variant="outlined"
                     color="primary"
@@ -230,7 +230,7 @@ export default function BookingList() {
         </Box>
       )}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Delete Booking</DialogTitle>
+        <DialogTitle sx={{ fontWeight: "bold" }}>Delete Booking</DialogTitle>
 
         <DialogContent>
           <Typography>Are you sure you want to delete this booking?</Typography>
@@ -280,7 +280,7 @@ export default function BookingList() {
         onClose={() => setOpenEditDialog(false)}
         fullWidth
       >
-        <DialogTitle>Edit Booking</DialogTitle>
+        <DialogTitle sx={{ fontWeight: "bold" }}>Edit Booking</DialogTitle>
 
         <DialogContent>
           {selectedBooking && (

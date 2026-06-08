@@ -16,11 +16,11 @@ def get_users(db: Session):
 
 
 def get_user(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+    return db.query(User).filter(User.user_id == user_id).first()
 
 
 def delete_user(db: Session, user_id: int):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.user_id == user_id).first()
     if user:
         db.delete(user)
         db.commit()

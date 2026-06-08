@@ -283,13 +283,6 @@ export default function BookingForm({
         />
       </Box>
 
-      {/* {hasSubmitted && isOverlapping && ( */}
-      {/* {isOverlapping && (
-        <Box color="error.main" mb={2}>
-          This room is already booked for the selected time
-        </Box>
-      )} */}
-
       <TextField
         label="Capacity"
         name="required_capacity"
