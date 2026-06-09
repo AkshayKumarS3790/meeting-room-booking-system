@@ -1,6 +1,7 @@
 # The file where the checks happen before booking a room (Basically core logic of project)
 
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from datetime import datetime
 
 from app.schemas.booking_schema import BookingCreate
@@ -96,6 +97,16 @@ def create_booking(db: Session, booking: BookingCreate):
 
 
 def get_bookings(db: Session):
+
+    now = datetime.now()
+
+    # Remove expired bookings
+    db.query(Booking).filter(
+        Booking.end_date_time < now
+    ).delete(synchronize_session=False)
+
+    db.commit()
+
     bookings = db.query(Booking).all()
     result = []
 
@@ -193,6 +204,69 @@ def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
         "required_capacity": booking.required_capacity,
     }
 
+def filter_bookings(
+    db: Session,
+    room_name=None,
+    user_id=None,
+    start_date_time=None,
+    end_date_time=None,
+    search=None,
+):
+    now = datetime.now()
+
+    db.query(Booking).filter(
+        Booking.end_date_time < now
+    ).delete(synchronize_session=False)
+
+    db.commit()
+    
+    query = db.query(Booking)
+
+    # ✅ Filter by room
+    if room_name:
+        query = query.filter(Booking.room_name == room_name)
+
+    # ✅ Filter by user
+    if user_id:
+        query = query.filter(Booking.user_id == user_id)
+
+    # ✅ Filter by time range
+    if start_date_time and end_date_time:
+        query = query.filter(
+            Booking.start_date_time < start_date_time,
+            Booking.end_date_time > end_date_time,
+        )
+
+    # Search (purpose-based)
+    if search:
+        query = query.filter(
+            or_(
+                Booking.room_name.ilike(f"%{search}%"),
+                Booking.booked_by.ilike(f"%{search}%"),
+            )
+        )
+
+    bookings = query.all()
+
+    result = []
+
+    for b in bookings:
+        user = db.query(User).filter(User.user_id == b.user_id).first()
+
+        result.append(
+            {
+                "booking_id": b.booking_id,
+                "user_id": b.user_id,
+                "booked_by": user.user_name if user else None,
+                "room_name": b.room_name,
+                "purpose": b.purpose,
+                "start_date_time": b.start_date_time.strftime("%Y-%m-%d %H:%M"),
+                "end_date_time": b.end_date_time.strftime("%Y-%m-%d %H:%M"),
+                "required_capacity": b.required_capacity,
+            }
+        )
+
+    return result
 
 def delete_booking(db: Session, booking_id: int):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()

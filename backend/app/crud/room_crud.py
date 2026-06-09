@@ -5,6 +5,7 @@ from app.models.room import Room  # importing room table
 from app.schemas.room_schema import RoomCreate
 from app.models.booking import Booking  # importing booking table
 from typing import Optional
+from fastapi import HTTPException
 
 def get_available_rooms(
     db: Session, start_date_time, end_date_time, required_capacity: int
@@ -34,6 +35,12 @@ def get_available_rooms(
 
 
 def create_room(db: Session, room: RoomCreate):
+
+    existing_room = db.query(Room).filter(Room.room_name == room.room_name).first()
+
+    if existing_room:
+        raise HTTPException(status_code=400, detail="Room already exists")
+
     db_room = Room(
         room_name=room.room_name,
         capacity=room.capacity,
@@ -90,8 +97,14 @@ def filter_rooms(
     end_date_time,
     room_name: Optional[str],
     required_capacity: Optional[int],
+    search: Optional[str] = None,
 ):
     query = db.query(Room)
+
+    #Flexible search (partial match)
+    if search:
+        query = query.filter(Room.room_name.ilike(f"%{search}%"))
+
 
     # Filter by room_name (if given)
     if room_name:

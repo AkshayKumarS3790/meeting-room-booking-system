@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import { useAddRoomMutation } from "../services/api";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export default function AddRoomForm({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({
@@ -16,6 +17,8 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const [roomError, setRoomError] = useState("");
 
   const isValid =
     form.room_name.trim() !== "" &&
@@ -37,10 +40,23 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
       setTimeout(() => {
         onClose();
       }, 1000);
-    } catch {
-      setMsg("Failed to add room");
+    } catch (err) {
+      const error = err as FetchBaseQueryError;
+
+      let message = "Failed to add room";
+
+      if ("data" in error) {
+        const errData = error.data as { detail?: string };
+        message = errData?.detail || message;
+      }
+
+      setMsg(message);
       setSeverity("error");
       setOpenSnackbar(true);
+
+      if (message.toLowerCase().includes("exists")) {
+        setRoomError("Room already exists");
+      }
     }
   };
 
@@ -51,7 +67,12 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         required
         fullWidth
         value={form.room_name}
-        onChange={(e) => setForm({ ...form, room_name: e.target.value })}
+        onChange={(e) => {
+          setForm({ ...form, room_name: e.target.value });
+          setRoomError("");
+        }}
+        error={!!roomError}
+        helperText={roomError}
         sx={{
           mb: 2,
           "& .MuiOutlinedInput-root": {

@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.booking_schema import BookingCreate, BookingResponse
 from app.crud import booking_crud  # import business logic functions
-from typing import List
-
+from typing import List, Optional
+from datetime import datetime
 
 from app.exc_handling.booking_exceptions import (
     booking_not_found,
@@ -35,16 +35,36 @@ def get_bookings(db: Session = Depends(get_db)):
     return filtered_bookings
 
 
+@router.get("/filter", response_model=List[BookingResponse])
+def filter_bookings(
+    room_name: Optional[str] = None,
+    user_id: Optional[int] = None,
+    start_date_time: Optional[datetime] = None,
+    end_date_time: Optional[datetime] = None,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    
+    # validation (at least one filter required)
+    if (
+        not room_name
+        and not user_id
+        and not start_date_time
+        and not end_date_time
+        and not search
+    ):
+        return booking_crud.get_bookings(db)
 
-# API 3 - Get one booking
-# This API fetches a specific booking by ID
-@router.get("/{booking_id}", response_model=BookingResponse)
-def get_booking(booking_id: int, db: Session = Depends(get_db)):
-    booking = booking_crud.get_booking(db, booking_id)
-    if not booking:
-        raise booking_not_found(booking_id)
-    return booking
+    bookings = booking_crud.filter_bookings(
+        db,
+        room_name,
+        user_id,
+        start_date_time,
+        end_date_time,
+        search,
+    )
 
+    return bookings
 
 # API 4 - Post or Update booking
 @router.put("/{booking_id}", response_model=BookingResponse)
@@ -55,7 +75,6 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
         raise booking_not_found(booking_id)
 
     return updated_booking
-
 
 # API 5 - Delete booking
 # This API delete a booking from the database

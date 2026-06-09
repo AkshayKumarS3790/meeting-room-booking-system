@@ -49,6 +49,22 @@ type UpdateRoomInput = {
   location: string;
 };
 
+type RoomFilterParams = {
+  search?: string;
+  required_capacity?: number;
+  room_name?: string;
+  start_date_time?: string;
+  end_date_time?: string;
+};
+
+type BookingFilterParams = {
+  search?: string;
+  room_name?: string;
+  user_id?: number;
+  start_date_time?: string;
+  end_date_time?: string;
+};
+
 export type RoomResponse = Room[] | { message: string };
 
 export const api = createApi({
@@ -61,14 +77,22 @@ export const api = createApi({
   tagTypes: ["Rooms", "Bookings"],
 
   endpoints: (builder) => ({
-    getRooms: builder.query<RoomResponse, void>({
-      query: () => "rooms/",
+    getRooms: builder.query<Room[], RoomFilterParams>({
+      query: (params) => ({
+        url: "/rooms/filter/",
+        params,
+      }),
       providesTags: ["Rooms"],
     }),
-    getBookings: builder.query<Booking[], void>({
-      query: () => "/bookings/",
+
+    getBookings: builder.query<Booking[], BookingFilterParams>({
+      query: (params) => ({
+        url: "/bookings/filter",
+        params,
+      }),
       providesTags: ["Bookings"],
     }),
+
     getUsers: builder.query<User[], void>({
       query: () => "users/",
     }),
@@ -79,7 +103,7 @@ export const api = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Bookings"],
+      invalidatesTags: ["Bookings", "Rooms"],
     }),
 
     updateBooking: builder.mutation({
@@ -88,7 +112,7 @@ export const api = createApi({
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["Bookings"],
+      invalidatesTags: ["Bookings", "Rooms"],
     }),
 
     deleteBooking: builder.mutation({
@@ -96,7 +120,7 @@ export const api = createApi({
         url: `/bookings/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Bookings"],
+      invalidatesTags: ["Bookings", "Rooms"],
     }),
 
     addRoom: builder.mutation<AddRoomResponse, AddRoomInput>({

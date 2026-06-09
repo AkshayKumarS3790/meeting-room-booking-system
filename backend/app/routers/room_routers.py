@@ -39,6 +39,7 @@ def filter_rooms(
     end_date_time: Optional[datetime] = None,
     room_name: Optional[str] = None,
     required_capacity: Optional[int] = None,
+    search: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     if required_capacity is not None:
@@ -50,8 +51,9 @@ def filter_rooms(
         and not end_date_time
         and not room_name
         and required_capacity is None
+        and not search
     ):
-        return no_filters_provided()
+        return room_crud.get_rooms(db)
 
     if start_date_time and end_date_time:
         if start_date_time >= end_date_time:
@@ -90,7 +92,7 @@ def filter_rooms(
         return room_not_booked(room_name)
 
     rooms = room_crud.filter_rooms(
-        db, start_date_time, end_date_time, room_name, required_capacity
+        db, start_date_time, end_date_time, room_name, required_capacity, search,
     )
 
     # Case 2: capacity filter + no rooms

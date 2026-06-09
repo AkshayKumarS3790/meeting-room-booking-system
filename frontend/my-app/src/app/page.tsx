@@ -10,17 +10,27 @@ import {
   DialogContent,
   Snackbar,
   Alert,
+  TextField,
 } from "@mui/material";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
 import BookingList from "@/components/BookingList";
 import AddRoomForm from "@/components/AddRoomForm";
 import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function Home() {
-  const { data, error, isLoading } = useGetRoomsQuery(undefined, {});
-  const { data: bookings } = useGetBookingsQuery();
+  const [roomSearch, setRoomSearch] = useState("");
+
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
+
+  const debouncedSearch = useDebounce(roomSearch, 500);
+
+  const { data, error, isLoading } = useGetRoomsQuery({
+    search: debouncedSearch || undefined,
+  });
+
+  const { data: bookings } = useGetBookingsQuery({});
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
@@ -36,10 +46,8 @@ export default function Home() {
     : [];
 
   if (isLoading) return <Typography>Loading rooms...</Typography>;
+
   if (error) return <Typography>Error loading rooms</Typography>;
-  if (data && !Array.isArray(data)) {
-    return <Typography>{data.message}</Typography>;
-  }
 
   return (
     <Container
@@ -84,27 +92,55 @@ export default function Home() {
             Rooms
           </Typography>
 
-          <Dialog
-            open={openRoomDialog}
-            onClose={() => setOpenRoomDialog(false)}
-          >
-            <DialogTitle fontWeight="bold">Add Room</DialogTitle>
+          <Box display="flex" gap={2} alignItems="center">
+            <TextField
+              placeholder="Search rooms"
+              value={roomSearch}
+              onChange={(e) => setRoomSearch(e.target.value)}
+              size="small"
+              sx={{
+                mb: 1,
+                width: 150,
+                backgroundColor: "#ffffff", // bright background
+                borderRadius: 2,
+                "& .MuiOutlinedInput-root": {
+                  color: "#000", // text color
+                  "& fieldset": {
+                    borderColor: "#ccc",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#1976d2",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#1976d2",
+                  },
+                },
+              }}
+            />
 
-            <DialogContent>
-              <AddRoomForm onClose={() => setOpenRoomDialog(false)} />
-            </DialogContent>
-          </Dialog>
+            <Button
+              variant="contained"
+              sx={{
+                mb: 1,
+                borderRadius: 2,
+                textTransform: "none",
+              }}
+              onClick={() => setOpenRoomDialog(true)}
+            >
+              Add Room
+            </Button>
 
-          <Button
-            variant="contained"
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-            }}
-            onClick={() => setOpenRoomDialog(true)}
-          >
-            Add Room
-          </Button>
+            <Dialog
+              open={openRoomDialog}
+              onClose={() => setOpenRoomDialog(false)}
+            >
+              <DialogTitle fontWeight="bold">Add Room</DialogTitle>
+
+              <DialogContent>
+                <AddRoomForm onClose={() => setOpenRoomDialog(false)} />
+              </DialogContent>
+            </Dialog>
+          </Box>
         </Box>
 
         {data && data.length > 0 ? (

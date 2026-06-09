@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  TextField,
 } from "@mui/material";
 
 import {
@@ -25,26 +26,35 @@ import {
   useDeleteBookingMutation,
   useGetRoomsQuery,
 } from "../services/api";
+
 import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+
 import EditBookingForm from "./EditBookingForm";
 
 export default function BookingList() {
-  const { data, isLoading, error } = useGetBookingsQuery();
-  const { data: rooms } = useGetRoomsQuery();
+  const [search, setSearch] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState("all");
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const [deleteBooking, { isLoading: isDeleting }] = useDeleteBookingMutation();
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const debouncedSearch = useDebounce(search, 500);
 
-  const [selectedRoom, setSelectedRoom] = useState("all");
+  const { data, isLoading, error } = useGetBookingsQuery({
+    search: debouncedSearch || undefined,
+  });
+
+  const { data: rooms } = useGetRoomsQuery({});
+
+  const [deleteBooking, { isLoading: isDeleting }] = useDeleteBookingMutation();
 
   const bookings = Array.isArray(data) ? data : [];
 
@@ -53,15 +63,11 @@ export default function BookingList() {
   );
 
   const now = new Date();
+
   const validBookings = sortedBookings.filter((b) => {
     const endTime = new Date(b.end_date_time);
     return endTime > now;
   });
-
-  const filteredBookings =
-    selectedRoom === "all"
-      ? validBookings
-      : validBookings.filter((b) => b.room_name === selectedRoom);
 
   if (isLoading) return <Typography>Loading bookings...</Typography>;
 
@@ -79,70 +85,96 @@ export default function BookingList() {
           Bookings
         </Typography>
 
-        <FormControl
-          variant="outlined"
-          sx={{
-            minWidth: 100,
-            "& .MuiOutlinedInput-root": {
-              height: 40,
-              display: "flex",
-              alignItems: "center",
-
-              color: "lightgray",
+        <Box display="flex" gap={2} alignItems="center">
+          <TextField
+            placeholder="Search bookings..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            size="small"
+            sx={{
+              width: 150,
+              backgroundColor: "#ffffff", // bright background
               borderRadius: 2,
+              "& .MuiOutlinedInput-root": {
+                color: "#000", // text color
+                "& fieldset": {
+                  borderColor: "#ccc",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#1976d2",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1976d2",
+                },
+              },
+            }}
+          />
 
-              "& fieldset": {
-                borderColor: "#afafaf",
+          <FormControl
+            variant="outlined"
+            sx={{
+              minWidth: 100,
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+
+                color: "lightgray",
+                borderRadius: 2,
+
+                "& fieldset": {
+                  borderColor: "#afafaf",
+                },
+
+                "&:hover fieldset": {
+                  borderColor: "#afafaf",
+                },
+
+                "&.Mui-focused fieldset": {
+                  borderColor: "#afafaf",
+                  borderWidth: 2,
+                },
               },
 
-              "&:hover fieldset": {
-                borderColor: "#afafaf",
+              "& .MuiSelect-select": {
+                paddingTop: "10px",
+                paddingBottom: "10px",
               },
 
-              "&.Mui-focused fieldset": {
-                borderColor: "#afafaf",
-                borderWidth: 2,
+              "& .MuiSvgIcon-root": {
+                color: "lightgray",
               },
-            },
 
-            "& .MuiSelect-select": {
-              paddingTop: "10px",
-              paddingBottom: "10px",
-            },
-
-            "& .MuiSvgIcon-root": {
-              color: "lightgray",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#afafaf",
-            },
-          }}
-        >
-          <InputLabel>Select Room</InputLabel>
-
-          <Select
-            value={selectedRoom}
-            label="Select Room"
-            onChange={(e) => setSelectedRoom(e.target.value)}
-            MenuProps={{
-              disableScrollLock: true,
+              "& .MuiInputLabel-root": {
+                color: "#afafaf",
+              },
             }}
           >
-            <MenuItem value="all">All Rooms</MenuItem>
+            <InputLabel>Select Room</InputLabel>
 
-            {Array.from(new Set(validBookings.map((b) => b.room_name))).map(
-              (roomName) => (
-                <MenuItem key={roomName} value={roomName}>
-                  {roomName}
-                </MenuItem>
-              ),
-            )}
-          </Select>
-        </FormControl>
+            <Select
+              value={selectedRoom}
+              label="Select Room"
+              onChange={(e) => setSelectedRoom(e.target.value)}
+              MenuProps={{
+                disableScrollLock: true,
+              }}
+            >
+              <MenuItem value="all">All Rooms</MenuItem>
+
+              {Array.from(new Set(validBookings.map((b) => b.room_name))).map(
+                (roomName) => (
+                  <MenuItem key={roomName} value={roomName}>
+                    {roomName}
+                  </MenuItem>
+                ),
+              )}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
 
-      {filteredBookings.length === 0 ? (
+      {validBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
       ) : (
         <Box
@@ -158,7 +190,7 @@ export default function BookingList() {
             alignItems: "start",
           }}
         >
-          {filteredBookings.map((b) => (
+          {validBookings.map((b) => (
             <Card
               key={b.booking_id}
               sx={{
@@ -198,7 +230,11 @@ export default function BookingList() {
                   <Button
                     variant="outlined"
                     color="primary"
-                    sx={{ mt: 2, borderRadius: 2, textTransform: "none" }}
+                    sx={{
+                      mt: 2,
+                      borderRadius: 2,
+                      textTransform: "none",
+                    }}
                     onClick={() => {
                       setSelectedBooking(b);
                       setOpenEditDialog(true);
