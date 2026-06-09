@@ -1,6 +1,7 @@
 # This file is the service layer/business logic
 
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from app.models.room import Room  # importing room table
 from app.schemas.room_schema import RoomCreate
 from app.models.booking import Booking  # importing booking table
@@ -103,7 +104,15 @@ def filter_rooms(
 
     #Flexible search (partial match)
     if search:
-        query = query.filter(Room.room_name.ilike(f"%{search}%"))
+        filters = [
+                Room.room_name.ilike(f"%{search}%"),
+                Room.location.ilike(f"%{search}%"),
+        ]
+
+        if search.isdigit():
+            filters. append(Room.capacity >= int(search))
+
+        query = query.filter(or_(*filters))
 
 
     # Filter by room_name (if given)
