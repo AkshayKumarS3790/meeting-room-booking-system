@@ -47,12 +47,13 @@ export default function RoomCard({
   return (
     <Card
       sx={{
+        backgroundColor: "#2e2e45",
+        color: "#fff",
         borderRadius: 3,
-        boxShadow: 3,
-        transition: "all 0.3s ease",
+        transition: "0.3s",
         "&:hover": {
-          boxShadow: 6,
-          transform: "translateY(+5px)",
+          backgroundColor: "#26263a",
+          transform: "translateY(-4px)",
         },
       }}
     >
@@ -72,7 +73,7 @@ export default function RoomCard({
               width: 8,
               height: 8,
               borderRadius: "50%",
-              backgroundColor: bookingCount > 0 ? "green" : "red",
+              backgroundColor: bookingCount > 0 ? "#24cd3e" : "#f23737",
             }}
           />
 
@@ -89,13 +90,17 @@ export default function RoomCard({
         <Typography>Location: {room.location}</Typography>
 
         <Button
-          variant="contained"
+          // className="primary-btn"
           sx={{
             mt: 2,
+            background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+            color: "#fff",
             borderRadius: 2,
             textTransform: "none",
+            padding: "6px 14px",
+
             "&:hover": {
-              backgroundColor: "#1b5690",
+              background: "linear-gradient(55deg, #7340ff, #a674fd)",
             },
           }}
           onClick={() => setShowForm(!showForm)}
@@ -104,19 +109,38 @@ export default function RoomCard({
         </Button>
 
         <Button
-          variant="outlined"
           sx={{
             mt: 2,
             ml: 2,
+            border: "1px solid #d1b3ff",
+            color: "#d1b3ff",
             borderRadius: 2,
             textTransform: "none",
+
+            "&:hover": {
+              borderColor: "#b388ff",
+              color: "#b388ff",
+              backgroundColor: "rgba(179,136,255,0.1)",
+            },
           }}
           onClick={() => setOpenEdit(true)}
         >
           Edit Room
         </Button>
 
-        <Dialog open={showForm} onClose={() => setShowForm(false)} fullWidth>
+        <Dialog
+          open={showForm}
+          onClose={() => setShowForm(false)}
+          fullWidth
+          PaperProps={{
+            sx: {
+              backgroundColor: "#1e1e2f",
+              color: "#fff",
+              borderRadius: 3,
+              padding: 2,
+            },
+          }}
+        >
           <DialogTitle sx={{ fontWeight: "bold" }}>
             Book {room.room_name}
           </DialogTitle>
@@ -129,7 +153,18 @@ export default function RoomCard({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
+        <Dialog
+          open={openEdit}
+          onClose={() => setOpenEdit(false)}
+          PaperProps={{
+            sx: {
+              backgroundColor: "#1e1e2f",
+              color: "#fff",
+              borderRadius: 3,
+              padding: 2,
+            },
+          }}
+        >
           <DialogTitle sx={{ fontWeight: "bold" }}>Edit Room</DialogTitle>
 
           <DialogContent>

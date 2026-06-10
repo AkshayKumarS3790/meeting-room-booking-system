@@ -1,13 +1,39 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  background: #12121c;
+  color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.section-card {
+  background: #1e1e2f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card {
+  background: #26263a;
+  border-radius: 12px;
+  padding: 16px;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background: #2e2e45;
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, #7c4dff, #b388ff);
+  color: white;
+  border-radius: 8px;
+  text-transform: none;
+}
+
+.secondary-btn {
+  border: 1px solid #b388ff;
+  color: #b388ff;
+  border-radius: 8px;
+  text-transform: none;
 }
 
 html {
@@ -21,8 +47,8 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background: #12121c;
+  color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -43,4 +69,17 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #7c4dff !important;
+}
+
+.MuiButton-containedPrimary {
+  background-color: #7c4dff !important;
+}
+
+.MuiButton-outlinedPrimary {
+  border-color: #7c4dff !important;
+  color: #7c4dff !important;
 }

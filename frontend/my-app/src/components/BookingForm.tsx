@@ -38,7 +38,7 @@ export default function BookingForm({
   });
 
   const { data: users } = useGetUsersQuery();
-  const { data: bookings } = useGetBookingsQuery();
+  const { data: bookings } = useGetBookingsQuery({});
 
   const [createBooking] = useCreateBookingMutation();
 
@@ -176,14 +176,76 @@ export default function BookingForm({
 
   return (
     <Box mt={2}>
-      <FormControl fullWidth sx={{ mb: 1 }}>
+      <FormControl
+        fullWidth
+        sx={{
+          mb: 1,
+
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
+            borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
+          },
+
+          "& .MuiSvgIcon-root": {
+            color: "#aaa",
+          },
+        }}
+      >
         <InputLabel>Select User</InputLabel>
 
         <Select
           name="user_id"
           value={form.user_id || ""}
           label="Select User"
-          sx={{ mb: 1, borderRadius: 2 }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                backgroundColor: "#37374c",
+                color: "#fff",
+
+                "& .MuiMenuItem-root": {
+                  color: "#fff",
+                },
+
+                "& .MuiMenuItem-root:hover": {
+                  backgroundColor: "#303047",
+                },
+
+                "& .MuiMenuItem-root.Mui-selected": {
+                  backgroundColor: "#7c4dff",
+                  color: "#fff",
+                },
+              },
+            },
+          }}
+          sx={{
+            mb: 1,
+            borderRadius: 2,
+            "& .MuiSelect-select": {
+              color: "#fff",
+            },
+          }}
           onChange={(e) =>
             setForm({ ...form, user_id: Number(e.target.value) })
           }
@@ -195,6 +257,7 @@ export default function BookingForm({
           ))}
         </Select>
       </FormControl>
+
       <TextField
         label="Purpose"
         name="purpose"
@@ -203,9 +266,33 @@ export default function BookingForm({
         fullWidth
         onChange={handleChange}
         sx={{
-          mb: 2,
+          mb: 3,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
@@ -220,17 +307,48 @@ export default function BookingForm({
           inputLabel: { shrink: true },
         }}
         onChange={handleChange}
-        // error={hasSubmitted && isPastDate}
         error={isPastDate}
-        helperText={
-          // hasSubmitted &&
-          isPastDate ? "Cannot select a past date" : ""
-        }
+        helperText={isPastDate ? "Cannot select a past date" : ""}
         sx={{
-          mb: 2,
+          mb: 3,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&.Mui-error fieldset": {
+              borderColor: "#ff6b6b",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
           },
+
+          "& .MuiFormHelperText-root.Mui-error": {
+            color: "#ff8a80",
+            fontSize: "0.75rem",
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
+          },
+
+          "& input": { color: "#fff" },
         }}
       />
       <Box display="flex" gap={2} mb={2}>
@@ -254,9 +372,45 @@ export default function BookingForm({
                 : ""
           }
           sx={{
+            mb: 1,
+
             "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
               borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff6b6b",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
             },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
+            },
+
+            "& input": { color: "#fff" },
           }}
         />
 
@@ -277,7 +431,39 @@ export default function BookingForm({
           }
           sx={{
             "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
               borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff6b6b",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
             },
           }}
         />
@@ -300,16 +486,62 @@ export default function BookingForm({
         }
         sx={{
           mb: 2,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-error fieldset": {
+              borderColor: "#ff6b6b",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiFormHelperText-root.Mui-error": {
+            color: "#ff8a80",
+            fontSize: "0.75rem",
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
       <Button
-        variant="contained"
         onClick={handleSubmit}
         disabled={!isFormValid}
-        sx={{ borderRadius: 2, textTransform: "none" }}
+        sx={{
+          background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+          color: "#fff",
+          borderRadius: 2,
+          textTransform: "none",
+
+          "&:hover": {
+            background: "linear-gradient(55deg, #7340ff, #a674fd)",
+          },
+
+          "&.Mui-disabled": {
+            background: "#444",
+            color: "#aaa",
+          },
+        }}
       >
         Confirm Booking
       </Button>

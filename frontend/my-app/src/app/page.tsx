@@ -45,9 +45,9 @@ export default function Home() {
       )
     : [];
 
-  if (isLoading) return <Typography>Loading rooms...</Typography>;
+  if (isLoading) return <Typography>Loading page...</Typography>;
 
-  if (error) return <Typography>Error loading rooms</Typography>;
+  if (error) return <Typography>Error loading the page</Typography>;
 
   return (
     <Container
@@ -69,16 +69,17 @@ export default function Home() {
       <Box
         sx={{
           height: 2,
-          backgroundColor: "#4387db",
+          backgroundColor: "#7c4dff",
           mb: 3,
         }}
       />
 
       <Box
+        className="section-card"
         sx={{
           p: 2,
           borderRadius: 2,
-          backgroundColor: "#383838",
+          backgroundColor: "#1e1e2f",
           mb: 4,
         }}
       >
@@ -88,7 +89,7 @@ export default function Home() {
           alignItems="center"
           mb={2}
         >
-          <Typography variant="h5" fontWeight="bold">
+          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
             Rooms
           </Typography>
 
@@ -99,29 +100,47 @@ export default function Home() {
               onChange={(e) => setRoomSearch(e.target.value)}
               size="small"
               sx={{
-                mb: 1,
-                width: 150,
-                backgroundColor: "#ffffff", // bright background
-                borderRadius: 2,
+                width: 200,
+
+                background: "linear-gradient(145deg, #2a2a3d, #24243a)",
+
+                borderRadius: 3,
+
                 "& .MuiOutlinedInput-root": {
-                  color: "#000", // text color
+                  borderRadius: 3,
+                  color: "#fff",
+
                   "& fieldset": {
-                    borderColor: "#ccc",
+                    borderColor: "transparent",
                   },
+
                   "&:hover fieldset": {
-                    borderColor: "#1976d2",
+                    borderColor: "#7c4dff",
                   },
+
                   "&.Mui-focused fieldset": {
-                    borderColor: "#1976d2",
+                    borderColor: "#7c4dff",
+                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
                   },
+                },
+
+                "& input::placeholder": {
+                  color: "#bbb",
+                  opacity: 1,
+                },
+
+                "& input": {
+                  color: "#fff",
+                  padding: "8px 12px",
                 },
               }}
             />
 
             <Button
-              variant="contained"
               sx={{
-                mb: 1,
+                minWidth: 100,
+                background: "linear-gradient(55deg, #7340ff, #a674fd)",
+                color: "#fff",
                 borderRadius: 2,
                 textTransform: "none",
               }}
@@ -133,6 +152,14 @@ export default function Home() {
             <Dialog
               open={openRoomDialog}
               onClose={() => setOpenRoomDialog(false)}
+              PaperProps={{
+                sx: {
+                  backgroundColor: "#1e1e2f",
+                  color: "#fff",
+                  borderRadius: 3,
+                  padding: 2,
+                },
+              }}
             >
               <DialogTitle fontWeight="bold">Add Room</DialogTitle>
 
@@ -178,7 +205,7 @@ export default function Home() {
         sx={{
           p: 2,
           borderRadius: 2,
-          backgroundColor: "#383838",
+          backgroundColor: "#1e1e2f",
           mt: 4,
         }}
       >

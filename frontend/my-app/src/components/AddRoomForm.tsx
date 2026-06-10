@@ -75,8 +75,32 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         helperText={roomError}
         sx={{
           mb: 2,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
@@ -90,8 +114,32 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         inputProps={{ min: 1 }}
         sx={{
           mb: 2,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
@@ -103,15 +151,40 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         value={form.location}
         onChange={(e) => setForm({ ...form, location: e.target.value })}
         sx={{
-          mb: 2,
+          mb: 1,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
 
       <Box display="flex" gap={2} mt={1}>
         <Button
+          className="primary-btn"
           variant="contained"
           disabled={!isValid}
           onClick={handleSubmit}
@@ -134,7 +207,11 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert severity={severity} variant="filled">
+        <Alert
+          severity={severity}
+          variant="filled"
+          sx={{ borderRadius: 2, fontWeight: "medium" }}
+        >
           {msg}
         </Alert>
       </Snackbar>

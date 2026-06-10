@@ -50,6 +50,7 @@ export default function BookingList() {
 
   const { data, isLoading, error } = useGetBookingsQuery({
     search: debouncedSearch || undefined,
+    room_name: selectedRoom !== "all" ? selectedRoom : undefined,
   });
 
   const { data: rooms } = useGetRoomsQuery({});
@@ -92,20 +93,38 @@ export default function BookingList() {
             onChange={(e) => setSearch(e.target.value)}
             size="small"
             sx={{
-              width: 150,
-              backgroundColor: "#ffffff", // bright background
-              borderRadius: 2,
+              width: 200,
+
+              background: "linear-gradient(145deg, #2a2a3d, #24243a)",
+
+              borderRadius: 3,
+
               "& .MuiOutlinedInput-root": {
-                color: "#000", // text color
+                borderRadius: 3,
+                color: "#fff",
+
                 "& fieldset": {
-                  borderColor: "#ccc",
+                  borderColor: "transparent",
                 },
+
                 "&:hover fieldset": {
-                  borderColor: "#1976d2",
+                  borderColor: "#7c4dff",
                 },
+
                 "&.Mui-focused fieldset": {
-                  borderColor: "#1976d2",
+                  borderColor: "#7c4dff",
+                  boxShadow: "0 0 6px rgba(124,77,255,0.4)",
                 },
+              },
+
+              "& input::placeholder": {
+                color: "#bbb",
+                opacity: 1,
+              },
+
+              "& input": {
+                color: "#fff",
+                padding: "8px 12px",
               },
             }}
           />
@@ -194,9 +213,15 @@ export default function BookingList() {
             <Card
               key={b.booking_id}
               sx={{
-                width: "100%",
-                borderRadius: 2,
-                boxShadow: 2,
+                backgroundColor: "#2e2e45",
+                color: "#fff",
+                borderRadius: 3,
+                transition: "0.3s",
+
+                "&:hover": {
+                  backgroundColor: "#26263a",
+                  transform: "translateY(-4px)",
+                },
               }}
             >
               <CardContent
@@ -228,12 +253,18 @@ export default function BookingList() {
 
                 <Box display="flex" gap={2}>
                   <Button
-                    variant="outlined"
-                    color="primary"
+                    className="secondary-btn"
                     sx={{
                       mt: 2,
+                      background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+                      color: "#fff",
                       borderRadius: 2,
                       textTransform: "none",
+                      padding: "6px 14px",
+
+                      "&:hover": {
+                        background: "linear-gradient(55deg, #7340ff, #a674fd)",
+                      },
                     }}
                     onClick={() => {
                       setSelectedBooking(b);
@@ -244,12 +275,11 @@ export default function BookingList() {
                   </Button>
 
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="error"
                     sx={{
                       mt: 2,
                       borderRadius: 2,
-                      alignSelf: "flex-start",
                       textTransform: "none",
                     }}
                     onClick={() => {
@@ -265,7 +295,18 @@ export default function BookingList() {
           ))}
         </Box>
       )}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#1e1e2f",
+            color: "#fff",
+            borderRadius: 3,
+            padding: 2,
+          },
+        }}
+      >
         <DialogTitle sx={{ fontWeight: "bold" }}>Delete Booking</DialogTitle>
 
         <DialogContent>
@@ -274,8 +315,17 @@ export default function BookingList() {
 
         <DialogActions>
           <Button
-            variant="outlined"
-            sx={{ borderRadius: 2, textTransform: "none" }}
+            sx={{
+              background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+              color: "#fff",
+              borderRadius: 2,
+              textTransform: "none",
+              padding: "6px 14px",
+
+              "&:hover": {
+                background: "linear-gradient(55deg, #7340ff, #a674fd)",
+              },
+            }}
             onClick={() => setOpenDialog(false)}
           >
             Cancel
@@ -283,7 +333,7 @@ export default function BookingList() {
 
           <Button
             color="error"
-            variant="contained"
+            variant="outlined"
             disabled={isDeleting}
             sx={{ borderRadius: 2, textTransform: "none" }}
             onClick={async () => {
@@ -315,6 +365,14 @@ export default function BookingList() {
         open={openEditDialog}
         onClose={() => setOpenEditDialog(false)}
         fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: "#1e1e2f",
+            color: "#fff",
+            borderRadius: 3,
+            padding: 2,
+          },
+        }}
       >
         <DialogTitle sx={{ fontWeight: "bold" }}>Edit Booking</DialogTitle>
 

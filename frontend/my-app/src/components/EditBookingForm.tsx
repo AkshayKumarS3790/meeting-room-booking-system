@@ -118,8 +118,33 @@ export default function EditBookingForm({
         required
         value={form.purpose}
         sx={{
+          mb: 1,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
         onChange={(e) => setForm({ ...form, purpose: e.target.value })}
@@ -137,8 +162,42 @@ export default function EditBookingForm({
         error={isPastDate}
         helperText={isPastDate ? "Cannot select a past date" : ""}
         sx={{
+          mb: 1,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&.Mui-error fieldset": {
+              borderColor: "#ff6b6b",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiFormHelperText-root.Mui-error": {
+            color: "#ff8a80",
+            fontSize: "0.75rem",
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
       />
@@ -163,8 +222,42 @@ export default function EditBookingForm({
                 : ""
           }
           sx={{
+            mb: 1,
+
             "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
               borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff6b6b",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
             },
           }}
         />
@@ -185,7 +278,39 @@ export default function EditBookingForm({
           }
           sx={{
             "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
               borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff6b6b",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
             },
           }}
         />
@@ -196,8 +321,42 @@ export default function EditBookingForm({
         required
         value={form.required_capacity}
         sx={{
+          mb: 1,
+
           "& .MuiOutlinedInput-root": {
+            backgroundColor: "#37374c",
+            color: "#fff",
             borderRadius: 2,
+
+            "& fieldset": {
+              borderColor: "#444",
+            },
+
+            "&.Mui-error fieldset": {
+              borderColor: "#ff6b6b",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#7c4dff",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#7c4dff",
+              borderWidth: "2px",
+            },
+          },
+
+          "& .MuiFormHelperText-root.Mui-error": {
+            color: "#ff8a80",
+            fontSize: "0.75rem",
+          },
+
+          "& .MuiInputLabel-root": {
+            color: "#aaa",
+          },
+
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#b388ff",
           },
         }}
         onChange={(e) =>
@@ -217,7 +376,26 @@ export default function EditBookingForm({
       <Button
         variant="contained"
         onClick={handleSubmit}
-        sx={{ borderRadius: 2, textTransform: "none", alignSelf: "flex-start" }}
+        sx={{
+          background: "linear-gradient(55deg, #7340ff, #a674fd)",
+          color: "#fff",
+          borderRadius: 2,
+          textTransform: "none",
+          alignSelf: "flex-start",
+
+          padding: "6px 16px",
+
+          transition: "0.3s ease",
+
+          "&:hover": {
+            background: "linear-gradient(55deg, #7340ff, #a674fd)",
+          },
+
+          "&.Mui-disabled": {
+            background: "#444",
+            color: "#999",
+          },
+        }}
       >
         Update Booking
       </Button>
