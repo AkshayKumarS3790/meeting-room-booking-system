@@ -31,6 +31,7 @@ export type Booking = {
   start_date_time: string;
   end_date_time: string;
   required_capacity: number;
+  is_active?: boolean;
 };
 
 type AddRoomInput = {
@@ -63,6 +64,7 @@ type BookingFilterParams = {
   user_id?: number;
   start_date_time?: string;
   end_date_time?: string;
+  only_active?: boolean;
 };
 
 export type RoomResponse = Room[] | { message: string };

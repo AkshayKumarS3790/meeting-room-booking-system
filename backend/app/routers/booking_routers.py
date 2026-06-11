@@ -42,6 +42,7 @@ def filter_bookings(
     start_date_time: Optional[datetime] = None,
     end_date_time: Optional[datetime] = None,
     search: Optional[str] = None,
+    only_active: Optional[bool] = True,
     db: Session = Depends(get_db),
 ):
     
@@ -62,6 +63,7 @@ def filter_bookings(
         start_date_time,
         end_date_time,
         search,
+        only_active,
     )
 
     return bookings

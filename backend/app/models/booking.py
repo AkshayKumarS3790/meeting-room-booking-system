@@ -3,7 +3,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from app.base import Base
-
+from sqlalchemy import Boolean
 
 # Creating the "Booking" table in database
 class Booking(Base):
@@ -18,7 +18,9 @@ class Booking(Base):
     end_date_time = Column(DateTime)
     required_capacity = Column(Integer)
 
-    room = relationship("Room", back_populates="bookings")
-    # This will connect back to Room model, basically allowing navigation b/w room and its bookings
+    is_active = Column(Boolean, default=True)
 
+    # This will connect back to Room model, basically allowing navigation b/w room and its bookings
+    room = relationship("Room", back_populates="bookings")
+    
     user = relationship("User")

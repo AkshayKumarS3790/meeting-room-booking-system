@@ -51,6 +51,7 @@ export default function BookingList() {
   const { data, isLoading, error } = useGetBookingsQuery({
     search: debouncedSearch || undefined,
     room_name: selectedRoom !== "all" ? selectedRoom : undefined,
+    only_active: false,
   });
 
   const { data: rooms } = useGetRoomsQuery({});
@@ -63,11 +64,9 @@ export default function BookingList() {
     (a, b) => b.booking_id - a.booking_id,
   );
 
-  const now = new Date();
-
   const validBookings = sortedBookings.filter((b) => {
-    const endTime = new Date(b.end_date_time);
-    return endTime > now;
+    const end = new Date(b.end_date_time);
+    return end > new Date();
   });
 
   if (isLoading) return <Typography>Loading bookings...</Typography>;
@@ -298,6 +297,7 @@ export default function BookingList() {
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
+        disableScrollLock
         PaperProps={{
           sx: {
             backgroundColor: "#1e1e2f",
@@ -364,6 +364,7 @@ export default function BookingList() {
       <Dialog
         open={openEditDialog}
         onClose={() => setOpenEditDialog(false)}
+        disableScrollLock
         fullWidth
         PaperProps={{
           sx: {

@@ -151,6 +151,7 @@ export default function Home() {
 
             <Dialog
               open={openRoomDialog}
+              disableScrollLock
               onClose={() => setOpenRoomDialog(false)}
               PaperProps={{
                 sx: {

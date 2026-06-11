@@ -225,6 +225,7 @@ export default function EditRoomForm({
 
       <Dialog
         open={confirmDelete}
+        disableScrollLock
         PaperProps={{
           sx: {
             backgroundColor: "#1e1e2f",

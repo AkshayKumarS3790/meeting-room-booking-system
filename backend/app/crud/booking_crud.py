@@ -3,6 +3,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from datetime import datetime
+from sqlalchemy.orm import Session
 
 from app.schemas.booking_schema import BookingCreate
 from app.models.room import Room
@@ -17,6 +18,17 @@ from app.exc_handling.booking_exceptions import (
     invalid_time_range,
     room_already_booked,
 )
+
+
+def deactivate_past_bookings(db: Session):
+    now = datetime.now()
+
+    db.query(Booking).filter(
+        Booking.end_date_time < now,
+        Booking.is_active == True
+    ).update({Booking.is_active: False}, synchronize_session=False)
+
+    db.commit()
 
 
 def create_booking(db: Session, booking: BookingCreate):
@@ -76,6 +88,7 @@ def create_booking(db: Session, booking: BookingCreate):
         start_date_time=start_date_time,
         end_date_time=end_date_time,
         required_capacity=booking.required_capacity,
+        is_active=True,
     )
 
     db.add(db_booking)
@@ -97,15 +110,7 @@ def create_booking(db: Session, booking: BookingCreate):
 
 
 def get_bookings(db: Session):
-
-    now = datetime.now()
-
-    # Remove expired bookings
-    db.query(Booking).filter(
-        Booking.end_date_time < now
-    ).delete(synchronize_session=False)
-
-    db.commit()
+    deactivate_past_bookings(db)
 
     bookings = db.query(Booking).all()
     result = []
@@ -123,6 +128,7 @@ def get_bookings(db: Session):
                 "start_date_time": b.start_date_time.strftime("%Y-%m-%d %H:%M"),
                 "end_date_time": b.end_date_time.strftime("%Y-%m-%d %H:%M"),
                 "required_capacity": b.required_capacity,
+                "is_active": b.is_active,
             }
         )
 
@@ -211,26 +217,24 @@ def filter_bookings(
     start_date_time=None,
     end_date_time=None,
     search=None,
+    only_active: bool = True,
 ):
-    now = datetime.now()
-
-    db.query(Booking).filter(
-        Booking.end_date_time < now
-    ).delete(synchronize_session=False)
-
-    db.commit()
+    deactivate_past_bookings(db)
     
     query = db.query(Booking)
+    
+    if only_active:
+        query = query.filter(Booking.is_active == True)
 
-    # ✅ Filter by room
+    # Filter by room
     if room_name:
         query = query.filter(Booking.room_name == room_name)
 
-    # ✅ Filter by user
+    # Filter by user
     if user_id:
         query = query.filter(Booking.user_id == user_id)
 
-    # ✅ Filter by time range
+    # Filter by time range
     if start_date_time and end_date_time:
         query = query.filter(
             Booking.start_date_time < start_date_time,
@@ -263,6 +267,7 @@ def filter_bookings(
                 "start_date_time": b.start_date_time.strftime("%Y-%m-%d %H:%M"),
                 "end_date_time": b.end_date_time.strftime("%Y-%m-%d %H:%M"),
                 "required_capacity": b.required_capacity,
+                "is_active": b.is_active,
             }
         )
 
@@ -272,7 +277,7 @@ def delete_booking(db: Session, booking_id: int):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
 
     if booking:
-        db.delete(booking)
+        booking.is_active = False
         db.commit()
 
     return booking

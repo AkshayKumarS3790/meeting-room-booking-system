@@ -132,6 +132,7 @@ export default function RoomCard({
           open={showForm}
           onClose={() => setShowForm(false)}
           fullWidth
+          disableScrollLock
           PaperProps={{
             sx: {
               backgroundColor: "#1e1e2f",
@@ -156,6 +157,7 @@ export default function RoomCard({
         <Dialog
           open={openEdit}
           onClose={() => setOpenEdit(false)}
+          disableScrollLock
           PaperProps={{
             sx: {
               backgroundColor: "#1e1e2f",

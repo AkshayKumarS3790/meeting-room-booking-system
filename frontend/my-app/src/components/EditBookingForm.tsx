@@ -218,7 +218,7 @@ export default function EditBookingForm({
             isPastTime
               ? "Cannot select past time"
               : isInvalidTimeRange
-                ? "Start time must be before end time"
+                ? "Start time must be lesser than end time"
                 : ""
           }
           sx={{
@@ -274,7 +274,7 @@ export default function EditBookingForm({
           }}
           error={isInvalidTimeRange}
           helperText={
-            isInvalidTimeRange ? "End time must be after start time" : ""
+            isInvalidTimeRange ? "End time must be greater than start time" : ""
           }
           sx={{
             "& .MuiOutlinedInput-root": {
