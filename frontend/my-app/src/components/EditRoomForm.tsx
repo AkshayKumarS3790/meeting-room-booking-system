@@ -217,7 +217,12 @@ export default function EditRoomForm({
           color="error"
           disabled={isDeleting}
           onClick={() => setConfirmDelete(true)}
-          sx={{ borderRadius: 2, textTransform: "none" }}
+          sx={{
+            borderRadius: 2,
+            borderColor: "#fc5d5d",
+            textTransform: "none",
+            color: "#fc5d5d",
+          }}
         >
           {isDeleting ? "Deleting..." : "Delete Room"}
         </Button>
@@ -267,7 +272,12 @@ export default function EditRoomForm({
           <Button
             color="error"
             variant="outlined"
-            sx={{ borderRadius: 2, textTransform: "none" }}
+            sx={{
+              borderRadius: 2,
+              borderColor: "#fc5d5d",
+              textTransform: "none",
+              color: "#fc5d5d",
+            }}
             onClick={handleDelete}
           >
             Delete

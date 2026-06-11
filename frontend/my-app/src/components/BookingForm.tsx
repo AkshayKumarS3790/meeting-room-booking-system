@@ -83,12 +83,12 @@ export default function BookingForm({
 
   const isPastTime = newStart !== null && newStart <= now;
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // const today = new Date();
+  // today.setHours(0, 0, 0, 0);
 
-  const selectedDate = form.date ? new Date(form.date) : null;
+  // const selectedDate = form.date ? new Date(form.date) : null;
 
-  const isPastDate = selectedDate !== null && selectedDate < today;
+  // const isPastDate = selectedDate !== null && selectedDate < today;
 
   const isFormValid =
     form.user_id > 0 &&
@@ -119,12 +119,12 @@ export default function BookingForm({
       return;
     }
 
-    if (isPastDate) {
-      setSnackbarMsg("Cannot select a past date");
-      setSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
+    // if (isPastDate) {
+    //   setSnackbarMsg("Cannot select a past date");
+    //   setSeverity("error");
+    //   setOpenSnackbar(true);
+    //   return;
+    // }
 
     if (isPastTime) {
       setSnackbarMsg("Cannot book room for past time");
@@ -173,6 +173,8 @@ export default function BookingForm({
       setOpenSnackbar(true);
     }
   };
+
+  const todayStr = new Date().toISOString().split("T")[0];
 
   return (
     <Box mt={2}>
@@ -325,12 +327,16 @@ export default function BookingForm({
         required
         fullWidth
         value={form.date}
+        inputProps={{
+          min: todayStr,
+        }}
         slotProps={{
           inputLabel: { shrink: true },
         }}
         onChange={handleChange}
-        error={isPastDate}
-        helperText={isPastDate ? "Cannot select a past date" : ""}
+        // error={isPastDate}
+        // helperText={isPastDate ? "Cannot select a past date" : ""}
+
         sx={{
           mb: 3,
 

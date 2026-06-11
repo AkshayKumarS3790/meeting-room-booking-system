@@ -223,6 +223,8 @@ export default function Home() {
               },
               gap: 3,
               alignItems: "start",
+
+              minHeight: "400px",
             }}
           >
             {paginatedRooms.map((room) => (

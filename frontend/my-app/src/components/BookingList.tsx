@@ -102,7 +102,7 @@ export default function BookingList() {
 
         <Box display="flex" gap={2} alignItems="center">
           <TextField
-            placeholder="Search bookings..."
+            placeholder="Search bookings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             size="small"
@@ -152,7 +152,6 @@ export default function BookingList() {
                 display: "flex",
                 alignItems: "center",
 
-                color: "lightgray",
                 borderRadius: 2,
 
                 "& fieldset": {
@@ -232,7 +231,7 @@ export default function BookingList() {
           page={page}
           onChange={(e, value) => {
             setPage(value);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ behavior: "smooth" });
           }}
           sx={{
             "& .MuiPaginationItem-root": {
@@ -268,6 +267,8 @@ export default function BookingList() {
             },
             gap: 3,
             alignItems: "start",
+
+            minHeight: "500px",
           }}
         >
           {paginatedBookings.map((b) => (
@@ -341,7 +342,9 @@ export default function BookingList() {
                     sx={{
                       mt: 2,
                       borderRadius: 2,
+                      borderColor: "#fc5d5d",
                       textTransform: "none",
+                      color: "#fc5d5d",
                     }}
                     onClick={() => {
                       setSelectedId(b.booking_id);
@@ -397,7 +400,12 @@ export default function BookingList() {
             color="error"
             variant="outlined"
             disabled={isDeleting}
-            sx={{ borderRadius: 2, textTransform: "none" }}
+            sx={{
+              borderRadius: 2,
+              color: "#fc5d5d",
+              textTransform: "none",
+              borderColor: "#fc5d5d",
+            }}
             onClick={async () => {
               try {
                 if (selectedId) {
