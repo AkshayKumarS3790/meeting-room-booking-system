@@ -219,13 +219,35 @@ export default function BookingForm({
           value={form.user_id || ""}
           label="Select User"
           MenuProps={{
+            disableScrollLock: true,
+            disablePortal: true,
+
+            container: document.body,
+
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+
             PaperProps: {
               sx: {
                 backgroundColor: "#37374c",
                 color: "#fff",
+                borderRadius: 2,
+                mt: 1,
+                maxHeight: 350,
+                minWidth: "100%",
+                overflowY: "auto",
 
                 "& .MuiMenuItem-root": {
                   color: "#fff",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 },
 
                 "& .MuiMenuItem-root:hover": {

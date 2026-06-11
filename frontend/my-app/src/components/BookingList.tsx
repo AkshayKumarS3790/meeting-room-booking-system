@@ -17,6 +17,7 @@ import {
   MenuItem,
   InputLabel,
   TextField,
+  Pagination,
 } from "@mui/material";
 
 import {
@@ -27,7 +28,7 @@ import {
   useGetRoomsQuery,
 } from "../services/api";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 
 import EditBookingForm from "./EditBookingForm";
@@ -60,6 +61,13 @@ export default function BookingList() {
 
   const bookings = Array.isArray(data) ? data : [];
 
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, selectedRoom]);
+
   const sortedBookings = [...bookings].sort(
     (a, b) => b.booking_id - a.booking_id,
   );
@@ -68,6 +76,13 @@ export default function BookingList() {
     const end = new Date(b.end_date_time);
     return end > new Date();
   });
+
+  const startIndex = (page - 1) * itemsPerPage;
+
+  const paginatedBookings = validBookings.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   if (isLoading) return <Typography>Loading bookings...</Typography>;
 
@@ -94,7 +109,7 @@ export default function BookingList() {
             sx={{
               width: 200,
 
-              background: "linear-gradient(145deg, #2a2a3d, #24243a)",
+              background: "rgba(84, 66, 134, 0.4)",
 
               borderRadius: 3,
 
@@ -141,15 +156,15 @@ export default function BookingList() {
                 borderRadius: 2,
 
                 "& fieldset": {
-                  borderColor: "#afafaf",
+                  borderColor: "#995eff",
                 },
 
                 "&:hover fieldset": {
-                  borderColor: "#afafaf",
+                  borderColor: "#995eff",
                 },
 
                 "&.Mui-focused fieldset": {
-                  borderColor: "#afafaf",
+                  borderColor: "#995eff",
                   borderWidth: 2,
                 },
               },
@@ -160,11 +175,11 @@ export default function BookingList() {
               },
 
               "& .MuiSvgIcon-root": {
-                color: "lightgray",
+                color: "#995eff",
               },
 
               "& .MuiInputLabel-root": {
-                color: "#afafaf",
+                color: "#a875ff",
               },
             }}
           >
@@ -176,6 +191,25 @@ export default function BookingList() {
               onChange={(e) => setSelectedRoom(e.target.value)}
               MenuProps={{
                 disableScrollLock: true,
+
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "#2e2e45",
+                    color: "#fff",
+                    borderRadius: 2,
+                  },
+                },
+              }}
+              sx={{
+                color: "#a06afe",
+
+                "& .MuiSelect-select": {
+                  color: "#e0ceff",
+                },
+
+                "& .MuiSvgIcon-root": {
+                  color: "#a06afe",
+                },
               }}
             >
               <MenuItem value="all">All Rooms</MenuItem>
@@ -192,11 +226,39 @@ export default function BookingList() {
         </Box>
       </Box>
 
+      <Box display="flex" justifyContent="center" mt={2} mb={2}>
+        <Pagination
+          count={Math.ceil(validBookings.length / itemsPerPage)}
+          page={page}
+          onChange={(e, value) => {
+            setPage(value);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#ccc",
+              borderRadius: "15%",
+              transition: "0.2s",
+            },
+
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#995eff",
+              color: "#fff",
+              fontWeight: "bold",
+            },
+
+            "& .MuiPaginationItem-root.Mui-selected:hover": {
+              backgroundColor: "#7340ff",
+            },
+          }}
+        />
+      </Box>
+
       {validBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
       ) : (
         <Box
-          mt={3}
+          mt={2}
           sx={{
             display: "grid",
             gridTemplateColumns: {
@@ -208,7 +270,7 @@ export default function BookingList() {
             alignItems: "start",
           }}
         >
-          {validBookings.map((b) => (
+          {paginatedBookings.map((b) => (
             <Card
               key={b.booking_id}
               sx={{
@@ -404,6 +466,26 @@ export default function BookingList() {
           {msg}
         </Alert>
       </Snackbar>
+
+      {/* <Box display="flex" justifyContent="center" mt={3}>
+        <Pagination
+          count={Math.ceil(validBookings.length / itemsPerPage)}
+          page={page}
+          onChange={(e, value) => {
+            setPage(value);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#ccc",
+            },
+            "& .Mui-selected": {
+              backgroundColor: "#7c4dff",
+              color: "#fff",
+            },
+          }}
+        />
+      </Box> */}
     </>
   );
 }

@@ -24,7 +24,7 @@ body {
 
 .primary-btn {
   background: linear-gradient(45deg, #7c4dff, #b388ff);
-  color: white;
+  color: white !important;
   border-radius: 8px;
   text-transform: none;
 }

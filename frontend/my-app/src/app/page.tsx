@@ -11,12 +11,13 @@ import {
   Snackbar,
   Alert,
   TextField,
+  Pagination,
 } from "@mui/material";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
 import BookingList from "@/components/BookingList";
 import AddRoomForm from "@/components/AddRoomForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function Home() {
@@ -36,6 +37,13 @@ export default function Home() {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    setPage(1);
+  }, [roomSearch]);
+
   const sortedRooms = Array.isArray(data)
     ? [...data].sort((a, b) =>
         a.room_name.localeCompare(b.room_name, undefined, {
@@ -44,6 +52,13 @@ export default function Home() {
         }),
       )
     : [];
+
+  const startIndex = (page - 1) * itemsPerPage;
+
+  const paginatedRooms = sortedRooms.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   if (isLoading) return <Typography>Loading page...</Typography>;
 
@@ -65,7 +80,6 @@ export default function Home() {
       >
         Meeting Room Booking System
       </Typography>
-
       <Box
         sx={{
           height: 2,
@@ -73,7 +87,6 @@ export default function Home() {
           mb: 3,
         }}
       />
-
       <Box
         className="section-card"
         sx={{
@@ -102,7 +115,7 @@ export default function Home() {
               sx={{
                 width: 200,
 
-                background: "linear-gradient(145deg, #2a2a3d, #24243a)",
+                background: "rgba(84, 66, 134, 0.4)",
 
                 borderRadius: 3,
 
@@ -171,6 +184,34 @@ export default function Home() {
           </Box>
         </Box>
 
+        <Box display="flex" justifyContent="center" mt={2} mb={2}>
+          <Pagination
+            count={Math.ceil(sortedRooms.length / itemsPerPage)}
+            page={page}
+            onChange={(e, value) => {
+              setPage(value);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "#ccc",
+                borderRadius: "15%",
+                transition: "0.2s",
+              },
+
+              "& .MuiPaginationItem-root.Mui-selected": {
+                backgroundColor: "#995eff",
+                color: "#fff",
+                fontWeight: "bold",
+              },
+
+              "& .MuiPaginationItem-root.Mui-selected:hover": {
+                backgroundColor: "#7340ff",
+              },
+            }}
+          />
+        </Box>
+
         {data && data.length > 0 ? (
           <Box
             sx={{
@@ -184,7 +225,7 @@ export default function Home() {
               alignItems: "start",
             }}
           >
-            {sortedRooms.map((room) => (
+            {paginatedRooms.map((room) => (
               <RoomCard
                 key={room.room_name}
                 room={room}

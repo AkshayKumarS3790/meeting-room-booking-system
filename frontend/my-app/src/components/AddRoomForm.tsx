@@ -188,7 +188,7 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
           variant="contained"
           disabled={!isValid}
           onClick={handleSubmit}
-          sx={{ mb: 2, borderRadius: 2, textTransform: "none" }}
+          sx={{ mb: 2, borderRadius: 2, textTransform: "none", color: "#fff" }}
         >
           Add Room
         </Button>
