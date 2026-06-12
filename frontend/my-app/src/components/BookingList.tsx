@@ -187,6 +187,7 @@ export default function BookingList() {
         <Box display="flex" gap={2} alignItems="center">
           <Box
             display="flex"
+            gap={2}
             alignItems="center"
             flexWrap="wrap"
             sx={{
@@ -207,7 +208,7 @@ export default function BookingList() {
               onChange={(e) => setSearch(e.target.value)}
               sx={{
                 width: 150,
-                mr: 2,
+
                 background: "rgba(84, 66, 134, 0.4)",
 
                 borderRadius: 2,
@@ -288,7 +289,7 @@ export default function BookingList() {
               variant="outlined"
               sx={{
                 minWidth: 100,
-                mr: 2,
+
                 "& .MuiOutlinedInput-root": {
                   height: 40,
                   display: "flex",

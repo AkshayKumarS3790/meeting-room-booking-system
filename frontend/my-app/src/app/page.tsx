@@ -13,6 +13,10 @@ import {
   TextField,
   CircularProgress,
   Pagination,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
@@ -26,6 +30,8 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
 
+  const [selectedLocation, setSelectedLocation] = useState("all");
+
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
 
   const debouncedSearch = useDebounce(roomSearch, 500);
@@ -33,6 +39,10 @@ export default function Home() {
   const { data, error, isLoading } = useGetRoomsQuery({
     search: debouncedSearch || undefined,
   });
+
+  const uniqueLocations = Array.from(
+    new Set((data || []).map((room) => room.location)),
+  );
 
   const { data: bookings } = useGetBookingsQuery({});
 
@@ -45,7 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     setPage(1);
-  }, [roomSearch]);
+  }, [roomSearch, selectedLocation]);
 
   const sortedRooms = Array.isArray(data)
     ? [...data].sort((a, b) =>
@@ -58,7 +68,22 @@ export default function Home() {
 
   const startIndex = (page - 1) * itemsPerPage;
 
-  const paginatedRooms = sortedRooms.slice(
+  const filteredRooms = sortedRooms.filter((room) => {
+    if (
+      roomSearch &&
+      !room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
+    ) {
+      return false;
+    }
+
+    if (selectedLocation !== "all" && room.location !== selectedLocation) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const paginatedRooms = filteredRooms.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
@@ -75,24 +100,6 @@ export default function Home() {
         <CircularProgress sx={{ color: "#7c4dff", mb: 2 }} />
         <Typography sx={{ color: "#aaa" }}>Loading page...</Typography>
       </Box>
-
-      // <Container maxWidth="lg" sx={{ mt: 4 }}>
-      //   <Box
-      //     sx={{
-      //       display: "grid",
-      //       gridTemplateColumns: {
-      //         xs: "1fr",
-      //         sm: "1fr 1fr",
-      //         md: "1fr 1fr 1fr",
-      //       },
-      //       gap: 3,
-      //     }}
-      //   >
-      //     {[...Array(6)].map((_, i) => (
-      //       <RoomCardSkeleton key={i} />
-      //     ))}
-      //   </Box>
-      // </Container>
     );
   }
 
@@ -208,6 +215,96 @@ export default function Home() {
               }}
             />
 
+            <FormControl
+              variant="outlined"
+              sx={{
+                minWidth: 150,
+                "& .MuiOutlinedInput-root": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: 2,
+
+                  "& fieldset": {
+                    borderColor: "#995eff",
+                  },
+
+                  "&:hover fieldset": {
+                    borderColor: "#995eff",
+                  },
+
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#995eff",
+                    borderWidth: 2,
+                  },
+                },
+
+                "& .MuiInputLabel-root": {
+                  color: "#d4bbff",
+                },
+
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#995eff",
+                },
+
+                "& .MuiSelect-select": {
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                  color: "#e0ceff",
+                },
+
+                "& .MuiSelect-select.Mui-focused": {
+                  color: "#e0ceff",
+                },
+
+                "& .MuiSvgIcon-root": {
+                  color: "#995eff",
+                },
+
+                "& .Mui-focused .MuiSelect-select": {
+                  color: "#e0ceff",
+                },
+              }}
+            >
+              <InputLabel>Select Location</InputLabel>
+
+              <Select
+                value={selectedLocation}
+                label="Select Location"
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                MenuProps={{
+                  disableScrollLock: true,
+
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: "#2e2e45",
+                      color: "#fff",
+                      borderRadius: 2,
+                    },
+                  },
+                }}
+                sx={{
+                  color: "#a06afe",
+
+                  "& .MuiSelect-select": {
+                    color: "#e0ceff",
+                  },
+
+                  "& .MuiSvgIcon-root": {
+                    color: "#a06afe",
+                  },
+                }}
+              >
+                <MenuItem value="all">All Locations</MenuItem>
+
+                {uniqueLocations.map((loc) => (
+                  <MenuItem key={loc} value={loc}>
+                    {loc}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Button
               sx={{
                 minWidth: 100,
@@ -245,7 +342,7 @@ export default function Home() {
 
         <Box display="flex" justifyContent="center" mt={2} mb={2}>
           <Pagination
-            count={Math.ceil(sortedRooms.length / itemsPerPage)}
+            count={Math.ceil(filteredRooms.length / itemsPerPage)}
             page={page}
             onChange={(e, value) => {
               setPage(value);
@@ -271,7 +368,7 @@ export default function Home() {
           />
         </Box>
 
-        {data && data.length > 0 ? (
+        {filteredRooms.length > 0 ? (
           <Box
             sx={{
               display: "grid",
