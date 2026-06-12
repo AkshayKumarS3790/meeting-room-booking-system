@@ -19,6 +19,7 @@ import {
   TextField,
   Pagination,
   CircularProgress,
+  Skeleton,
 } from "@mui/material";
 
 import {
@@ -34,9 +35,13 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 import EditBookingForm from "./EditBookingForm";
 
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+
 export default function BookingList() {
   const [search, setSearch] = useState("");
   const [selectedRoom, setSelectedRoom] = useState("all");
+
+  const [selectedDate, setSelectedDate] = useState("");
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -67,44 +72,105 @@ export default function BookingList() {
 
   useEffect(() => {
     setPage(1);
-  }, [search, selectedRoom]);
+  }, [search, selectedRoom, selectedDate]);
 
   const sortedBookings = [...bookings].sort(
     (a, b) => b.booking_id - a.booking_id,
   );
 
-  const validBookings = sortedBookings.filter((b) => {
+  const filteredBookings = sortedBookings.filter((b) => {
+    const now = new Date();
     const end = new Date(b.end_date_time);
-    return end > new Date();
+
+    if (end <= now) return false;
+
+    if (
+      debouncedSearch &&
+      !b.booked_by.toLowerCase().includes(debouncedSearch.toLowerCase())
+    ) {
+      return false;
+    }
+
+    if (selectedRoom !== "all" && b.room_name !== selectedRoom) {
+      return false;
+    }
+
+    if (selectedDate) {
+      const bookingDate = b.start_date_time.split(" ")[0];
+      if (bookingDate !== selectedDate) return false;
+    }
+
+    return true;
   });
 
   const startIndex = (page - 1) * itemsPerPage;
 
-  const paginatedBookings = validBookings.slice(
+  const paginatedBookings = filteredBookings.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
 
-  if (isLoading)
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            md: "1fr 1fr 1fr",
+          },
+          gap: 3,
+          minHeight: "500px",
+        }}
+      >
+        {[...Array(6)].map((_, i) => (
+          <BookingSkeleton key={i} />
+        ))}
+      </Box>
+    );
+  }
+
+  if (error) {
     return (
       <Box
         display="flex"
+        flexDirection="column"
         justifyContent="center"
         alignItems="center"
         height="60vh"
-        flexDirection="column"
       >
-        <CircularProgress sx={{ color: "#7c4dff", mb: 2 }} />
-        <Typography sx={{ color: "#aaa" }}>Loading bookings...</Typography>
+        <ErrorOutlineIcon sx={{ color: "#ff6b6b", fontSize: 40, mb: 1 }} />
+        <Typography sx={{ color: "#ff6b6b" }}>
+          Error loading bookings
+        </Typography>
       </Box>
-
-      // <Box display="flex" justifyContent="center" mt={4}>
-      //   <CircularProgress sx={{ color: "#7c4dff" }} />
-      // </Box>
-      // <Typography>Loading bookings...</Typography>;
     );
+  }
 
-  if (error) return <Typography>Error loading bookings</Typography>;
+  function BookingSkeleton() {
+    return (
+      <Card
+        sx={{
+          backgroundColor: "#2e2e45",
+          borderRadius: 3,
+        }}
+      >
+        <CardContent>
+          <Skeleton variant="text" width="70%" />
+          <Skeleton variant="text" width="60%" />
+          <Skeleton variant="text" width="80%" />
+          <Skeleton variant="text" width="90%" />
+          <Skeleton variant="text" width="50%" />
+
+          <Box mt={2} display="flex" gap={2}>
+            <Skeleton variant="rectangular" width={110} height={35} />
+            <Skeleton variant="rectangular" width={110} height={35} />
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <>
@@ -114,151 +180,233 @@ export default function BookingList() {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h5" fontWeight="bold">
+        <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
           Bookings
         </Typography>
 
         <Box display="flex" gap={2} alignItems="center">
-          <TextField
-            placeholder="Search bookings"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            size="small"
+          <Box
+            display="flex"
+            alignItems="center"
+            flexWrap="wrap"
             sx={{
-              width: 200,
-
-              background: "rgba(84, 66, 134, 0.4)",
-
-              borderRadius: 3,
-
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 3,
-                color: "#fff",
-
-                "& fieldset": {
-                  borderColor: "transparent",
-                },
-
-                "&:hover fieldset": {
-                  borderColor: "#7c4dff",
-                },
-
-                "&.Mui-focused fieldset": {
-                  borderColor: "#7c4dff",
-                  boxShadow: "0 0 6px rgba(124,77,255,0.4)",
-                },
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr 1fr 1fr auto",
               },
-
-              "& input::placeholder": {
-                color: "#bbb",
-                opacity: 1,
-              },
-
-              "& input": {
-                color: "#fff",
-                padding: "8px 12px",
-              },
-            }}
-          />
-
-          <FormControl
-            variant="outlined"
-            sx={{
-              minWidth: 100,
-
-              "& .MuiOutlinedInput-root": {
-                height: 40,
-                display: "flex",
-                alignItems: "center",
-                borderRadius: 2,
-
-                "& fieldset": {
-                  borderColor: "#995eff",
-                },
-
-                "&:hover fieldset": {
-                  borderColor: "#995eff",
-                },
-
-                "&.Mui-focused fieldset": {
-                  borderColor: "#995eff",
-                  borderWidth: 2,
-                },
-              },
-
-              "& .MuiInputLabel-root": {
-                color: "#d4bbff",
-              },
-
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#995eff",
-              },
-
-              "& .MuiSelect-select": {
-                paddingTop: "10px",
-                paddingBottom: "10px",
-                color: "#e0ceff",
-              },
-
-              "& .MuiSelect-select.Mui-focused": {
-                color: "#e0ceff",
-              },
-
-              "& .MuiSvgIcon-root": {
-                color: "#995eff",
-              },
-
-              "& .Mui-focused .MuiSelect-select": {
-                color: "#e0ceff",
-              },
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            <InputLabel>Select Room</InputLabel>
+            <TextField
+              placeholder="Search User"
+              size="small"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{
+                width: 150,
+                mr: 2,
+                background: "rgba(84, 66, 134, 0.4)",
 
-            <Select
-              value={selectedRoom}
-              label="Select Room"
-              onChange={(e) => setSelectedRoom(e.target.value)}
-              MenuProps={{
-                disableScrollLock: true,
+                borderRadius: 2,
 
-                PaperProps: {
-                  sx: {
-                    backgroundColor: "#2e2e45",
-                    color: "#fff",
-                    borderRadius: 2,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  color: "#fff",
+
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+
+                  "&:hover fieldset": {
+                    borderColor: "#7c4dff",
+                  },
+
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#7c4dff",
+                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
                   },
                 },
+
+                "& input::placeholder": {
+                  color: "#bbb",
+                  opacity: 1,
+                },
+
+                "& input": {
+                  color: "#fff",
+                  padding: "8px 12px",
+                },
               }}
+            />
+
+            <TextField
+              type="date"
+              size="small"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
               sx={{
-                color: "#a06afe",
+                width: 150,
+
+                background: "rgba(84, 66, 134, 0.4)",
+
+                borderRadius: 2,
+
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  color: "#fff",
+
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+
+                  "&:hover fieldset": {
+                    borderColor: "#7c4dff",
+                  },
+
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#7c4dff",
+                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
+                  },
+                },
+
+                "& input::placeholder": {
+                  color: "#bbb",
+                  opacity: 1,
+                },
+
+                "& input": {
+                  color: "#bbb",
+                  padding: "8px 12px",
+                },
+              }}
+            />
+
+            <FormControl
+              variant="outlined"
+              sx={{
+                minWidth: 100,
+                mr: 2,
+                "& .MuiOutlinedInput-root": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: 2,
+
+                  "& fieldset": {
+                    borderColor: "#995eff",
+                  },
+
+                  "&:hover fieldset": {
+                    borderColor: "#995eff",
+                  },
+
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#995eff",
+                    borderWidth: 2,
+                  },
+                },
+
+                "& .MuiInputLabel-root": {
+                  color: "#d4bbff",
+                },
+
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#995eff",
+                },
 
                 "& .MuiSelect-select": {
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                  color: "#e0ceff",
+                },
+
+                "& .MuiSelect-select.Mui-focused": {
                   color: "#e0ceff",
                 },
 
                 "& .MuiSvgIcon-root": {
-                  color: "#a06afe",
+                  color: "#995eff",
+                },
+
+                "& .Mui-focused .MuiSelect-select": {
+                  color: "#e0ceff",
                 },
               }}
             >
-              <MenuItem value="all">All Rooms</MenuItem>
+              <InputLabel>Select Room</InputLabel>
 
-              {Array.from(new Set(validBookings.map((b) => b.room_name))).map(
-                (roomName) => (
-                  <MenuItem key={roomName} value={roomName}>
-                    {roomName}
-                  </MenuItem>
-                ),
-              )}
-            </Select>
-          </FormControl>
+              <Select
+                value={selectedRoom}
+                label="Select Room"
+                onChange={(e) => setSelectedRoom(e.target.value)}
+                MenuProps={{
+                  disableScrollLock: true,
+
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: "#2e2e45",
+                      color: "#fff",
+                      borderRadius: 2,
+                      height: 400,
+                    },
+                  },
+                }}
+                sx={{
+                  color: "#a06afe",
+
+                  "& .MuiSelect-select": {
+                    color: "#e0ceff",
+                  },
+
+                  "& .MuiSvgIcon-root": {
+                    color: "#a06afe",
+                  },
+                }}
+              >
+                <MenuItem value="all">All Rooms</MenuItem>
+
+                {Array.isArray(rooms) &&
+                  rooms.map((room: Room) => (
+                    <MenuItem key={room.room_name} value={room.room_name}>
+                      {room.room_name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              variant="contained"
+              onClick={() => {
+                setSearch("");
+                setSelectedRoom("all");
+                setSelectedDate("");
+              }}
+              sx={{
+                height: "40px",
+                borderRadius: 2,
+                border: "1px solid #995eff",
+                color: "#fff",
+                textTransform: "none",
+                background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+                padding: "6px 14px",
+
+                "&:hover": {
+                  background: "linear-gradient(55deg, #7340ff, #a674fd)",
+                },
+              }}
+            >
+              Clear
+            </Button>
+          </Box>
         </Box>
       </Box>
 
       <Box display="flex" justifyContent="center" mt={2} mb={2}>
         <Pagination
-          count={Math.ceil(validBookings.length / itemsPerPage)}
+          count={Math.ceil(filteredBookings.length / itemsPerPage)}
           page={page}
           onChange={(e, value) => {
             setPage(value);
@@ -284,7 +432,7 @@ export default function BookingList() {
         />
       </Box>
 
-      {validBookings.length === 0 ? (
+      {filteredBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
       ) : (
         <Box
@@ -509,26 +657,6 @@ export default function BookingList() {
           {msg}
         </Alert>
       </Snackbar>
-
-      {/* <Box display="flex" justifyContent="center" mt={3}>
-        <Pagination
-          count={Math.ceil(validBookings.length / itemsPerPage)}
-          page={page}
-          onChange={(e, value) => {
-            setPage(value);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              color: "#ccc",
-            },
-            "& .Mui-selected": {
-              backgroundColor: "#7c4dff",
-              color: "#fff",
-            },
-          }}
-        />
-      </Box> */}
     </>
   );
 }

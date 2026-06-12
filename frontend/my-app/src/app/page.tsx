@@ -11,8 +11,8 @@ import {
   Snackbar,
   Alert,
   TextField,
-  Pagination,
   CircularProgress,
+  Pagination,
 } from "@mui/material";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
@@ -21,6 +21,7 @@ import AddRoomForm from "@/components/AddRoomForm";
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+// import RoomCardSkeleton from "@/components/RoomCardSkeleton";
 
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
@@ -74,6 +75,24 @@ export default function Home() {
         <CircularProgress sx={{ color: "#7c4dff", mb: 2 }} />
         <Typography sx={{ color: "#aaa" }}>Loading page...</Typography>
       </Box>
+
+      // <Container maxWidth="lg" sx={{ mt: 4 }}>
+      //   <Box
+      //     sx={{
+      //       display: "grid",
+      //       gridTemplateColumns: {
+      //         xs: "1fr",
+      //         sm: "1fr 1fr",
+      //         md: "1fr 1fr 1fr",
+      //       },
+      //       gap: 3,
+      //     }}
+      //   >
+      //     {[...Array(6)].map((_, i) => (
+      //       <RoomCardSkeleton key={i} />
+      //     ))}
+      //   </Box>
+      // </Container>
     );
   }
 
@@ -142,7 +161,7 @@ export default function Home() {
           alignItems="center"
           mb={2}
         >
-          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
             Rooms
           </Typography>
 
@@ -153,11 +172,11 @@ export default function Home() {
               onChange={(e) => setRoomSearch(e.target.value)}
               size="small"
               sx={{
-                width: 200,
+                width: 150,
 
                 background: "rgba(84, 66, 134, 0.4)",
 
-                borderRadius: 3,
+                borderRadius: 2,
 
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 3,
