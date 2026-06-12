@@ -23,7 +23,7 @@ export default function EditBookingForm({
     room_name: booking.room_name,
   });
 
-  const [updateBooking] = useUpdateBookingMutation();
+  const [updateBooking, { isLoading }] = useUpdateBookingMutation();
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
@@ -382,6 +382,7 @@ export default function EditBookingForm({
       <Button
         variant="contained"
         onClick={handleSubmit}
+        disabled={isLoading}
         sx={{
           background: "linear-gradient(55deg, #7340ff, #a674fd)",
           color: "#fff",
@@ -403,7 +404,7 @@ export default function EditBookingForm({
           },
         }}
       >
-        Update Booking
+        {isLoading ? "Updating..." : "Update Booking"}
       </Button>
 
       <Snackbar

@@ -40,7 +40,7 @@ export default function BookingForm({
   const { data: users } = useGetUsersQuery();
   const { data: bookings } = useGetBookingsQuery({});
 
-  const [createBooking] = useCreateBookingMutation();
+  const [createBooking, { isLoading }] = useCreateBookingMutation();
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
@@ -554,7 +554,7 @@ export default function BookingForm({
       />
       <Button
         onClick={handleSubmit}
-        disabled={!isFormValid}
+        disabled={!isFormValid || isLoading}
         sx={{
           background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
           color: "#fff",
@@ -571,7 +571,7 @@ export default function BookingForm({
           },
         }}
       >
-        Confirm Booking
+        {isLoading ? "Booking..." : "Confirm Booking"}
       </Button>
       <Snackbar
         open={openSnackbar}

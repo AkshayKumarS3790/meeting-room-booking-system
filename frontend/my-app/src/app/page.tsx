@@ -12,6 +12,7 @@ import {
   Alert,
   TextField,
   Pagination,
+  CircularProgress,
 } from "@mui/material";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
@@ -19,6 +20,7 @@ import BookingList from "@/components/BookingList";
 import AddRoomForm from "@/components/AddRoomForm";
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
@@ -60,9 +62,47 @@ export default function Home() {
     startIndex + itemsPerPage,
   );
 
-  if (isLoading) return <Typography>Loading page...</Typography>;
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
+        <CircularProgress sx={{ color: "#7c4dff", mb: 2 }} />
+        <Typography sx={{ color: "#aaa" }}>Loading page...</Typography>
+      </Box>
+    );
+  }
 
-  if (error) return <Typography>Error loading the page</Typography>;
+  if (error) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
+        <Box
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <ErrorOutlineIcon sx={{ color: "#ff6b6b", fontSize: 50, mb: 1 }} />
+
+          <Typography sx={{ color: "#ff6b6b", fontWeight: "bold" }}>
+            Error loading the page
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Container

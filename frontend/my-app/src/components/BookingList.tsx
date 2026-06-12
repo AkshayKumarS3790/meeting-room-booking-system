@@ -18,6 +18,7 @@ import {
   InputLabel,
   TextField,
   Pagination,
+  CircularProgress,
 } from "@mui/material";
 
 import {
@@ -84,7 +85,24 @@ export default function BookingList() {
     startIndex + itemsPerPage,
   );
 
-  if (isLoading) return <Typography>Loading bookings...</Typography>;
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="60vh"
+        flexDirection="column"
+      >
+        <CircularProgress sx={{ color: "#7c4dff", mb: 2 }} />
+        <Typography sx={{ color: "#aaa" }}>Loading bookings...</Typography>
+      </Box>
+
+      // <Box display="flex" justifyContent="center" mt={4}>
+      //   <CircularProgress sx={{ color: "#7c4dff" }} />
+      // </Box>
+      // <Typography>Loading bookings...</Typography>;
+    );
 
   if (error) return <Typography>Error loading bookings</Typography>;
 
@@ -147,11 +165,11 @@ export default function BookingList() {
             variant="outlined"
             sx={{
               minWidth: 100,
+
               "& .MuiOutlinedInput-root": {
                 height: 40,
                 display: "flex",
                 alignItems: "center",
-
                 borderRadius: 2,
 
                 "& fieldset": {
@@ -168,17 +186,30 @@ export default function BookingList() {
                 },
               },
 
+              "& .MuiInputLabel-root": {
+                color: "#d4bbff",
+              },
+
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#995eff",
+              },
+
               "& .MuiSelect-select": {
                 paddingTop: "10px",
                 paddingBottom: "10px",
+                color: "#e0ceff",
+              },
+
+              "& .MuiSelect-select.Mui-focused": {
+                color: "#e0ceff",
               },
 
               "& .MuiSvgIcon-root": {
                 color: "#995eff",
               },
 
-              "& .MuiInputLabel-root": {
-                color: "#a875ff",
+              "& .Mui-focused .MuiSelect-select": {
+                color: "#e0ceff",
               },
             }}
           >
@@ -426,7 +457,11 @@ export default function BookingList() {
               }
             }}
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isDeleting ? (
+              <CircularProgress size={20} sx={{ color: "#fff" }} />
+            ) : (
+              "Delete"
+            )}
           </Button>
         </DialogActions>
       </Dialog>

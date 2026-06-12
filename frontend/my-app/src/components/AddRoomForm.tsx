@@ -12,7 +12,7 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
     location: "",
   });
 
-  const [addRoom] = useAddRoomMutation();
+  const [addRoom, { isLoading }] = useAddRoomMutation();
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
@@ -186,16 +186,30 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
         <Button
           className="primary-btn"
           variant="contained"
-          disabled={!isValid}
+          disabled={!isValid || isLoading}
           onClick={handleSubmit}
           sx={{ mb: 2, borderRadius: 2, textTransform: "none", color: "#fff" }}
         >
-          Add Room
+          {isLoading ? "Adding..." : "Add Room"}
         </Button>
+
         <Button
           onClick={onClose}
           variant="outlined"
-          sx={{ mb: 2, borderRadius: 2, textTransform: "none" }}
+          sx={{
+            mb: 2,
+            borderRadius: 2,
+            textTransform: "none",
+
+            border: "1px solid #d1b3ff !important",
+            color: "#d1b3ff !important",
+
+            "&:hover": {
+              borderColor: "#b388ff !important",
+              color: "#b388ff !important",
+              backgroundColor: "rgba(179,136,255,0.1)",
+            },
+          }}
         >
           Cancel
         </Button>
