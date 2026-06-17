@@ -244,16 +244,22 @@ export default function BookingList() {
             />
 
             <TextField
+              // label="Date"
               type="date"
               size="small"
               value={selectedDate}
+              // slotProps={{
+              //   inputLabel: { shrink: true },
+              // }}
               onChange={(e) => setSelectedDate(e.target.value)}
               sx={{
                 width: 150,
-
                 background: "rgba(84, 66, 134, 0.4)",
-
                 borderRadius: 2,
+
+                "& fieldset": {
+                  borderColor: "#995eff",
+                },
 
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2,
@@ -276,6 +282,10 @@ export default function BookingList() {
                 "& input::placeholder": {
                   color: "#bbb",
                   opacity: 1,
+                },
+
+                "& .MuiInputLabel-root": {
+                  color: "#d4bbff",
                 },
 
                 "& input": {
