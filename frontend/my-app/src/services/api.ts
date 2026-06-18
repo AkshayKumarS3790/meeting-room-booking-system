@@ -78,6 +78,10 @@ export const api = createApi({
 
   tagTypes: ["Rooms", "Bookings"],
 
+  serializeQueryArgs: ({ endpointName }) => {
+    return endpointName;
+  },
+
   endpoints: (builder) => ({
     getRooms: builder.query<Room[], RoomFilterParams>({
       query: (params) => ({
@@ -92,7 +96,16 @@ export const api = createApi({
         url: "/bookings/filter",
         params,
       }),
-      providesTags: ["Bookings"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ booking_id }) => ({
+                type: "Bookings" as const,
+                id: booking_id,
+              })),
+              { type: "Bookings", id: "LIST" },
+            ]
+          : [{ type: "Bookings", id: "LIST" }],
     }),
 
     getUsers: builder.query<User[], void>({
@@ -122,7 +135,11 @@ export const api = createApi({
         url: `/bookings/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Bookings", "Rooms"],
+      invalidatesTags: (result, error, id) => [
+        { type: "Bookings", id },
+        { type: "Bookings", id: "LIST" },
+        { type: "Rooms", id: "LIST" },
+      ],
     }),
 
     addRoom: builder.mutation<AddRoomResponse, AddRoomInput>({

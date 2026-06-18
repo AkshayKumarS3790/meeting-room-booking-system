@@ -5,11 +5,31 @@ import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import { useAddRoomMutation } from "../services/api";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 export default function AddRoomForm({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({
-    room_name: "",
-    capacity: "",
-    location: "",
+  const roomSchema = z.object({
+    room_name: z.string().trim().min(1, "Room name is required"),
+
+    capacity: z.coerce
+      .number({
+        invalid_type_error: "Capacity is required",
+      })
+      .min(1, "Capacity must be greater than 0"),
+
+    location: z.string().trim().min(1, "Location is required"),
+  });
+
+  type RoomFormData = z.infer<typeof roomSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RoomFormData>({
+    resolver: zodResolver(roomSchema),
   });
 
   const [addRoom, { isLoading }] = useAddRoomMutation();
@@ -18,28 +38,19 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
-  const [roomError, setRoomError] = useState("");
-
-  const isValid =
-    form.room_name.trim() !== "" &&
-    Number(form.capacity) > 0 &&
-    form.location.trim() !== "";
-
-  const handleSubmit = async () => {
+  const onSubmit = async (data: RoomFormData) => {
     try {
       await addRoom({
-        room_name: form.room_name,
-        capacity: Number(form.capacity),
-        location: form.location,
+        room_name: data.room_name,
+        capacity: data.capacity,
+        location: data.location,
       }).unwrap();
 
       setMsg("Room added successfully");
       setSeverity("success");
       setOpenSnackbar(true);
 
-      setTimeout(() => {
-        onClose();
-      }, 1000);
+      setTimeout(onClose, 1000);
     } catch (err) {
       const error = err as FetchBaseQueryError;
 
@@ -53,167 +64,197 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
       setMsg(message);
       setSeverity("error");
       setOpenSnackbar(true);
-
-      if (message.toLowerCase().includes("exists")) {
-        setRoomError("Room already exists");
-      }
     }
   };
 
   return (
     <Box mt={2}>
-      <TextField
-        label="Room Name"
-        required
-        fullWidth
-        value={form.room_name}
-        onChange={(e) => {
-          setForm({ ...form, room_name: e.target.value });
-          setRoomError("");
-        }}
-        error={!!roomError}
-        helperText={roomError}
-        sx={{
-          mb: 2,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
-      />
-
-      <TextField
-        label="Capacity"
-        required
-        fullWidth
-        value={form.capacity}
-        onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-        inputProps={{ min: 1 }}
-        sx={{
-          mb: 2,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
-      />
-
-      <TextField
-        label="Location"
-        required
-        fullWidth
-        value={form.location}
-        onChange={(e) => setForm({ ...form, location: e.target.value })}
-        sx={{
-          mb: 1,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
-      />
-
-      <Box display="flex" gap={2} mt={1}>
-        <Button
-          className="primary-btn"
-          variant="contained"
-          disabled={!isValid || isLoading}
-          onClick={handleSubmit}
-          sx={{ mb: 2, borderRadius: 2, textTransform: "none", color: "#fff" }}
-        >
-          {isLoading ? "Adding..." : "Add Room"}
-        </Button>
-
-        <Button
-          onClick={onClose}
-          variant="outlined"
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <TextField
+          label="Room Name"
+          fullWidth
+          {...register("room_name")}
+          error={!!errors.room_name}
+          helperText={errors.room_name?.message}
           sx={{
             mb: 2,
-            borderRadius: 2,
-            textTransform: "none",
 
-            border: "1px solid #d1b3ff !important",
-            color: "#d1b3ff !important",
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
+              borderRadius: 2,
 
-            "&:hover": {
-              borderColor: "#b388ff !important",
-              color: "#b388ff !important",
-              backgroundColor: "rgba(179,136,255,0.1)",
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff8a80",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
             },
           }}
-        >
-          Cancel
-        </Button>
-      </Box>
+        />
+
+        <TextField
+          label="Capacity"
+          fullWidth
+          {...register("capacity")}
+          error={!!errors.capacity}
+          helperText={errors.capacity?.message}
+          inputProps={{ min: 1 }}
+          sx={{
+            mb: 2,
+
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
+              borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff8a80",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
+            },
+          }}
+        />
+
+        <TextField
+          label="Location"
+          fullWidth
+          {...register("location")}
+          error={!!errors.location}
+          helperText={errors.location?.message}
+          sx={{
+            mb: 1,
+
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#37374c",
+              color: "#fff",
+              borderRadius: 2,
+
+              "& fieldset": {
+                borderColor: "#444",
+              },
+
+              "&.Mui-error fieldset": {
+                borderColor: "#ff8a80",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+                borderWidth: "2px",
+              },
+            },
+
+            "& .MuiFormHelperText-root.Mui-error": {
+              color: "#ff8a80",
+              fontSize: "0.75rem",
+            },
+
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#b388ff",
+            },
+          }}
+        />
+
+        <Box display="flex" gap={2} mt={1}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading}
+            sx={{
+              mb: 2,
+              borderRadius: 2,
+              textTransform: "none",
+              background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
+              color: "#fff",
+
+              "&:hover": {
+                background: "linear-gradient(55deg, #7340ff, #a674fd)",
+              },
+            }}
+          >
+            {isLoading ? "Adding..." : "Add Room"}
+          </Button>
+
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{
+              mb: 2,
+              borderRadius: 2,
+              textTransform: "none",
+
+              border: "1px solid #d1b3ff !important",
+              color: "#d1b3ff !important",
+
+              "&:hover": {
+                borderColor: "#b388ff !important",
+                color: "#b388ff !important",
+                backgroundColor: "rgba(179,136,255,0.1)",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      </form>
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

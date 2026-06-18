@@ -25,7 +25,6 @@ import AddRoomForm from "@/components/AddRoomForm";
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-// import RoomCardSkeleton from "@/components/RoomCardSkeleton";
 
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
@@ -51,7 +50,7 @@ export default function Home() {
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   useEffect(() => {
     setPage(1);
@@ -82,6 +81,12 @@ export default function Home() {
 
     return true;
   });
+
+  const totalItems = filteredRooms.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const startItem = (page - 1) * itemsPerPage + 1;
+  const endItem = Math.min(page * itemsPerPage, totalItems);
 
   const paginatedRooms = filteredRooms.slice(
     startIndex,
@@ -172,7 +177,7 @@ export default function Home() {
             Rooms
           </Typography>
 
-          <Box display="flex" gap={2} alignItems="center">
+          <Box display="flex" gap={2} alignItems="center" sx={{ mb: 1 }}>
             <TextField
               placeholder="Search rooms"
               value={roomSearch}
@@ -340,34 +345,6 @@ export default function Home() {
           </Box>
         </Box>
 
-        <Box display="flex" justifyContent="center" mt={2} mb={2}>
-          <Pagination
-            count={Math.ceil(filteredRooms.length / itemsPerPage)}
-            page={page}
-            onChange={(e, value) => {
-              setPage(value);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#ccc",
-                borderRadius: "15%",
-                transition: "0.2s",
-              },
-
-              "& .MuiPaginationItem-root.Mui-selected": {
-                backgroundColor: "#995eff",
-                color: "#fff",
-                fontWeight: "bold",
-              },
-
-              "& .MuiPaginationItem-root.Mui-selected:hover": {
-                backgroundColor: "#7340ff",
-              },
-            }}
-          />
-        </Box>
-
         {filteredRooms.length > 0 ? (
           <Box
             sx={{
@@ -399,6 +376,75 @@ export default function Home() {
         ) : (
           <Typography sx={{ opacity: 0.7 }}>No rooms available</Typography>
         )}
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={2}
+          width="100%"
+        >
+          {/* Left Side - Per page filtering part */}
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography sx={{ color: "#ccc", fontSize: 14 }}>
+              Per page
+            </Typography>
+
+            <Select
+              size="small"
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setPage(1);
+              }}
+              sx={{
+                color: "#fff",
+                backgroundColor: "#2e2e45",
+                borderRadius: 2,
+              }}
+            >
+              {[3, 6, 9, 12, 15, 18].map((num) => (
+                <MenuItem key={num} value={num}>
+                  {num}
+                </MenuItem>
+              ))}
+            </Select>
+
+            <Typography sx={{ color: "#ccc", fontSize: 14 }}>
+              {totalItems === 0
+                ? "0–0 of 0"
+                : `${startItem}–${endItem} of ${totalItems}`}
+            </Typography>
+          </Box>
+
+          {/* Right side - Pagination part */}
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(e, value) => {
+              setPage(value);
+              window.scrollTo({ behavior: "smooth" });
+            }}
+            siblingCount={1}
+            boundaryCount={1}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "#ccc",
+                borderRadius: "12%",
+              },
+
+              "& .MuiPaginationItem-root.Mui-selected": {
+                backgroundColor: "#995eff",
+                color: "#fff",
+                fontWeight: "bold",
+              },
+
+              "& .MuiPaginationItem-root.Mui-selected:hover": {
+                backgroundColor: "#7340ff",
+              },
+            }}
+          />
+        </Box>
       </Box>
 
       <Box

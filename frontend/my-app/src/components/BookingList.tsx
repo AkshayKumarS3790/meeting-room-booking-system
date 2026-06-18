@@ -68,7 +68,7 @@ export default function BookingList() {
   const bookings = Array.isArray(data) ? data : [];
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   useEffect(() => {
     setPage(1);
@@ -102,6 +102,12 @@ export default function BookingList() {
 
     return true;
   });
+
+  const totalItems = filteredBookings.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const startItem = (page - 1) * itemsPerPage + 1;
+  const endItem = Math.min(page * itemsPerPage, totalItems);
 
   const startIndex = (page - 1) * itemsPerPage;
 
@@ -184,7 +190,7 @@ export default function BookingList() {
           Bookings
         </Typography>
 
-        <Box display="flex" gap={2} alignItems="center">
+        <Box display="flex" gap={2} alignItems="center" sx={{ mb: 1 }}>
           <Box
             display="flex"
             gap={2}
@@ -244,13 +250,9 @@ export default function BookingList() {
             />
 
             <TextField
-              // label="Date"
               type="date"
               size="small"
               value={selectedDate}
-              // slotProps={{
-              //   inputLabel: { shrink: true },
-              // }}
               onChange={(e) => setSelectedDate(e.target.value)}
               sx={{
                 width: 150,
@@ -415,34 +417,6 @@ export default function BookingList() {
         </Box>
       </Box>
 
-      <Box display="flex" justifyContent="center" mt={2} mb={2}>
-        <Pagination
-          count={Math.ceil(filteredBookings.length / itemsPerPage)}
-          page={page}
-          onChange={(e, value) => {
-            setPage(value);
-            window.scrollTo({ behavior: "smooth" });
-          }}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              color: "#ccc",
-              borderRadius: "15%",
-              transition: "0.2s",
-            },
-
-            "& .MuiPaginationItem-root.Mui-selected": {
-              backgroundColor: "#995eff",
-              color: "#fff",
-              fontWeight: "bold",
-            },
-
-            "& .MuiPaginationItem-root.Mui-selected:hover": {
-              backgroundColor: "#7340ff",
-            },
-          }}
-        />
-      </Box>
-
       {filteredBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
       ) : (
@@ -602,13 +576,13 @@ export default function BookingList() {
                   await deleteBooking(selectedId).unwrap();
                 }
 
+                setOpenDialog(false);
+
                 setMsg("Booking deleted successfully");
                 setSeverity("success");
                 setOpenSnackbar(true);
 
-                setTimeout(() => {
-                  setOpenDialog(false);
-                }, 1200);
+                setOpenDialog(false);
               } catch {
                 setMsg("Delete failed");
                 setSeverity("error");
@@ -657,6 +631,73 @@ export default function BookingList() {
           )}
         </DialogContent>
       </Dialog>
+
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mt={2}
+        width="100%"
+      >
+        {/* Left side - Per page filtering part */}
+        <Box display="flex" alignItems="center" gap={2}>
+          <Typography sx={{ color: "#ccc", fontSize: 14 }}>Per page</Typography>
+
+          <Select
+            size="small"
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value));
+              setPage(1);
+            }}
+            sx={{
+              color: "#fff",
+              backgroundColor: "#2e2e45",
+              borderRadius: 2,
+            }}
+          >
+            {[3, 6, 9, 12, 15, 18].map((num) => (
+              <MenuItem key={num} value={num}>
+                {num}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Typography sx={{ color: "#ccc", fontSize: 14 }}>
+            {totalItems === 0
+              ? "0–0 of 0"
+              : `${startItem}–${endItem} of ${totalItems}`}
+          </Typography>
+        </Box>
+
+        {/* Right side - Pagination part */}
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={(e, value) => {
+            setPage(value);
+            window.scrollTo({ behavior: "smooth" });
+          }}
+          siblingCount={1}
+          boundaryCount={1}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#ccc",
+              borderRadius: "12%",
+            },
+
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#995eff",
+              color: "#fff",
+              fontWeight: "bold",
+            },
+
+            "& .MuiPaginationItem-root.Mui-selected:hover": {
+              backgroundColor: "#7340ff",
+            },
+          }}
+        />
+      </Box>
 
       <Snackbar
         open={openSnackbar}
