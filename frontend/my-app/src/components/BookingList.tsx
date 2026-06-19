@@ -55,45 +55,26 @@ export default function BookingList() {
 
   const debouncedSearch = useDebounce(search, 500);
 
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
+
   const { data, isLoading, error } = useGetBookingsQuery({
+    page,
+    limit: itemsPerPage,
     search: debouncedSearch || undefined,
     room_name: selectedRoom !== "all" ? selectedRoom : undefined,
     only_active: false,
   });
 
-  const { data: rooms } = useGetRoomsQuery({});
+  const bookings = data || [];
 
-  const [deleteBooking, { isLoading: isDeleting }] = useDeleteBookingMutation();
+  const now = new Date();
 
-  const bookings = Array.isArray(data) ? data : [];
-
-  const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, selectedRoom, selectedDate]);
-
-  const sortedBookings = [...bookings].sort(
-    (a, b) => b.booking_id - a.booking_id,
-  );
-
-  const filteredBookings = sortedBookings.filter((b) => {
-    const now = new Date();
+  const activeBookings = bookings.filter((b: Booking) => {
     const end = new Date(b.end_date_time);
+    const isActive = end > now;
 
-    if (end <= now) return false;
-
-    if (
-      debouncedSearch &&
-      !b.booked_by.toLowerCase().includes(debouncedSearch.toLowerCase())
-    ) {
-      return false;
-    }
-
-    if (selectedRoom !== "all" && b.room_name !== selectedRoom) {
-      return false;
-    }
+    if (!isActive) return false;
 
     if (selectedDate) {
       const bookingDate = b.start_date_time.split(" ")[0];
@@ -103,18 +84,53 @@ export default function BookingList() {
     return true;
   });
 
-  const totalItems = filteredBookings.length;
+  const totalItems = activeBookings.length;
+
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const startItem = (page - 1) * itemsPerPage + 1;
   const endItem = Math.min(page * itemsPerPage, totalItems);
 
+  const { data: rooms } = useGetRoomsQuery({});
+
+  const [deleteBooking, { isLoading: isDeleting }] = useDeleteBookingMutation();
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, selectedRoom, selectedDate]);
+
+  // const sortedBookings = [...bookings].sort(
+  //   (a, b) => b.booking_id - a.booking_id,
+  // );
+
+  // const filteredBookings = sortedBookings.filter((b) => {
+  //   const now = new Date();
+  //   const end = new Date(b.end_date_time);
+  //   if (end <= now) return false;
+  //   if (
+  //     debouncedSearch &&
+  //     !b.booked_by.toLowerCase().includes(debouncedSearch.toLowerCase())
+  //   ) {
+  //     return false;
+  //   }
+  //   if (selectedRoom !== "all" && b.room_name !== selectedRoom) {
+  //     return false;
+  //   }
+  //   if (selectedDate) {
+  //     const bookingDate = b.start_date_time.split(" ")[0];
+  //     if (bookingDate !== selectedDate) return false;
+  //   }
+  //   return true;
+  // });
+
   const startIndex = (page - 1) * itemsPerPage;
 
-  const paginatedBookings = filteredBookings.slice(
+  const paginatedBookings = activeBookings.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
+
+  const todayStr = new Date().toISOString().split("T")[0];
 
   if (isLoading) {
     return (
@@ -254,6 +270,9 @@ export default function BookingList() {
               size="small"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
+              inputProps={{
+                min: todayStr,
+              }}
               sx={{
                 width: 150,
                 background: "rgba(84, 66, 134, 0.4)",
@@ -417,7 +436,7 @@ export default function BookingList() {
         </Box>
       </Box>
 
-      {filteredBookings.length === 0 ? (
+      {activeBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
       ) : (
         <Box
@@ -435,7 +454,7 @@ export default function BookingList() {
             minHeight: "500px",
           }}
         >
-          {paginatedBookings.map((b) => (
+          {paginatedBookings.map((b: Booking) => (
             <Card
               key={b.booking_id}
               sx={{

@@ -52,6 +52,7 @@ type UpdateRoomInput = {
 
 type RoomFilterParams = {
   search?: string;
+  location?: string;
   required_capacity?: number;
   room_name?: string;
   start_date_time?: string;
@@ -78,23 +79,29 @@ export const api = createApi({
 
   tagTypes: ["Rooms", "Bookings"],
 
-  serializeQueryArgs: ({ endpointName }) => {
-    return endpointName;
-  },
-
   endpoints: (builder) => ({
-    getRooms: builder.query<Room[], RoomFilterParams>({
-      query: (params) => ({
+    getRooms: builder.query<
+      Room[],
+      RoomFilterParams & { page?: number; limit?: number }
+    >({
+      query: ({ page = 1, limit = 6, ...params }) => ({
         url: "/rooms/filter/",
-        params,
+        params: { ...params, page, limit },
       }),
-      providesTags: ["Rooms"],
+      providesTags: [{ type: "Rooms", id: "LIST" }],
     }),
 
-    getBookings: builder.query<Booking[], BookingFilterParams>({
-      query: (params) => ({
+    getBookings: builder.query<
+      Booking[],
+      BookingFilterParams & { page?: number; limit?: number }
+    >({
+      query: ({ page = 1, limit = 6, ...params }) => ({
         url: "/bookings/filter",
-        params,
+        params: {
+          ...params,
+          page,
+          limit,
+        },
       }),
       providesTags: (result) =>
         result
@@ -118,7 +125,10 @@ export const api = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Bookings", "Rooms"],
+      invalidatesTags: [
+        { type: "Bookings", id: "LIST" },
+        { type: "Rooms", id: "LIST" },
+      ],
     }),
 
     updateBooking: builder.mutation({
@@ -127,7 +137,10 @@ export const api = createApi({
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["Bookings", "Rooms"],
+      invalidatesTags: [
+        { type: "Bookings", id: "LIST" },
+        { type: "Rooms", id: "LIST" },
+      ],
     }),
 
     deleteBooking: builder.mutation({
@@ -148,7 +161,7 @@ export const api = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Rooms"],
+      invalidatesTags: [{ type: "Rooms", id: "LIST" }],
     }),
 
     updateRoom: builder.mutation({
@@ -157,7 +170,7 @@ export const api = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Rooms"],
+      invalidatesTags: [{ type: "Rooms", id: "LIST" }],
     }),
 
     deleteRoom: builder.mutation({
@@ -165,7 +178,7 @@ export const api = createApi({
         url: `rooms/${room_name}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Rooms", "Bookings"],
+      invalidatesTags: [{ type: "Rooms", id: "LIST" }],
     }),
   }),
 });

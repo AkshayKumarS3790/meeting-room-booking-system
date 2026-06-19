@@ -59,6 +59,8 @@ export default function EditRoomForm({
 
       console.log("DELETE SUCCESS");
 
+      onSuccess("Room deleted successfully", "success");
+
       setConfirmDelete(false);
 
       setTimeout(() => {

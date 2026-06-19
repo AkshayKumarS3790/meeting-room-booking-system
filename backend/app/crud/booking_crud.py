@@ -277,7 +277,7 @@ def delete_booking(db: Session, booking_id: int):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
 
     if booking:
-        booking.is_active = False
+        db.delete(booking)
         db.commit()
 
     return booking

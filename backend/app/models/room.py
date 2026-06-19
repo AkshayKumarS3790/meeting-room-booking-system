@@ -15,5 +15,5 @@ class Room(Base):
     capacity = Column(Integer)
     location = Column(String)
 
-    bookings = relationship("Booking", back_populates="room")
+    bookings = relationship("Booking", back_populates="room", cascade="all, delete")
     # This will link rooms to their bookings

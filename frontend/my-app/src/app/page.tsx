@@ -18,7 +18,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import { useGetRoomsQuery, useGetBookingsQuery } from "@/services/api";
+import { useGetRoomsQuery, useGetBookingsQuery, Room } from "@/services/api";
 import RoomCard from "@/components/RoomCard";
 import BookingList from "@/components/BookingList";
 import AddRoomForm from "@/components/AddRoomForm";
@@ -28,6 +28,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
+  const [capacitySearch, setCapacitySearch] = useState("");
 
   const [selectedLocation, setSelectedLocation] = useState("all");
 
@@ -35,15 +36,9 @@ export default function Home() {
 
   const debouncedSearch = useDebounce(roomSearch, 500);
 
-  const { data, error, isLoading } = useGetRoomsQuery({
-    search: debouncedSearch || undefined,
-  });
+  const { data: bookingsData } = useGetBookingsQuery({});
 
-  const uniqueLocations = Array.from(
-    new Set((data || []).map((room) => room.location)),
-  );
-
-  const { data: bookings } = useGetBookingsQuery({});
+  const bookings = bookingsData || [];
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
@@ -52,46 +47,60 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
-  useEffect(() => {
-    setPage(1);
-  }, [roomSearch, selectedLocation]);
+  const { data: allRoomsData } = useGetRoomsQuery({});
 
-  const sortedRooms = Array.isArray(data)
-    ? [...data].sort((a, b) =>
-        a.room_name.localeCompare(b.room_name, undefined, {
-          numeric: true,
-          sensitivity: "base",
-        }),
-      )
-    : [];
-
-  const startIndex = (page - 1) * itemsPerPage;
-
-  const filteredRooms = sortedRooms.filter((room) => {
-    if (
-      roomSearch &&
-      !room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
-    ) {
-      return false;
-    }
-
-    if (selectedLocation !== "all" && room.location !== selectedLocation) {
-      return false;
-    }
-
-    return true;
+  const { data, error, isLoading } = useGetRoomsQuery({
+    page,
+    limit: itemsPerPage,
+    search: debouncedSearch || undefined,
+    required_capacity: capacitySearch ? Number(capacitySearch) : undefined,
+    // room_name: selectedLocation !== "all" ? selectedLocation : undefined,
+    location: selectedLocation !== "all" ? selectedLocation : undefined,
   });
 
-  const totalItems = filteredRooms.length;
+  const rooms = Array.isArray(data) ? data : [];
+  const totalItems = rooms.length;
+
+  const allRooms = Array.isArray(allRoomsData) ? allRoomsData : [];
+
+  const uniqueLocations = Array.from(
+    new Set(allRooms.map((room) => room.location)),
+  );
+
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const startItem = (page - 1) * itemsPerPage + 1;
   const endItem = Math.min(page * itemsPerPage, totalItems);
 
-  const paginatedRooms = filteredRooms.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  useEffect(() => {
+    setPage(1);
+  }, [roomSearch, selectedLocation]);
+
+  // const sortedRooms = Array.isArray(data)
+  //   ? [...data].sort((a, b) =>
+  //       a.room_name.localeCompare(b.room_name, undefined, {
+  //         numeric: true,
+  //         sensitivity: "base",
+  //       }),
+  //     )
+  //   : [];
+
+  const startIndex = (page - 1) * itemsPerPage;
+
+  // const filteredRooms = sortedRooms.filter((room) => {
+  //   if (
+  //     roomSearch &&
+  //     !room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
+  //   ) {
+  //     return false;
+  //   }
+  //   if (selectedLocation !== "all" && room.location !== selectedLocation) {
+  //     return false;
+  //   }
+  //   return true;
+  // });
+
+  const paginatedRooms = rooms.slice(startIndex, startIndex + itemsPerPage);
 
   if (isLoading) {
     return (
@@ -182,6 +191,48 @@ export default function Home() {
               placeholder="Search rooms"
               value={roomSearch}
               onChange={(e) => setRoomSearch(e.target.value)}
+              size="small"
+              sx={{
+                width: 150,
+
+                background: "rgba(84, 66, 134, 0.4)",
+
+                borderRadius: 2,
+
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  color: "#fff",
+
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+
+                  "&:hover fieldset": {
+                    borderColor: "#7c4dff",
+                  },
+
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#7c4dff",
+                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
+                  },
+                },
+
+                "& input::placeholder": {
+                  color: "#bbb",
+                  opacity: 1,
+                },
+
+                "& input": {
+                  color: "#fff",
+                  padding: "8px 12px",
+                },
+              }}
+            />
+
+            <TextField
+              placeholder="Search capacity"
+              value={capacitySearch}
+              onChange={(e) => setCapacitySearch(e.target.value)}
               size="small"
               sx={{
                 width: 150,
@@ -345,7 +396,7 @@ export default function Home() {
           </Box>
         </Box>
 
-        {filteredRooms.length > 0 ? (
+        {rooms.length > 0 ? (
           <Box
             sx={{
               display: "grid",
@@ -360,7 +411,7 @@ export default function Home() {
               minHeight: "400px",
             }}
           >
-            {paginatedRooms.map((room) => (
+            {paginatedRooms.map((room: Room) => (
               <RoomCard
                 key={room.room_name}
                 room={room}

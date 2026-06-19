@@ -10,7 +10,7 @@ class Booking(Base):
     __tablename__ = "bookings"  # Tablename in PostgreSQL
 
     booking_id = Column(Integer, primary_key=True, index=True)
-    room_name = Column(String, ForeignKey("rooms.room_name"), index=True)
+    room_name = Column(String, ForeignKey("rooms.room_name", ondelete="CASCADE"), index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"))
     booked_by = Column(String)
     purpose = Column(String)

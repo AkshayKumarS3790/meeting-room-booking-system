@@ -74,22 +74,31 @@ def update_room(db: Session, room_name: str, updated_room: RoomCreate):
     return room
 
 
-def delete_room(db: Session, room_name: str):
-    try: 
-        room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
+# def delete_room(db: Session, room_name: str):
+#     try: 
+#         room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
         
-        if room:  # If room exists
-            db.query(Booking).filter(
-                Booking.room_name == room_name
-            ).delete(synchronize_session=False) # Delete all bookings for this room
-            db.delete(room)  # Delete the room
-            db.commit()  # Then save changes
-        return room
+#         if room:  # If room exists
+#             db.query(Booking).filter(
+#                 Booking.room_name == room_name
+#             ).delete(synchronize_session=False) # Delete all bookings for this room
+#             db.delete(room)  # Delete the room
+#             db.commit()  # Then save changes
+#         return room
 
-    except Exception as e:
-        print(e)
-        db.rollback()
-        raise
+#     except Exception as e:
+#         print(e)
+#         db.rollback()
+#         raise
+
+def delete_room(db: Session, room_name: str):
+    room = db.query(Room).filter(Room.room_name == room_name).first()
+
+    if room:
+        db.delete(room)   # cascade handles bookings
+        db.commit()
+
+    return room
 
 
 def filter_rooms(
@@ -99,25 +108,31 @@ def filter_rooms(
     room_name: Optional[str],
     required_capacity: Optional[int],
     search: Optional[str] = None,
+    location: Optional[str] = None,
 ):
     query = db.query(Room)
 
     #Flexible search (partial match)
     if search:
-        filters = [
+        query = query.filter(
                 Room.room_name.ilike(f"%{search}%"),
-                Room.location.ilike(f"%{search}%"),
-        ]
+                # Room.location.ilike(f"%{search}%"),
+        )
 
-        if search.isdigit():
-            filters. append(Room.capacity >= int(search))
+        # if search.isdigit():
+        #     filters. append(Room.capacity >= int(search))
 
-        query = query.filter(or_(*filters))
+        # query = query.filter(or_(*filters))
 
 
     # Filter by room_name (if given)
     if room_name:
         query = query.filter(Room.room_name == room_name)
+
+        
+    if location:
+        query = query.filter(Room.location == location)
+
 
     # Filter by capacity (if given)
     if required_capacity is not None:
