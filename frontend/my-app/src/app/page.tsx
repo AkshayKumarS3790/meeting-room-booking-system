@@ -25,6 +25,7 @@ import AddRoomForm from "@/components/AddRoomForm";
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+// import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 export default function Home() {
   const [roomSearch, setRoomSearch] = useState("");
@@ -49,14 +50,19 @@ export default function Home() {
 
   const { data: allRoomsData } = useGetRoomsQuery({});
 
-  const { data, error, isLoading } = useGetRoomsQuery({
-    page,
-    limit: itemsPerPage,
-    search: debouncedSearch || undefined,
-    required_capacity: capacitySearch ? Number(capacitySearch) : undefined,
-    // room_name: selectedLocation !== "all" ? selectedLocation : undefined,
-    location: selectedLocation !== "all" ? selectedLocation : undefined,
-  });
+  const { data, error, isLoading } = useGetRoomsQuery(
+    {
+      page,
+      limit: itemsPerPage,
+      search: debouncedSearch || undefined,
+      required_capacity: capacitySearch ? Number(capacitySearch) : undefined,
+      // room_name: selectedLocation !== "all" ? selectedLocation : undefined,
+      location: selectedLocation !== "all" ? selectedLocation : undefined,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const rooms = Array.isArray(data) ? data : [];
   const totalItems = rooms.length;
@@ -76,29 +82,7 @@ export default function Home() {
     setPage(1);
   }, [roomSearch, selectedLocation]);
 
-  // const sortedRooms = Array.isArray(data)
-  //   ? [...data].sort((a, b) =>
-  //       a.room_name.localeCompare(b.room_name, undefined, {
-  //         numeric: true,
-  //         sensitivity: "base",
-  //       }),
-  //     )
-  //   : [];
-
   const startIndex = (page - 1) * itemsPerPage;
-
-  // const filteredRooms = sortedRooms.filter((room) => {
-  //   if (
-  //     roomSearch &&
-  //     !room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
-  //   ) {
-  //     return false;
-  //   }
-  //   if (selectedLocation !== "all" && room.location !== selectedLocation) {
-  //     return false;
-  //   }
-  //   return true;
-  // });
 
   const paginatedRooms = rooms.slice(startIndex, startIndex + itemsPerPage);
 
@@ -152,14 +136,17 @@ export default function Home() {
         mb: 5,
       }}
     >
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        textAlign="center"
-        gutterBottom
-      >
-        Meeting Room Booking System
-      </Typography>
+      <Box mb={2}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          textAlign="center"
+          gutterBottom
+        >
+          Meeting Room Booking System
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           height: 2,
@@ -167,6 +154,7 @@ export default function Home() {
           mb: 3,
         }}
       />
+
       <Box
         className="section-card"
         sx={{
@@ -497,7 +485,6 @@ export default function Home() {
           />
         </Box>
       </Box>
-
       <Box
         sx={{
           p: 2,

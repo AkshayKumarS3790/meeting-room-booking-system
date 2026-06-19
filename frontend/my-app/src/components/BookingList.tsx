@@ -58,13 +58,18 @@ export default function BookingList() {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
-  const { data, isLoading, error } = useGetBookingsQuery({
-    page,
-    limit: itemsPerPage,
-    search: debouncedSearch || undefined,
-    room_name: selectedRoom !== "all" ? selectedRoom : undefined,
-    only_active: false,
-  });
+  const { data, isLoading, error } = useGetBookingsQuery(
+    {
+      page,
+      limit: itemsPerPage,
+      search: debouncedSearch || undefined,
+      room_name: selectedRoom !== "all" ? selectedRoom : undefined,
+      only_active: false,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const bookings = data || [];
 
