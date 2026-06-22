@@ -51,6 +51,11 @@ export default function RoomCard({
         color: "#fff",
         borderRadius: 3,
         transition: "0.3s",
+
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+
         "&:hover": {
           backgroundColor: "#26263a",
           transform: "translateY(-4px)",
@@ -85,7 +90,11 @@ export default function RoomCard({
         </Box>
       </Box>
 
-      <CardContent sx={{ pt: 1 }}>
+      <CardContent
+        sx={{
+          pt: 1,
+        }}
+      >
         <Typography>Capacity: {room.capacity}</Typography>
         <Typography>Location: {room.location}</Typography>
 
