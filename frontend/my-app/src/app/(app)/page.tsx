@@ -1,3 +1,5 @@
+// main app's page.tsx file
+
 "use client";
 
 import { Container, Typography, Box } from "@mui/material";
