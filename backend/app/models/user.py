@@ -11,3 +11,6 @@ class User(Base):
     user_id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String, unique=True)
     role = Column(String)
+
+    email = Column(String, unique=True, index=True)
+    password = Column(String)

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.booking_schema import BookingCreate, BookingResponse
 from app.crud import booking_crud  # import business logic functions
+from app.auth.dependencies import get_current_user
 from typing import List, Optional
 from datetime import datetime
 
@@ -27,7 +28,10 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
 # API 2 - Get all bookings
 # This API returns all bookings or shows a message if none exist
 @router.get("/", response_model=List[BookingResponse])
-def get_bookings(db: Session = Depends(get_db)):
+def get_bookings(
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    ):
     bookings = booking_crud.get_bookings(db)  # Fetches all bookings
     
     filtered_bookings = [b for b in bookings if b.get("room_name") is not None]

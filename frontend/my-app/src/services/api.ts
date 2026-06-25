@@ -1,5 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: "http://localhost:8000",
+
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+
 export type Room = {
   room_name: string;
   capacity: number;
@@ -73,9 +87,7 @@ export type RoomResponse = Room[] | { message: string };
 export const api = createApi({
   reducerPath: "api",
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/",
-  }),
+  baseQuery: baseQuery,
 
   tagTypes: ["Rooms", "Bookings"],
 

@@ -1,3 +1,5 @@
+/* ================= BASE ================= */
+
 html,
 body {
   max-width: 100vw;
@@ -13,7 +15,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Section container */
+/* Reset */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ================= UI CARDS ================= */
+
 .section-card {
   background: #1e1e2f;
   border-radius: 12px;
@@ -21,7 +36,6 @@ body {
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Cards */
 .card {
   background: #26263a;
   border-radius: 12px;
@@ -34,7 +48,8 @@ body {
   background: #2e2e45;
 }
 
-/* Buttons */
+/* ================= BUTTONS ================= */
+
 .primary-btn {
   background: linear-gradient(45deg, #7c4dff, #b388ff);
   color: white !important;
@@ -49,19 +64,8 @@ body {
   text-transform: none;
 }
 
-/* Reset */
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
+/* ================= MUI OVERRIDES ================= */
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* MUI overrides */
 .MuiOutlinedInput-root.Mui-focused fieldset {
   border-color: #7c4dff !important;
 }
@@ -73,4 +77,106 @@ a {
 .MuiButton-outlinedPrimary {
   border-color: #7c4dff !important;
   color: #7c4dff !important;
+}
+
+/* ================= REACT BIG CALENDAR ================= */
+
+/* Calendar background */
+.rbc-calendar {
+  background-color: #2e2e45 !important;
+  color: #fff !important;
+}
+
+/* Header row (Sun, Mon, etc) */
+.rbc-header {
+  background-color: #2e2e45 !important;
+  color: #ccc !important;
+  border-bottom: 1px solid #989898 !important;
+}
+
+/* Day cells */
+.rbc-day-bg {
+  background-color: #2e2e45 !important;
+}
+
+/* Today highlight */
+.rbc-today {
+  background-color: rgba(124, 77, 255, 0.2) !important;
+}
+
+/* Outside month days */
+.rbc-off-range-bg {
+  background-color: #383856 !important;
+}
+
+.rbc-off-range {
+  color: #989898 !important;
+}
+
+/* Date numbers */
+.rbc-date-cell {
+  color: #ddd !important;
+}
+
+/* Grid lines */
+.rbc-month-view,
+.rbc-day-bg,
+.rbc-time-content,
+.rbc-time-header-content {
+  border-color: #989898 !important;
+}
+
+/* ================= TOOLBAR ================= */
+
+.rbc-toolbar {
+  margin-bottom: 15px;
+}
+
+/* Buttons */
+.rbc-btn-group button {
+  color: #fff !important;
+  background: transparent !important;
+  border: 1px solid #989898 !important;
+  padding: 6px 12px !important;
+  transition: 0.2s ease !important;
+}
+
+/* Hover */
+.rbc-btn-group button:hover {
+  background-color: #7c4dff !important;
+  border-color: #7c4dff !important;
+  color: #fff !important;
+}
+
+/* Active button */
+.rbc-btn-group button.rbc-active {
+  background-color: #7c4dff !important;
+  color: #fff !important;
+  border-color: #7c4dff !important;
+}
+
+/* Title (June 2026) */
+.rbc-toolbar-label {
+  color: #fff !important;
+  font-weight: bold !important;
+}
+
+/* ==== EVENT BASE ==== */
+
+/* DO NOT set background here */
+.rbc-event {
+  color: #fff !important;
+  border-radius: 6px !important;
+  border: none !important;
+}
+
+/* Ensure text is visible */
+.rbc-event-content {
+  color: #fff !important;
+}
+
+/* MAKE EVENT CONTENT TRANSPARENT */
+.rbc-event-content {
+  background: transparent !important;
+  padding: 2px 4px;
 }

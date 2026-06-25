@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.models.user import User
+from app.auth.auth import verify_password, create_access_token
+from pydantic import BaseModel
 from app.schemas.user_schema import UserCreate, UserResponse
 from app.crud import user_crud
 from typing import Union
@@ -13,10 +16,41 @@ from app.exc_handling.user_exceptions import (
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+#Register User
+@router.post("/register")
+def register(user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.email == user.email).first()
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    new_user = user_crud.create_user(db, user)
+
+    return {"message": "User created successfully", "user_id": new_user.user_id}
+
+#User Login
+@router.post("/login")
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    if not verify_password(data.password, user.password):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    token = create_access_token({"user_id": user.user_id, "user_name": user.user_name})
+
+    return {"access_token": token}
+
 
 # Create user
 @router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user_route(user: UserCreate , db: Session = Depends(get_db)):
     return user_crud.create_user(db, user)
 
 

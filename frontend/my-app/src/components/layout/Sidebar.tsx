@@ -24,7 +24,7 @@ export default function Sidebar({
   const sidebarContent = (
     <Box
       sx={{
-        width: 220,
+        width: 200,
         height: "100vh",
         position: "fixed",
         top: 0,
@@ -72,8 +72,25 @@ export default function Sidebar({
 
       {/* BOTTOM */}
       <Box>
-        <Box sx={{ py: 1.2 }}>Settings</Box>
-        <Box sx={{ py: 1.2 }}>Logout</Box>
+        <Box sx={{ py: 1.2, px: 1 }}>Settings</Box>
+
+        <Box
+          sx={{
+            py: 1.2,
+            px: 1,
+            cursor: "pointer",
+            borderRadius: 2,
+            "&:hover": {
+              backgroundColor: "#432f7b",
+            },
+          }}
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+          }}
+        >
+          Logout
+        </Box>
       </Box>
     </Box>
   );

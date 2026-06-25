@@ -1,43 +1,44 @@
-// Login page.tsx file
+// Register page.tsx file
 
 "use client";
 
 import { Box, Card, TextField, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/users/login", {
+      const res = await fetch("http://127.0.0.1:8000/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          user_name: userName,
           email,
           password,
+          role: "user",
         }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.access_token);
-        router.push("/");
+        alert("User registered successfully");
+        router.push("/login");
       } else {
-        console.log("LOGIN ERROR:", data);
-        alert(JSON.stringify(data));
+        alert(data.detail || "Registration failed");
       }
     } catch (err) {
-      console.error("ERROR DETAILS:", err);
-      alert(err instanceof Error ? err.message : "Unknown error");
+      console.error(err);
+      alert("Something went wrong");
     }
   };
 
@@ -53,28 +54,48 @@ export default function LoginPage() {
     >
       <Card
         sx={{
-          width: 400,
+          width: 420,
           p: 4,
-          borderRadius: 3,
           backgroundColor: "#1e1e2f",
-          boxShadow: "0px 8px 30px rgba(0,0,0,0.5)",
         }}
       >
-        {/* TITLE */}
         <Typography
           variant="h5"
-          fontWeight="bold"
           textAlign="center"
-          sx={{ mb: 2, color: "#7c4dff" }}
+          sx={{ mb: 1, color: "#7c4dff" }}
         >
-          MeetSpace Login
+          Register
         </Typography>
 
-        {/* EMAIL */}
+        <TextField
+          fullWidth
+          label="User Name"
+          margin="normal"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              color: "#fff",
+              "& fieldset": {
+                borderColor: "#555",
+                borderRadius: 2,
+              },
+              "&:hover fieldset": {
+                borderColor: "#7c4dff",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#7c4dff",
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "#aaa",
+            },
+          }}
+        />
+
         <TextField
           fullWidth
           label="Email"
-          variant="outlined"
           margin="normal"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +119,6 @@ export default function LoginPage() {
           }}
         />
 
-        {/* PASSWORD */}
         <TextField
           fullWidth
           label="Password"
@@ -126,43 +146,14 @@ export default function LoginPage() {
           }}
         />
 
-        {/* BUTTON */}
         <Button
           fullWidth
           variant="contained"
-          onClick={handleLogin}
-          sx={{
-            mt: 2,
-            py: 1.2,
-            borderRadius: 2,
-            textTransform: "none",
-            background: "linear-gradient(55deg, #7340ff, #a674fd)",
-            "&:hover": {
-              background: "linear-gradient(55deg, #5f30e0, #8e5ae8)",
-            },
-          }}
+          sx={{ mt: 2, textTransform: "none", borderRadius: 2 }}
+          onClick={handleRegister}
         >
-          Login
+          Register
         </Button>
-
-        <Typography
-          textAlign="center"
-          sx={{ mt: 2, fontSize: 14, color: "#aaa" }}
-        >
-          New user?{" "}
-          <Link href="/register" style={{ color: "#7c4dff" }}>
-            Register
-          </Link>
-        </Typography>
-
-        <Typography
-          textAlign="center"
-          sx={{ mt: 1, fontSize: 14, color: "#aaa" }}
-        >
-          <Link href="/forgot-password" style={{ color: "#7c4dff" }}>
-            Forgot password?
-          </Link>
-        </Typography>
       </Card>
     </Box>
   );
