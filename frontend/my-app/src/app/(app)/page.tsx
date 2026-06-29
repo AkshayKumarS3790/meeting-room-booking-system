@@ -13,6 +13,7 @@ export default function Home() {
           fontWeight="bold"
           textAlign="center"
           gutterBottom
+          sx={{ color: "#fff", fontWeight: 600 }}
         >
           Meeting Room Booking System
         </Typography>
@@ -27,7 +28,9 @@ export default function Home() {
       />
 
       <Box>
-        This is the home page of the Meeting Rooms Booking System application
+        <Typography sx={{ color: "#ccc", mt: 2 }}>
+          This is the home page of the Meeting Rooms Booking System application
+        </Typography>
       </Box>
     </Container>
   );

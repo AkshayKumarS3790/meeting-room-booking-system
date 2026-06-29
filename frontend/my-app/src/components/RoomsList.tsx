@@ -132,7 +132,10 @@ export default function RoomsList() {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: "bold", mt: 1, color: "#fff" }}
+        >
           Rooms
         </Typography>
 

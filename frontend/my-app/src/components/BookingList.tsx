@@ -104,30 +104,6 @@ export default function BookingList() {
     setPage(1);
   }, [search, selectedRoom, selectedDate]);
 
-  // const sortedBookings = [...bookings].sort(
-  //   (a, b) => b.booking_id - a.booking_id,
-  // );
-
-  // const filteredBookings = sortedBookings.filter((b) => {
-  //   const now = new Date();
-  //   const end = new Date(b.end_date_time);
-  //   if (end <= now) return false;
-  //   if (
-  //     debouncedSearch &&
-  //     !b.booked_by.toLowerCase().includes(debouncedSearch.toLowerCase())
-  //   ) {
-  //     return false;
-  //   }
-  //   if (selectedRoom !== "all" && b.room_name !== selectedRoom) {
-  //     return false;
-  //   }
-  //   if (selectedDate) {
-  //     const bookingDate = b.start_date_time.split(" ")[0];
-  //     if (bookingDate !== selectedDate) return false;
-  //   }
-  //   return true;
-  // });
-
   const startIndex = (page - 1) * itemsPerPage;
 
   const paginatedBookings = activeBookings.slice(
@@ -207,7 +183,10 @@ export default function BookingList() {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: "bold", mt: 1, color: "#fff" }}
+        >
           Bookings
         </Typography>
 
@@ -442,7 +421,9 @@ export default function BookingList() {
       </Box>
 
       {activeBookings.length === 0 ? (
-        <Typography sx={{ opacity: 0.7, mt: 2 }}>No bookings yet</Typography>
+        <Typography sx={{ opacity: 0.7, mt: 2, color: "#fff" }}>
+          No bookings yet
+        </Typography>
       ) : (
         <Box
           mt={2}

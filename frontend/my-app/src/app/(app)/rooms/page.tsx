@@ -13,8 +13,6 @@ export default function RoomsPage() {
         p: 2,
         borderRadius: 2,
         backgroundColor: "#1e1e2f",
-        ml: 2,
-        mb: 2,
       }}
     >
       <RoomsList />
