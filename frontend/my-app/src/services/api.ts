@@ -14,6 +14,22 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+// WRAP BASE QUERY (THIS IS THE KEY FIX)
+const baseQueryWithAuth: typeof baseQuery = async (args, api, extraOptions) => {
+  const result = await baseQuery(args, api, extraOptions);
+
+  // CHECK FOR 401 (TOKEN EXPIRED)
+  if (result.error && result.error.status === 401) {
+    console.log("Token expired → logging out");
+
+    // Remove token
+    localStorage.removeItem("token");
+    // Redirect
+    window.location.href = "/login";
+  }
+  return result;
+};
+
 export type Room = {
   room_name: string;
   capacity: number;
@@ -87,7 +103,7 @@ export type RoomResponse = Room[] | { message: string };
 export const api = createApi({
   reducerPath: "api",
 
-  baseQuery: baseQuery,
+  baseQuery: baseQueryWithAuth,
 
   tagTypes: ["Rooms", "Bookings"],
 
