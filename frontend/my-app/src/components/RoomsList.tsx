@@ -36,7 +36,7 @@ export default function RoomsList() {
 
   const debouncedSearch = useDebounce(roomSearch, 500);
 
-  const { data: bookingsData } = useGetBookingsQuery({});
+  const { data: bookingsData } = useGetBookingsQuery();
   const bookings = bookingsData || [];
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -127,26 +127,43 @@ export default function RoomsList() {
   return (
     <>
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 2,
+        }}
       >
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", mt: 1, color: "#fff" }}
-        >
+        {/* LEFT SIDE */}
+        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#fff" }}>
           Rooms
         </Typography>
 
-        <Box display="flex" gap={2} alignItems="center" sx={{ mb: 1 }}>
+        {/* RIGHT SIDE - FILTERS */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr 1fr auto",
+            },
+            gap: 2,
+            alignItems: "center",
+            justifyContent: "end",
+            width: "auto",
+          }}
+        >
           <TextField
             placeholder="Search rooms"
             value={roomSearch}
             onChange={(e) => setRoomSearch(e.target.value)}
             size="small"
             sx={{
-              width: 150,
+              width: "100%",
+              maxWidth: 150,
 
               background: "rgba(84, 66, 134, 0.4)",
 
@@ -188,7 +205,8 @@ export default function RoomsList() {
             onChange={(e) => setCapacitySearch(e.target.value)}
             size="small"
             sx={{
-              width: 150,
+              width: "100%",
+              maxWidth: 150,
 
               background: "rgba(84, 66, 134, 0.4)",
 
@@ -293,6 +311,9 @@ export default function RoomsList() {
                 },
               }}
               sx={{
+                width: "100%",
+                maxWidth: 150,
+
                 color: "#a06afe",
 
                 "& .MuiSelect-select": {
@@ -316,7 +337,9 @@ export default function RoomsList() {
 
           <Button
             sx={{
-              minWidth: 100,
+              height: "40px",
+              maxWidth: 150,
+              width: "100%",
               background: "linear-gradient(55deg, #7340ff, #a674fd)",
               color: "#fff",
               borderRadius: 2,

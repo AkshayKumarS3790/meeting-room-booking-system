@@ -75,7 +75,7 @@ export default function BookingForm({
   const required_capacity = watch("required_capacity");
 
   const { data: users } = useGetUsersQuery();
-  const { data: bookings } = useGetBookingsQuery({});
+  const { data: bookings } = useGetBookingsQuery();
 
   const [createBooking, { isLoading }] = useCreateBookingMutation();
 
@@ -361,6 +361,11 @@ export default function BookingForm({
               },
             },
 
+            "& input::-webkit-calendar-picker-indicator": {
+              filter: "invert(1)",
+              cursor: "pointer",
+            },
+
             "& .MuiFormHelperText-root.Mui-error": {
               color: "#ff8a80",
               fontSize: "0.75rem",
@@ -419,6 +424,11 @@ export default function BookingForm({
                 },
               },
 
+              "& input::-webkit-calendar-picker-indicator": {
+                filter: "invert(1)",
+                cursor: "pointer",
+              },
+
               "& .MuiFormHelperText-root.Mui-error": {
                 color: "#ff8a80",
                 fontSize: "0.75rem",
@@ -470,6 +480,11 @@ export default function BookingForm({
                   borderColor: "#7c4dff",
                   borderWidth: "2px",
                 },
+              },
+
+              "& input::-webkit-calendar-picker-indicator": {
+                filter: "invert(1)",
+                cursor: "pointer",
               },
 
               "& .MuiFormHelperText-root.Mui-error": {

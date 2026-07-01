@@ -31,7 +31,7 @@ import {
 } from "../redux/api";
 
 import { useState, useEffect } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+// import { useDebounce } from "@/hooks/useDebounce";
 
 import EditBookingForm from "./EditBookingForm";
 
@@ -53,23 +53,12 @@ export default function BookingList() {
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
-  const debouncedSearch = useDebounce(search, 500);
+  // const debouncedSearch = useDebounce(search, 500);
 
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
-  const { data, isLoading, error } = useGetBookingsQuery(
-    {
-      page,
-      limit: itemsPerPage,
-      search: debouncedSearch || undefined,
-      room_name: selectedRoom !== "all" ? selectedRoom : undefined,
-      only_active: false,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const { data, isLoading, error } = useGetBookingsQuery();
 
   const bookings = data || [];
 
@@ -77,10 +66,28 @@ export default function BookingList() {
 
   const activeBookings = bookings.filter((b: Booking) => {
     const end = new Date(b.end_date_time);
-    const isActive = end > now;
 
-    if (!isActive) return false;
+    // active check
+    if (end <= now) return false;
 
+    // search filter (VERY IMPORTANT)
+    if (search) {
+      const searchLower = search.toLowerCase();
+
+      const matches =
+        b.booked_by.toLowerCase().includes(searchLower) ||
+        b.room_name.toLowerCase().includes(searchLower) ||
+        b.purpose.toLowerCase().includes(searchLower);
+
+      if (!matches) return false;
+    }
+
+    // room filter
+    if (selectedRoom !== "all" && b.room_name !== selectedRoom) {
+      return false;
+    }
+
+    // date filter
     if (selectedDate) {
       const bookingDate = b.start_date_time.split(" ")[0];
       if (bookingDate !== selectedDate) return false;
@@ -282,6 +289,11 @@ export default function BookingList() {
                     borderColor: "#7c4dff",
                     boxShadow: "0 0 6px rgba(124,77,255,0.4)",
                   },
+                },
+
+                "& input::-webkit-calendar-picker-indicator": {
+                  filter: "invert(1)",
+                  cursor: "pointer",
                 },
 
                 "& input::placeholder": {

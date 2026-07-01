@@ -2,7 +2,15 @@
 
 "use client";
 
-import { Box, Card, TextField, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Card,
+  TextField,
+  Typography,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,31 +21,80 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleLogin = async () => {
+    let hasError = false;
+
+    // reset errors
+    setEmailError("");
+    setPasswordError("");
+
+    // Email validation
+    if (!email) {
+      setEmailError("Email is required");
+      hasError = true;
+    } else if (!validateEmail(email)) {
+      setEmailError("Enter a valid email (e.g. user@gmail.com)");
+      hasError = true;
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     try {
+      setLoading(true);
+
       const res = await fetch("http://127.0.0.1:8000/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         localStorage.setItem("token", data.access_token);
-        router.push("/");
+
+        setSnackbarMsg("Login successful");
+        setSeverity("success");
+        setSnackbarOpen(true);
+
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
       } else {
-        console.log("LOGIN ERROR:", data);
-        alert(JSON.stringify(data));
+        setSnackbarMsg(data.detail || "Invalid credentials");
+        setSeverity("error");
+        setSnackbarOpen(true);
       }
     } catch (err) {
-      console.error("ERROR DETAILS:", err);
-      alert(err instanceof Error ? err.message : "Unknown error");
+      console.log(err);
+      setSnackbarMsg("Something went wrong");
+      setSeverity("error");
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,7 +122,7 @@ export default function LoginPage() {
           variant="h5"
           fontWeight="bold"
           textAlign="center"
-          sx={{ mb: 2, color: "#7c4dff" }}
+          sx={{ mb: 1, color: "#7c4dff" }}
         >
           MeetSpace Login
         </Typography>
@@ -76,8 +133,11 @@ export default function LoginPage() {
           label="Email"
           variant="outlined"
           margin="normal"
+          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          error={!!emailError}
+          helperText={emailError}
           sx={{
             "& .MuiOutlinedInput-root": {
               color: "#fff",
@@ -104,8 +164,11 @@ export default function LoginPage() {
           label="Password"
           type="password"
           margin="normal"
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={!!passwordError}
+          helperText={passwordError}
           sx={{
             "& .MuiOutlinedInput-root": {
               color: "#fff",
@@ -131,6 +194,7 @@ export default function LoginPage() {
           fullWidth
           variant="contained"
           onClick={handleLogin}
+          disabled={loading}
           sx={{
             mt: 2,
             py: 1.2,
@@ -142,7 +206,7 @@ export default function LoginPage() {
             },
           }}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </Button>
 
         <Typography
@@ -164,6 +228,21 @@ export default function LoginPage() {
           </Link>
         </Typography>
       </Card>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <Alert severity={severity} variant="filled">
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

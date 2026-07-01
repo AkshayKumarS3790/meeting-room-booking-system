@@ -164,9 +164,6 @@ export default function EditBookingForm({
           inputLabel: { shrink: true },
         }}
         onChange={(e) => setForm({ ...form, date: e.target.value })}
-        // error={isPastDate}
-        // helperText={isPastDate ? "Cannot select a past date" : ""}
-
         sx={{
           mb: 1,
 
@@ -191,6 +188,11 @@ export default function EditBookingForm({
               borderColor: "#7c4dff",
               borderWidth: "2px",
             },
+          },
+
+          "& input::-webkit-calendar-picker-indicator": {
+            filter: "invert(1)",
+            cursor: "pointer",
           },
 
           "& .MuiFormHelperText-root.Mui-error": {
@@ -253,6 +255,11 @@ export default function EditBookingForm({
               },
             },
 
+            "& input::-webkit-calendar-picker-indicator": {
+              filter: "invert(1)",
+              cursor: "pointer",
+            },
+
             "& .MuiFormHelperText-root.Mui-error": {
               color: "#ff8a80",
               fontSize: "0.75rem",
@@ -304,6 +311,11 @@ export default function EditBookingForm({
                 borderColor: "#7c4dff",
                 borderWidth: "2px",
               },
+            },
+
+            "& input::-webkit-calendar-picker-indicator": {
+              filter: "invert(1)",
+              cursor: "pointer",
             },
 
             "& .MuiFormHelperText-root.Mui-error": {
