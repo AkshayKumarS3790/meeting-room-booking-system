@@ -16,7 +16,7 @@ import {
   useCreateBookingMutation,
   useGetUsersQuery,
   useGetBookingsQuery,
-} from "../services/api";
+} from "../redux/api";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";

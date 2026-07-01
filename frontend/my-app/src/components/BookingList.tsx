@@ -28,7 +28,7 @@ import {
   useGetBookingsQuery,
   useDeleteBookingMutation,
   useGetRoomsQuery,
-} from "../services/api";
+} from "../redux/api";
 
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";

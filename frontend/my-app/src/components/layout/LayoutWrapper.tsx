@@ -5,40 +5,44 @@ import { Box } from "@mui/material";
 
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
-
-import { useState } from "react";
+import ParticlesBackground from "@/components/ui/ParticlesBackground";
 
 export default function LayoutWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(true);
-
   return (
-    <Box sx={{ display: "flex" }}>
-      {/* SIDEBAR */}
-      <Sidebar open={open} setOpen={setOpen} />
+    <Box sx={{ position: "relative", minHeight: "100vh" }}>
+      {/* GLOBAL PARTICLES BACKGROUND */}
+      <ParticlesBackground />
 
-      {/* RIGHT SIDE */}
-      <Box sx={{ flexGrow: 1, marginLeft: "60px" }}>
-        {/* TOPBAR */}
-        <Topbar />
+      <Box sx={{ display: "flex", position: "relative", zIndex: 1 }}>
+        {/* SIDEBAR */}
+        <Sidebar />
 
-        {/* CONTENT */}
+        {/* RIGHT SIDE */}
         <Box
           sx={{
-            px: 4,
-            pb: 2,
-            pl: 0,
-            mt: "50px",
-            ml: open ? "150px" : "60px",
+            flexGrow: 1,
+            marginLeft: "60px",
+            marginTop: "60px",
             minHeight: "100vh",
-            background: "#12121c",
-            transition: "margin 0.3s ease",
+            background: "transparent",
           }}
         >
-          {children}
+          {/* TOPBAR */}
+          <Topbar />
+
+          {/* MAIN CONTENT */}
+          <Box
+            sx={{
+              px: 4,
+              py: 3,
+            }}
+          >
+            {children}
+          </Box>
         </Box>
       </Box>
     </Box>

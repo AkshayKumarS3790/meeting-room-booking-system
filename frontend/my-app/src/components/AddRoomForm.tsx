@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
-import { useAddRoomMutation } from "../services/api";
+import { useAddRoomMutation } from "../redux/api";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import { useForm } from "react-hook-form";

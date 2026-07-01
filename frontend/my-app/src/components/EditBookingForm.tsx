@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
-import { Booking, useUpdateBookingMutation } from "../services/api";
+import { Booking, useUpdateBookingMutation } from "../redux/api";
 
 export default function EditBookingForm({
   booking,

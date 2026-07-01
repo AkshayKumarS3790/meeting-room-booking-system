@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
-import { useUpdateRoomMutation, useDeleteRoomMutation } from "../services/api";
-import { Room } from "../services/api";
+import { useUpdateRoomMutation, useDeleteRoomMutation } from "../redux/api";
+import { Room } from "../redux/api";
 import {
   Dialog,
   DialogTitle,

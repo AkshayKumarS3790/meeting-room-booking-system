@@ -60,9 +60,14 @@ export default function Topbar() {
         justifyContent: "space-between",
         px: 2,
         backgroundColor: "#1e1e2f",
-        // borderBottom: "1px solid #2e2e45",
         width: "100%",
-        position: "relative",
+
+        // ✅ FIXED TOPBAR
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1300,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

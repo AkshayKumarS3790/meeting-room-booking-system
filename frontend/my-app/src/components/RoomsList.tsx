@@ -18,7 +18,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-import { useGetRoomsQuery, useGetBookingsQuery, Room } from "@/services/api";
+import { useGetRoomsQuery, useGetBookingsQuery, Room } from "@/redux/api";
 
 import RoomCard from "./RoomCard";
 import AddRoomForm from "./AddRoomForm";

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import BookingForm from "./BookingForm";
 import EditRoomForm from "./EditRoomForm";
-import { Booking } from "@/services/api";
+import { Booking } from "@/redux/api";
 
 export type Room = {
   room_name: string;

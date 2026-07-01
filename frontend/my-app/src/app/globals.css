@@ -96,30 +96,30 @@ a {
 
 /* Calendar background */
 .rbc-calendar {
-  background-color: #2e2e45 !important;
+  background-color: #1e1e2f !important;
   color: #fff !important;
 }
 
 /* Header row (Sun, Mon, etc) */
 .rbc-header {
-  background-color: #2e2e45 !important;
+  background-color: #1e1e2f !important;
   color: #ccc !important;
   border-bottom: 1px solid #989898 !important;
 }
 
 /* Day cells */
 .rbc-day-bg {
-  background-color: #2e2e45 !important;
+  background-color: #1e1e2f !important;
 }
 
 /* Today highlight */
 .rbc-today {
-  background-color: rgba(124, 77, 255, 0.2) !important;
+  background-color: #2e2e45 !important;
 }
 
 /* Outside month days */
 .rbc-off-range-bg {
-  background-color: #383856 !important;
+  background-color: #16162f !important;
 }
 
 .rbc-off-range {
