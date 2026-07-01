@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { color } from "framer-motion";
 
 export default function RegisterPage() {
   const router = useRouter();
