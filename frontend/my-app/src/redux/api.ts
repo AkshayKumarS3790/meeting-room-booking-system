@@ -16,16 +16,45 @@ const baseQuery = fetchBaseQuery({
 
 // WRAP BASE QUERY (THIS IS THE KEY FIX)
 const baseQueryWithAuth: typeof baseQuery = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+  let result = await baseQuery(args, api, extraOptions);
 
   // CHECK FOR 401 (TOKEN EXPIRED)
   if (result.error && result.error.status === 401) {
     console.log("Token expired → logging out");
 
-    // Remove token
-    localStorage.removeItem("token");
-    // Redirect
-    window.location.href = "/login";
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    if (!refreshToken) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+      return result;
+    }
+
+    const refreshResult = await baseQuery(
+      {
+        url: "/users/refresh",
+        method: "POST",
+        body: { refresh_token: refreshToken },
+      },
+      api,
+      extraOptions,
+    );
+
+    if (refreshResult.data) {
+      const newToken = (refreshResult.data as { access_token: string })
+        .access_token;
+      localStorage.setItem("token", newToken);
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // Remove token
+      localStorage.removeItem("token");
+
+      // Refresh token
+      localStorage.removeItem("refresh_token");
+
+      // Redirect
+      window.location.href = "/login";
+    }
   }
   return result;
 };

@@ -41,6 +41,7 @@ export default function Topbar() {
   const handleLogout = () => {
     handleClose();
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     window.location.href = "/login";
   };
 

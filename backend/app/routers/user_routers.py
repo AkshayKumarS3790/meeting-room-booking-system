@@ -2,7 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.auth.auth import verify_password, create_access_token
+from app.auth.auth import (
+    verify_password, 
+    create_access_token,
+    create_refresh_token, 
+    decode_token
+)
 from pydantic import BaseModel
 from app.schemas.user_schema import UserCreate, UserResponse
 from app.crud import user_crud
@@ -19,6 +24,9 @@ router = APIRouter(prefix="/users", tags=["Users"])
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
 
 #Register User
 @router.post("/register")
@@ -43,10 +51,47 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     if not verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
-    token = create_access_token({"user_id": user.user_id, "user_name": user.user_name})
+    access_token = create_access_token(
+        {
+            "user_id": user.user_id,
+            "user_name": user.user_name,
+        }
+    )
 
-    return {"access_token": token}
+    refresh_token = create_refresh_token(
+        {
+            "user_id": user.user_id,
+            "user_name": user.user_name,
+        }
+    )
 
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
+
+#Token refresh
+@router.post("/refresh")
+def refresh_access_token(data: RefreshTokenRequest):
+
+    payload = decode_token(data.refresh_token)
+
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid refresh token",
+        )
+
+    access_token = create_access_token(
+        {
+            "user_id": payload["user_id"],
+            "user_name": payload["user_name"],
+        }
+    )
+
+    return {
+        "access_token": access_token
+    }
 
 # Create user
 @router.post("/", response_model=UserResponse)
