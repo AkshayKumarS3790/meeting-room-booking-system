@@ -1,6 +1,6 @@
 # This file handles all booking related requests
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.booking_schema import BookingCreate, BookingResponse
@@ -11,7 +11,6 @@ from datetime import datetime
 
 from app.exc_handling.booking_exceptions import (
     booking_not_found,
-    no_bookings_available,
     booking_deleted_successfully,
 )
 
@@ -26,6 +25,9 @@ def create_booking(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
     ):
+
+    booking.user_id = current_user.user_id
+
     return booking_crud.create_booking(db, booking)
 
 
@@ -85,10 +87,20 @@ def update_booking(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
     ):
-    updated_booking = booking_crud.update_booking(db, booking_id, booking)
+    existing_booking = booking_crud.get_booking(db, booking_id)
 
-    if not updated_booking:
+    if not existing_booking:
         raise booking_not_found(booking_id)
+    
+    if existing_booking["user_id"] != current_user.user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only edit your own bookings"
+        )
+
+    booking.user_id = current_user.user_id
+
+    updated_booking = booking_crud.update_booking(db, booking_id, booking)
 
     return updated_booking
 
@@ -100,7 +112,17 @@ def delete_booking(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
     ):
-    booking = booking_crud.delete_booking(db, booking_id)
-    if not booking:
+    existing_booking = booking_crud.get_booking(db, booking_id)
+
+    if not existing_booking:
         raise booking_not_found(booking_id)
+    
+    if existing_booking["user_id"] != current_user.user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only delete your own bookings"
+        )
+    
+    booking_crud.delete_booking(db, booking_id)
+    
     return booking_deleted_successfully()

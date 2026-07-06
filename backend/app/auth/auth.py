@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from passlib.context import CryptContext
+from zoneinfo import ZoneInfo
 
 from app.core.config import settings
 
@@ -26,10 +27,23 @@ def create_access_token(data: dict):
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
+    current_ist = datetime.now(ZoneInfo("Asia/Kolkata"))
+
+    #Convert to IST (Only for printing)
+    ist_expire = expire.astimezone(ZoneInfo("Asia/Kolkata"))
+
     to_encode.update({"exp": expire})
 
-    print("Token Expiry Time:", expire)
+    print(
+        "Token Creation Time(IST): ",
+        current_ist.strftime("%d-%m-%Y %I:%M %p")
+    )
 
+    print(
+        "Token Expiry Time(IST): ", 
+        ist_expire.strftime("%d-%m-%Y %I:%M %p")
+    )
+    
     print("Expiry minutes:", settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
