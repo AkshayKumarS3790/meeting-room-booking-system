@@ -1,26 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Snackbar,
-  Alert,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
-  TextField,
-  Pagination,
-  CircularProgress,
-  Skeleton,
-} from "@mui/material";
+import { Box, Typography, Skeleton, Card, CardContent } from "@mui/material";
 
 import {
   Booking,
@@ -31,11 +11,16 @@ import {
 } from "../redux/api";
 
 import { useState, useEffect } from "react";
-// import { useDebounce } from "@/hooks/useDebounce";
 
 import EditBookingForm from "./EditBookingForm";
 
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import AppSnackbar from "./common/AppSnackbar";
+import AppDialog from "./common/AppDialog";
+import BookingCard from "./common/BookingCard";
+import BookingFilters from "./common/BookingFilters";
+import ConfirmDialog from "./common/ConfirmDialog";
+import PageError from "./common/PageError";
+import PaginationFooter from "./common/PaginationFooter";
 
 export default function BookingList() {
   const [search, setSearch] = useState("");
@@ -53,8 +38,6 @@ export default function BookingList() {
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
-  // const debouncedSearch = useDebounce(search, 500);
-
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
@@ -63,6 +46,8 @@ export default function BookingList() {
   const bookings = data || [];
 
   const now = new Date();
+
+  const currentUserId = Number(localStorage.getItem("user_id") ?? 0);
 
   const activeBookings = bookings.filter((b: Booking) => {
     const end = new Date(b.end_date_time);
@@ -105,7 +90,7 @@ export default function BookingList() {
 
   const { data: rooms } = useGetRoomsQuery({});
 
-  const [deleteBooking, { isLoading: isDeleting }] = useDeleteBookingMutation();
+  const [deleteBooking] = useDeleteBookingMutation();
 
   useEffect(() => {
     setPage(1);
@@ -117,8 +102,6 @@ export default function BookingList() {
     startIndex,
     startIndex + itemsPerPage,
   );
-
-  const todayStr = new Date().toISOString().split("T")[0];
 
   if (isLoading) {
     return (
@@ -142,20 +125,7 @@ export default function BookingList() {
   }
 
   if (error) {
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height="60vh"
-      >
-        <ErrorOutlineIcon sx={{ color: "#ff6b6b", fontSize: 40, mb: 1 }} />
-        <Typography sx={{ color: "#ff6b6b" }}>
-          Error loading bookings
-        </Typography>
-      </Box>
-    );
+    return <PageError message="Error Loading bookings" />;
   }
 
   function BookingSkeleton() {
@@ -192,244 +162,38 @@ export default function BookingList() {
       >
         <Typography
           variant="h5"
-          sx={{ fontWeight: "bold", mt: 1, color: "#fff" }}
+          sx={{
+            fontWeight: "bold",
+            mt: 1,
+            color: "#fff",
+          }}
         >
           Bookings
         </Typography>
 
-        <Box display="flex" gap={2} alignItems="center" sx={{ mb: 1 }}>
-          <Box
-            display="flex"
-            gap={2}
-            alignItems="center"
-            flexWrap="wrap"
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "1fr 1fr",
-                md: "1fr 1fr 1fr 1fr auto",
-              },
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <TextField
-              placeholder="Search User"
-              size="small"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              sx={{
-                width: 150,
+        <BookingFilters
+          search={search}
+          setSearch={setSearch}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          selectedRoom={selectedRoom}
+          setSelectedRoom={setSelectedRoom}
+          roomOptions={[
+            { value: "all", label: "All Rooms" },
 
-                background: "rgba(84, 66, 134, 0.4)",
-
-                borderRadius: 2,
-
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  color: "#fff",
-
-                  "& fieldset": {
-                    borderColor: "transparent",
-                  },
-
-                  "&:hover fieldset": {
-                    borderColor: "#7c4dff",
-                  },
-
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#7c4dff",
-                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
-                  },
-                },
-
-                "& input::placeholder": {
-                  color: "#bbb",
-                  opacity: 1,
-                },
-
-                "& input": {
-                  color: "#fff",
-                  padding: "8px 12px",
-                },
-              }}
-            />
-
-            <TextField
-              type="date"
-              size="small"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              inputProps={{
-                min: todayStr,
-              }}
-              sx={{
-                width: 150,
-                background: "rgba(84, 66, 134, 0.4)",
-                borderRadius: 2,
-
-                "& fieldset": {
-                  borderColor: "#995eff",
-                },
-
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  color: "#fff",
-
-                  "& fieldset": {
-                    borderColor: "transparent",
-                  },
-
-                  "&:hover fieldset": {
-                    borderColor: "#7c4dff",
-                  },
-
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#7c4dff",
-                    boxShadow: "0 0 6px rgba(124,77,255,0.4)",
-                  },
-                },
-
-                "& input::-webkit-calendar-picker-indicator": {
-                  filter: "invert(1)",
-                  cursor: "pointer",
-                },
-
-                "& input::placeholder": {
-                  color: "#bbb",
-                  opacity: 1,
-                },
-
-                "& .MuiInputLabel-root": {
-                  color: "#d4bbff",
-                },
-
-                "& input": {
-                  color: "#bbb",
-                  padding: "8px 12px",
-                },
-              }}
-            />
-
-            <FormControl
-              variant="outlined"
-              sx={{
-                minWidth: 100,
-
-                "& .MuiOutlinedInput-root": {
-                  height: 40,
-                  display: "flex",
-                  alignItems: "center",
-                  borderRadius: 2,
-
-                  "& fieldset": {
-                    borderColor: "#995eff",
-                  },
-
-                  "&:hover fieldset": {
-                    borderColor: "#995eff",
-                  },
-
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#995eff",
-                    borderWidth: 2,
-                  },
-                },
-
-                "& .MuiInputLabel-root": {
-                  color: "#d4bbff",
-                },
-
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#995eff",
-                },
-
-                "& .MuiSelect-select": {
-                  paddingTop: "10px",
-                  paddingBottom: "10px",
-                  color: "#e0ceff",
-                },
-
-                "& .MuiSelect-select.Mui-focused": {
-                  color: "#e0ceff",
-                },
-
-                "& .MuiSvgIcon-root": {
-                  color: "#995eff",
-                },
-
-                "& .Mui-focused .MuiSelect-select": {
-                  color: "#e0ceff",
-                },
-              }}
-            >
-              <InputLabel>Select Room</InputLabel>
-
-              <Select
-                value={selectedRoom}
-                label="Select Room"
-                onChange={(e) => setSelectedRoom(e.target.value)}
-                MenuProps={{
-                  disableScrollLock: true,
-
-                  PaperProps: {
-                    sx: {
-                      backgroundColor: "#2e2e45",
-                      color: "#fff",
-                      borderRadius: 2,
-                      height: 400,
-                    },
-                  },
-                }}
-                sx={{
-                  color: "#a06afe",
-
-                  "& .MuiSelect-select": {
-                    color: "#e0ceff",
-                  },
-
-                  "& .MuiSvgIcon-root": {
-                    color: "#a06afe",
-                  },
-                }}
-              >
-                <MenuItem value="all">All Rooms</MenuItem>
-
-                {Array.isArray(rooms) &&
-                  rooms.map((room: Room) => (
-                    <MenuItem key={room.room_name} value={room.room_name}>
-                      {room.room_name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-
-            <Button
-              variant="contained"
-              onClick={() => {
-                setSearch("");
-                setSelectedRoom("all");
-                setSelectedDate("");
-              }}
-              sx={{
-                height: "40px",
-                borderRadius: 2,
-                border: "1px solid #995eff",
-                color: "#fff",
-                textTransform: "none",
-                background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-                padding: "6px 14px",
-
-                "&:hover": {
-                  background: "linear-gradient(55deg, #7340ff, #a674fd)",
-                },
-              }}
-            >
-              Clear
-            </Button>
-          </Box>
-        </Box>
+            ...(Array.isArray(rooms)
+              ? rooms.map((room) => ({
+                  value: room.room_name,
+                  label: room.room_name,
+                }))
+              : []),
+          ]}
+          clearFilters={() => {
+            setSearch("");
+            setSelectedRoom("all");
+            setSelectedDate("");
+          }}
+        />
       </Box>
 
       {activeBookings.length === 0 ? (
@@ -453,279 +217,85 @@ export default function BookingList() {
           }}
         >
           {paginatedBookings.map((b: Booking) => (
-            <Card
+            <BookingCard
               key={b.booking_id}
-              sx={{
-                backgroundColor: "#2e2e45",
-                color: "#fff",
-                borderRadius: 3,
-                transition: "0.3s",
-
-                "&:hover": {
-                  backgroundColor: "#26263a",
-                  transform: "translateY(-4px)",
-                },
+              booking={b}
+              canModify={b.user_id === currentUserId}
+              onEdit={() => {
+                setSelectedBooking(b);
+                setOpenEditDialog(true);
               }}
-            >
-              <CardContent
-                sx={{
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography>
-                  <b>Room:</b> {b.room_name}
-                </Typography>
-
-                <Typography>
-                  <b>Booked By:</b> {b.booked_by}
-                </Typography>
-
-                <Typography>
-                  <b>Purpose:</b> {b.purpose}
-                </Typography>
-
-                <Typography>
-                  <b>Time:</b> {b.start_date_time} → {b.end_date_time}
-                </Typography>
-
-                <Typography>
-                  <b>Capacity:</b> {b.required_capacity}
-                </Typography>
-
-                <Box display="flex" gap={2}>
-                  <Button
-                    className="secondary-btn"
-                    sx={{
-                      mt: 2,
-                      background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-                      color: "#fff",
-                      borderRadius: 2,
-                      textTransform: "none",
-                      padding: "6px 14px",
-
-                      "&:hover": {
-                        background: "linear-gradient(55deg, #7340ff, #a674fd)",
-                      },
-                    }}
-                    onClick={() => {
-                      setSelectedBooking(b);
-                      setOpenEditDialog(true);
-                    }}
-                  >
-                    Edit Booking
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    sx={{
-                      mt: 2,
-                      borderRadius: 2,
-                      borderColor: "#fc5d5d",
-                      textTransform: "none",
-                      color: "#fc5d5d",
-                    }}
-                    onClick={() => {
-                      setSelectedId(b.booking_id);
-                      setOpenDialog(true);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
+              onDelete={() => {
+                setSelectedId(b.booking_id);
+                setOpenDialog(true);
+              }}
+            />
           ))}
         </Box>
       )}
-      <Dialog
+
+      <ConfirmDialog
         open={openDialog}
+        title="Delete Booking"
+        message="Are you sure you want to delete this booking?"
         onClose={() => setOpenDialog(false)}
-        disableScrollLock
-        PaperProps={{
-          sx: {
-            backgroundColor: "#1e1e2f",
-            color: "#fff",
-            borderRadius: 3,
-            padding: 2,
-          },
+        onConfirm={async () => {
+          try {
+            if (selectedId) {
+              await deleteBooking(selectedId).unwrap();
+            }
+
+            setMsg("Booking deleted successfully");
+            setSeverity("success");
+            setOpenSnackbar(true);
+
+            setOpenDialog(false);
+          } catch {
+            setMsg("Delete failed");
+            setSeverity("error");
+            setOpenSnackbar(true);
+          }
         }}
-      >
-        <DialogTitle sx={{ fontWeight: "bold" }}>Delete Booking</DialogTitle>
+      />
 
-        <DialogContent>
-          <Typography>Are you sure you want to delete this booking?</Typography>
-        </DialogContent>
-
-        <DialogActions>
-          <Button
-            sx={{
-              background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-              color: "#fff",
-              borderRadius: 2,
-              textTransform: "none",
-              padding: "6px 14px",
-
-              "&:hover": {
-                background: "linear-gradient(55deg, #7340ff, #a674fd)",
-              },
-            }}
-            onClick={() => setOpenDialog(false)}
-          >
-            Cancel
-          </Button>
-
-          <Button
-            color="error"
-            variant="outlined"
-            disabled={isDeleting}
-            sx={{
-              borderRadius: 2,
-              color: "#fc5d5d",
-              textTransform: "none",
-              borderColor: "#fc5d5d",
-            }}
-            onClick={async () => {
-              try {
-                if (selectedId) {
-                  await deleteBooking(selectedId).unwrap();
-                }
-
-                setOpenDialog(false);
-
-                setMsg("Booking deleted successfully");
-                setSeverity("success");
-                setOpenSnackbar(true);
-
-                setOpenDialog(false);
-              } catch {
-                setMsg("Delete failed");
-                setSeverity("error");
-                setOpenSnackbar(true);
-              }
-            }}
-          >
-            {isDeleting ? (
-              <CircularProgress size={20} sx={{ color: "#fff" }} />
-            ) : (
-              "Delete"
-            )}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
+      <AppDialog
         open={openEditDialog}
         onClose={() => setOpenEditDialog(false)}
-        disableScrollLock
+        title="Edit Booking"
         fullWidth
-        PaperProps={{
-          sx: {
-            backgroundColor: "#1e1e2f",
-            color: "#fff",
-            borderRadius: 3,
-            padding: 2,
-          },
-        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold" }}>Edit Booking</DialogTitle>
+        {selectedBooking && (
+          <EditBookingForm
+            booking={selectedBooking}
+            onClose={() => setOpenEditDialog(false)}
+            room_capacity={
+              Array.isArray(rooms)
+                ? rooms.find(
+                    (r: Room) => r.room_name === selectedBooking.room_name,
+                  )?.capacity || 0
+                : 0
+            }
+          />
+        )}
+      </AppDialog>
 
-        <DialogContent>
-          {selectedBooking && (
-            <EditBookingForm
-              booking={selectedBooking}
-              onClose={() => setOpenEditDialog(false)}
-              room_capacity={
-                Array.isArray(rooms)
-                  ? rooms.find(
-                      (r: Room) => r.room_name === selectedBooking.room_name,
-                    )?.capacity || 0
-                  : 0
-              }
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <PaginationFooter
+        page={page}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
+        setPage={setPage}
+        setItemsPerPage={setItemsPerPage}
+        totalItems={totalItems}
+        startItem={startItem}
+        endItem={endItem}
+      />
 
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mt={2}
-        width="100%"
-      >
-        {/* Left side - Per page filtering part */}
-        <Box display="flex" alignItems="center" gap={2}>
-          <Typography sx={{ color: "#ccc", fontSize: 14 }}>Per page</Typography>
-
-          <Select
-            size="small"
-            value={itemsPerPage}
-            onChange={(e) => {
-              setItemsPerPage(Number(e.target.value));
-              setPage(1);
-            }}
-            sx={{
-              color: "#fff",
-              backgroundColor: "#2e2e45",
-              borderRadius: 2,
-            }}
-          >
-            {[3, 6, 9, 12, 15, 18].map((num) => (
-              <MenuItem key={num} value={num}>
-                {num}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <Typography sx={{ color: "#ccc", fontSize: 14 }}>
-            {totalItems === 0
-              ? "0–0 of 0"
-              : `${startItem}–${endItem} of ${totalItems}`}
-          </Typography>
-        </Box>
-
-        {/* Right side - Pagination part */}
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={(e, value) => {
-            setPage(value);
-            window.scrollTo({ behavior: "smooth" });
-          }}
-          siblingCount={1}
-          boundaryCount={1}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              color: "#ccc",
-              borderRadius: "12%",
-            },
-
-            "& .MuiPaginationItem-root.Mui-selected": {
-              backgroundColor: "#995eff",
-              color: "#fff",
-              fontWeight: "bold",
-            },
-
-            "& .MuiPaginationItem-root.Mui-selected:hover": {
-              backgroundColor: "#7340ff",
-            },
-          }}
-        />
-      </Box>
-
-      <Snackbar
+      <AppSnackbar
         open={openSnackbar}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        message={msg}
+        severity={severity}
         onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity={severity} variant="filled">
-          {msg}
-        </Alert>
-      </Snackbar>
+      />
     </>
   );
 }

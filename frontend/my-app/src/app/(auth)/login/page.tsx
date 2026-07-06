@@ -78,6 +78,10 @@ export default function LoginPage() {
 
         localStorage.setItem("refresh_token", data.refresh_token);
 
+        localStorage.setItem("user_id", String(data.user_id));
+
+        localStorage.setItem("user_name", data.user_name);
+
         setSnackbarMsg("Login successful");
         setSeverity("success");
         setSnackbarOpen(true);

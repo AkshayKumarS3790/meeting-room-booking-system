@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
+
+import { Box } from "@mui/material";
+
+import DarkTextField from "./common/DarkTextField";
+import PrimaryButton from "./common/PrimaryButton";
+import AppSnackbar from "./common/AppSnackbar";
+
 import { Booking, useUpdateBookingMutation } from "../redux/api";
 
 export default function EditBookingForm({
@@ -48,13 +54,6 @@ export default function EditBookingForm({
 
   const isPastTime = newStart !== null && newStart <= now;
 
-  // const today = new Date();
-  // today.setHours(0, 0, 0, 0);
-
-  // const selectedDate = form.date ? new Date(form.date) : null;
-
-  // const isPastDate = selectedDate !== null && selectedDate < today;
-
   const handleSubmit = async () => {
     if (capacityExceeded) {
       setMsg(
@@ -64,13 +63,6 @@ export default function EditBookingForm({
       setOpenSnackbar(true);
       return;
     }
-
-    // if (isPastDate) {
-    //   setMsg("Cannot select a past date");
-    //   setSeverity("error");
-    //   setOpenSnackbar(true);
-    //   return;
-    // }
 
     if (isPastTime) {
       setMsg("Cannot book room for past time");
@@ -115,44 +107,19 @@ export default function EditBookingForm({
 
   return (
     <Box display="flex" flexDirection="column" gap={2} mt={2}>
-      <TextField
+      <DarkTextField
         label="Purpose"
         required
         value={form.purpose}
-        sx={{
-          mb: 1,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
-        onChange={(e) => setForm({ ...form, purpose: e.target.value })}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            purpose: e.target.value,
+          })
+        }
       />
 
-      <TextField
+      <DarkTextField
         label="Date"
         type="date"
         required
@@ -163,55 +130,17 @@ export default function EditBookingForm({
         slotProps={{
           inputLabel: { shrink: true },
         }}
-        onChange={(e) => setForm({ ...form, date: e.target.value })}
         sx={{
-          mb: 1,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&.Mui-error fieldset": {
-              borderColor: "#ff6b6b",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
           "& input::-webkit-calendar-picker-indicator": {
             filter: "invert(1)",
             cursor: "pointer",
           },
-
-          "& .MuiFormHelperText-root.Mui-error": {
-            color: "#ff8a80",
-            fontSize: "0.75rem",
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
         }}
+        onChange={(e) => setForm({ ...form, date: e.target.value })}
       />
 
       <Box display="flex" gap={2}>
-        <TextField
+        <DarkTextField
           label="Start Time"
           type="time"
           required
@@ -230,52 +159,14 @@ export default function EditBookingForm({
                 : ""
           }
           sx={{
-            mb: 1,
-
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-                borderWidth: "2px",
-              },
-            },
-
             "& input::-webkit-calendar-picker-indicator": {
               filter: "invert(1)",
               cursor: "pointer",
             },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
-            },
           }}
         />
 
-        <TextField
+        <DarkTextField
           label="End Time"
           type="time"
           required
@@ -290,93 +181,18 @@ export default function EditBookingForm({
             isInvalidTimeRange ? "End time must be greater than start time" : ""
           }
           sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-                borderWidth: "2px",
-              },
-            },
-
             "& input::-webkit-calendar-picker-indicator": {
               filter: "invert(1)",
               cursor: "pointer",
-            },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
             },
           }}
         />
       </Box>
 
-      <TextField
+      <DarkTextField
         label="Capacity"
         required
         value={form.required_capacity}
-        sx={{
-          mb: 1,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&.Mui-error fieldset": {
-              borderColor: "#ff6b6b",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiFormHelperText-root.Mui-error": {
-            color: "#ff8a80",
-            fontSize: "0.75rem",
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
         onChange={(e) =>
           setForm({
             ...form,
@@ -391,44 +207,23 @@ export default function EditBookingForm({
         }
       />
 
-      <Button
-        variant="contained"
+      <PrimaryButton
         onClick={handleSubmit}
         disabled={isLoading}
         sx={{
-          background: "linear-gradient(55deg, #7340ff, #a674fd)",
-          color: "#fff",
-          borderRadius: 2,
-          textTransform: "none",
           alignSelf: "flex-start",
-
-          padding: "6px 16px",
-
-          transition: "0.3s ease",
-
-          "&:hover": {
-            background: "linear-gradient(55deg, #7340ff, #a674fd)",
-          },
-
-          "&.Mui-disabled": {
-            background: "#444",
-            color: "#999",
-          },
+          px: 2,
         }}
       >
         {isLoading ? "Updating..." : "Update Booking"}
-      </Button>
+      </PrimaryButton>
 
-      <Snackbar
+      <AppSnackbar
         open={openSnackbar}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        message={msg}
+        severity={severity}
         onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity={severity} variant="filled">
-          {msg}
-        </Alert>
-      </Snackbar>
+      />
     </Box>
   );
 }

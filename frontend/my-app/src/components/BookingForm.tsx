@@ -1,27 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import {
-  useCreateBookingMutation,
-  useGetUsersQuery,
-  useGetBookingsQuery,
-} from "../redux/api";
+import { Box } from "@mui/material";
+
+import DarkTextField from "@/components/common/DarkTextField";
+import PrimaryButton from "@/components/common/PrimaryButton";
+import AppSnackbar from "@/components/common/AppSnackbar";
+
+import { useCreateBookingMutation, useGetBookingsQuery } from "../redux/api";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormHelperText } from "@mui/material";
 
 export default function BookingForm({
   room_name,
@@ -37,12 +27,6 @@ export default function BookingForm({
   };
 
   const bookingSchema = z.object({
-    user_id: z.coerce
-      .number({
-        invalid_type_error: "User is required",
-      })
-      .min(1, "User is required"),
-
     purpose: z.string().min(1, "Purpose is required"),
     date: z.string().min(1, "Date is required"),
     start_time: z.string().min(1, "Start time is required"),
@@ -74,7 +58,10 @@ export default function BookingForm({
   const end_time = watch("end_time");
   const required_capacity = watch("required_capacity");
 
-  const { data: users } = useGetUsersQuery();
+  const currentUserId = Number(localStorage.getItem("user_id"));
+
+  const currentUserName = localStorage.getItem("user_name") || "";
+
   const { data: bookings } = useGetBookingsQuery();
 
   const [createBooking, { isLoading }] = useCreateBookingMutation();
@@ -137,7 +124,7 @@ export default function BookingForm({
       const end_date_time = `${data.date} ${data.end_time}`;
 
       await createBooking({
-        user_id: data.user_id,
+        user_id: currentUserId,
         purpose: data.purpose,
         required_capacity: data.required_capacity,
         room_name,
@@ -162,167 +149,30 @@ export default function BookingForm({
   return (
     <Box mt={2}>
       <form onSubmit={handleFormSubmit(handleSubmit)} noValidate>
-        <FormControl
+        <DarkTextField
+          label="User"
           fullWidth
-          error={!!errors.user_id}
+          disabled
+          value={currentUserName}
           sx={{
-            mb: 2,
-
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-              },
-            },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
-            },
-
-            "& .MuiSvgIcon-root": {
-              color: "#aaa",
+            "& .Mui-disabled": {
+              WebkitTextFillColor: "#ccc",
+              color: "#ccc",
+              opacity: 1,
             },
           }}
-        >
-          <InputLabel>Select User</InputLabel>
+        />
 
-          <Select
-            defaultValue=""
-            label="Select User"
-            {...register("user_id", { valueAsNumber: true })}
-            MenuProps={{
-              disableScrollLock: true,
-              disablePortal: true,
-
-              container: document.body,
-
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "left",
-              },
-              transformOrigin: {
-                vertical: "top",
-                horizontal: "left",
-              },
-
-              PaperProps: {
-                sx: {
-                  backgroundColor: "#37374c",
-                  color: "#fff",
-                  borderRadius: 2,
-                  mt: 1,
-                  maxHeight: 350,
-                  minWidth: "100%",
-                  overflowY: "auto",
-
-                  "& .MuiMenuItem-root": {
-                    color: "#fff",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  },
-
-                  "& .MuiMenuItem-root:hover": {
-                    backgroundColor: "#303047",
-                  },
-
-                  "& .MuiMenuItem-root.Mui-selected": {
-                    backgroundColor: "#7c4dff",
-                    color: "#fff",
-                  },
-                },
-              },
-            }}
-            sx={{
-              borderRadius: 2,
-              "& .MuiSelect-select": {
-                color: "#fff",
-              },
-            }}
-          >
-            {users?.map((user) => (
-              <MenuItem key={user.user_id} value={user.user_id}>
-                {user.user_name}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <FormHelperText>{errors.user_id?.message}</FormHelperText>
-        </FormControl>
-
-        <TextField
+        <DarkTextField
           label="Purpose"
           variant="outlined"
           fullWidth
           {...register("purpose")}
           error={!!errors.purpose}
           helperText={errors.purpose?.message}
-          sx={{
-            mb: 2,
-
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-                borderWidth: "2px",
-              },
-            },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
-            },
-          }}
         />
 
-        <TextField
+        <DarkTextField
           label="Date"
           type="date"
           fullWidth
@@ -336,55 +186,15 @@ export default function BookingForm({
           error={!!errors.date}
           helperText={errors.date?.message}
           sx={{
-            mb: 2,
-
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-                borderWidth: "2px",
-              },
-            },
-
             "& input::-webkit-calendar-picker-indicator": {
               filter: "invert(1)",
               cursor: "pointer",
             },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
-            },
-
-            "& input": { color: "#fff" },
           }}
         />
 
-        <Box display="flex" gap={2} mb={2}>
-          <TextField
+        <Box display="flex" gap={2}>
+          <DarkTextField
             label="Start Time"
             type="time"
             fullWidth
@@ -401,52 +211,14 @@ export default function BookingForm({
                   : "")
             }
             sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "#37374c",
-                color: "#fff",
-                borderRadius: 2,
-
-                "& fieldset": {
-                  borderColor: "#444",
-                },
-
-                "&:hover fieldset": {
-                  borderColor: "#7c4dff",
-                },
-
-                "&.Mui-error fieldset": {
-                  borderColor: "#ff6b6b",
-                },
-
-                "&.Mui-focused fieldset": {
-                  borderColor: "#7c4dff",
-                  borderWidth: "2px",
-                },
-              },
-
               "& input::-webkit-calendar-picker-indicator": {
                 filter: "invert(1)",
                 cursor: "pointer",
               },
-
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#ff8a80",
-                fontSize: "0.75rem",
-              },
-
-              "& .MuiInputLabel-root": {
-                color: "#aaa",
-              },
-
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#b388ff",
-              },
-
-              "& input": { color: "#fff" },
             }}
           />
 
-          <TextField
+          <DarkTextField
             label="End Time"
             type="time"
             fullWidth
@@ -459,51 +231,15 @@ export default function BookingForm({
               (isInvalidTimeRange ? "End time must be after start time" : "")
             }
             sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "#37374c",
-                color: "#fff",
-                borderRadius: 2,
-
-                "& fieldset": {
-                  borderColor: "#444",
-                },
-
-                "&:hover fieldset": {
-                  borderColor: "#7c4dff",
-                },
-
-                "&.Mui-error fieldset": {
-                  borderColor: "#ff6b6b",
-                },
-
-                "&.Mui-focused fieldset": {
-                  borderColor: "#7c4dff",
-                  borderWidth: "2px",
-                },
-              },
-
               "& input::-webkit-calendar-picker-indicator": {
                 filter: "invert(1)",
                 cursor: "pointer",
-              },
-
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#ff8a80",
-                fontSize: "0.75rem",
-              },
-
-              "& .MuiInputLabel-root": {
-                color: "#aaa",
-              },
-
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#b388ff",
               },
             }}
           />
         </Box>
 
-        <TextField
+        <DarkTextField
           label="Capacity"
           fullWidth
           {...register("required_capacity", { valueAsNumber: true })}
@@ -514,81 +250,23 @@ export default function BookingForm({
               ? `Room ${room_name} cannot accomodate more than ${room_capacity} people`
               : "")
           }
-          sx={{
-            mb: 2,
-
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#37374c",
-              color: "#fff",
-              borderRadius: 2,
-
-              "& fieldset": {
-                borderColor: "#444",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-
-              "&.Mui-error fieldset": {
-                borderColor: "#ff6b6b",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-                borderWidth: "2px",
-              },
-            },
-
-            "& .MuiFormHelperText-root.Mui-error": {
-              color: "#ff8a80",
-              fontSize: "0.75rem",
-            },
-
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#b388ff",
-            },
-          }}
         />
 
-        <Button
+        <PrimaryButton
           type="submit"
           // disabled={!isFormValid || isLoading}
           disabled={isLoading}
-          sx={{
-            background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-            color: "#fff",
-            borderRadius: 2,
-            textTransform: "none",
-
-            "&:hover": {
-              background: "linear-gradient(55deg, #7340ff, #a674fd)",
-            },
-
-            "&.Mui-disabled": {
-              background: "#444",
-              color: "#aaa",
-            },
-          }}
         >
           {isLoading ? "Booking..." : "Confirm Booking"}
-        </Button>
+        </PrimaryButton>
       </form>
 
-      <Snackbar
+      <AppSnackbar
         open={openSnackbar}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        message={snackbarMsg}
+        severity={severity}
         onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity={severity} variant="filled">
-          {snackbarMsg}
-        </Alert>
-      </Snackbar>
+      />
     </Box>
   );
 }

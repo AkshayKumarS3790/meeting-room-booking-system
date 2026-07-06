@@ -118,6 +118,12 @@ type RoomFilterParams = {
   end_date_time?: string;
 };
 
+type CurrentUser = {
+  user_id: number;
+  user_name: string;
+  email: string;
+};
+
 // type BookingFilterParams = {
 //   search?: string;
 //   room_name?: string;
@@ -166,6 +172,12 @@ export const api = createApi({
 
     getUsers: builder.query<User[], void>({
       query: () => "users/",
+    }),
+
+    getCurrentUser: builder.query<CurrentUser, void>({
+      query: () => ({
+        url: "/users/me",
+      }),
     }),
 
     createBooking: builder.mutation<BookingResponse, BookingInput>({

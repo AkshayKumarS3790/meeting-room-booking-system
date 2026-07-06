@@ -23,9 +23,6 @@ export default function Home() {
   const bookings =
     bookingsData && Array.isArray(bookingsData) ? bookingsData : [];
 
-  console.log("RAW bookingsData:", bookingsData);
-  console.log("Bookings Data:", bookingsData);
-
   const totalRooms = rooms.length + 1;
   const totalBookings = bookings.length;
   const now = new Date();

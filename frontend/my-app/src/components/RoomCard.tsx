@@ -1,19 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import BookingForm from "./BookingForm";
 import EditRoomForm from "./EditRoomForm";
 import { Booking } from "@/redux/api";
+
+import PrimaryButton from "@/components/common/PrimaryButton";
+import SecondaryButton from "./common/SecondaryButton";
+import AppDialog from "@/components/common/AppDialog";
 
 export type Room = {
   room_name: string;
@@ -98,94 +93,50 @@ export default function RoomCard({
         <Typography>Capacity: {room.capacity}</Typography>
         <Typography>Location: {room.location}</Typography>
 
-        <Button
-          // className="primary-btn"
+        <PrimaryButton
           sx={{
             mt: 2,
-            background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-            color: "#fff",
-            borderRadius: 2,
-            textTransform: "none",
             padding: "6px 14px",
-
-            "&:hover": {
-              background: "linear-gradient(55deg, #7340ff, #a674fd)",
-            },
           }}
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => setShowForm(true)}
         >
           Book Room
-        </Button>
+        </PrimaryButton>
 
-        <Button
+        <SecondaryButton
           sx={{
             mt: 2,
             ml: 2,
-            border: "1px solid #d1b3ff",
-            color: "#d1b3ff",
-            borderRadius: 2,
-            textTransform: "none",
-
-            "&:hover": {
-              borderColor: "#b388ff",
-              color: "#b388ff",
-              backgroundColor: "rgba(179,136,255,0.1)",
-            },
           }}
           onClick={() => setOpenEdit(true)}
         >
           Edit Room
-        </Button>
+        </SecondaryButton>
 
-        <Dialog
+        <AppDialog
           open={showForm}
           onClose={() => setShowForm(false)}
+          title={`Book ${room.room_name}`}
           fullWidth
-          disableScrollLock
-          PaperProps={{
-            sx: {
-              backgroundColor: "#1e1e2f",
-              color: "#fff",
-              borderRadius: 3,
-              padding: 2,
-            },
-          }}
         >
-          <DialogTitle sx={{ fontWeight: "bold" }}>
-            Book {room.room_name}
-          </DialogTitle>
-          <DialogContent>
-            <BookingForm
-              room_name={room.room_name}
-              room_capacity={room.capacity}
-              onSuccess={() => setShowForm(false)}
-            />
-          </DialogContent>
-        </Dialog>
+          <BookingForm
+            room_name={room.room_name}
+            room_capacity={room.capacity}
+            onSuccess={() => setShowForm(false)}
+          />
+        </AppDialog>
 
-        <Dialog
+        <AppDialog
           open={openEdit}
           onClose={() => setOpenEdit(false)}
-          disableScrollLock
-          PaperProps={{
-            sx: {
-              backgroundColor: "#1e1e2f",
-              color: "#fff",
-              borderRadius: 3,
-              padding: 2,
-            },
-          }}
+          title="Edit Room"
         >
-          <DialogTitle sx={{ fontWeight: "bold" }}>Edit Room</DialogTitle>
-
-          <DialogContent>
-            <EditRoomForm
-              room={room}
-              onClose={() => setOpenEdit(false)}
-              onSuccess={onAction}
-            />
-          </DialogContent>
-        </Dialog>
+          <EditRoomForm
+            room={room}
+            onClose={() => setOpenEdit(false)}
+            onSuccess={onAction}
+          />
+        </AppDialog>
       </CardContent>
     </Card>
   );

@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useUpdateRoomMutation, useDeleteRoomMutation } from "../redux/api";
 import { Room } from "../redux/api";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-} from "@mui/material";
+
+import ConfirmDialog from "./common/ConfirmDialog";
+import DangerButton from "./common/DangerButton";
+import DarkTextField from "./common/DarkTextField";
+import PrimaryButton from "./common/PrimaryButton";
 
 export default function EditRoomForm({
   room,
@@ -28,8 +26,7 @@ export default function EditRoomForm({
 
   const [updateRoom, { isLoading }] = useUpdateRoomMutation();
 
-  const [deleteRoom, deleteState] = useDeleteRoomMutation();
-  const isDeleting = deleteState.isLoading;
+  const [deleteRoom, { isLoading: isDeleting }] = useDeleteRoomMutation();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -75,7 +72,7 @@ export default function EditRoomForm({
 
   return (
     <Box mt={2}>
-      <TextField
+      <DarkTextField
         label="Room Name"
         fullWidth
         disabled
@@ -83,209 +80,73 @@ export default function EditRoomForm({
         sx={{
           mb: 3,
 
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
           "& .Mui-disabled": {
             WebkitTextFillColor: "#ccc",
             color: "#ccc",
             opacity: 1,
           },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
         }}
       />
-      <TextField
+      <DarkTextField
         label="Capacity"
         fullWidth
         required
         value={form.capacity}
-        onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
-        sx={{
-          mb: 3,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            capacity: Number(e.target.value),
+          })
+        }
+        sx={{ mb: 3 }}
       />
-      <TextField
+      <DarkTextField
         label="Location"
         fullWidth
         required
         value={form.location}
-        onChange={(e) => setForm({ ...form, location: e.target.value })}
-        sx={{
-          mb: 2,
-
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#37374c",
-            color: "#fff",
-            borderRadius: 2,
-
-            "& fieldset": {
-              borderColor: "#444",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#7c4dff",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#7c4dff",
-              borderWidth: "2px",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#aaa",
-          },
-
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "#b388ff",
-          },
-        }}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            location: e.target.value,
+          })
+        }
       />
-
       <Box display="flex" gap={2} mt={1}>
-        <Button
-          variant="contained"
+        <PrimaryButton
           fullWidth
           disabled={!isValid || isLoading}
           onClick={handleSubmit}
-          sx={{
-            background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-            color: "#fff",
-            borderRadius: 2,
-            textTransform: "none",
-            padding: "6px 14px",
-
-            "&:hover": {
-              background: "linear-gradient(55deg, #7340ff, #a674fd)",
-            },
-          }}
         >
           {isLoading ? "Updating..." : "Update Room"}
-        </Button>
+        </PrimaryButton>
 
-        <Button
-          variant="outlined"
+        <DangerButton
           fullWidth
-          color="error"
           disabled={isDeleting}
           onClick={() => setConfirmDelete(true)}
-          sx={{
-            borderRadius: 2,
-            borderColor: "#fc5d5d",
-            textTransform: "none",
-            color: "#fc5d5d",
-          }}
         >
           {isDeleting ? "Deleting..." : "Delete Room"}
-        </Button>
+        </DangerButton>
       </Box>
 
-      <Dialog
+      <ConfirmDialog
         open={confirmDelete}
-        disableScrollLock
-        PaperProps={{
-          sx: {
-            backgroundColor: "#1e1e2f",
-            color: "#fff",
-            borderRadius: 3,
-            padding: 2,
-          },
-        }}
+        title="Delete Room"
+        message="Are you sure you want to delete this room?"
         onClose={() => setConfirmDelete(false)}
+        onConfirm={handleDelete}
       >
-        <DialogTitle sx={{ fontWeight: "bold" }}>Delete Room</DialogTitle>
-
-        <DialogContent>
-          <Typography>Are you sure you want to delete this room?</Typography>
-
-          <Typography sx={{ color: "#fc5d5d", fontStyle: "italic" }}>
-            All bookings for this room will also be deleted.
-          </Typography>
-        </DialogContent>
-
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmDelete(false)}
-            sx={{
-              background: "linear-gradient(55deg, #7e4fff, #ad7eff)",
-              color: "#fff",
-              borderRadius: 2,
-              textTransform: "none",
-              padding: "6px 14px",
-
-              "&:hover": {
-                background: "linear-gradient(55deg, #7340ff, #a674fd)",
-              },
-            }}
-          >
-            Cancel
-          </Button>
-
-          <Button
-            color="error"
-            variant="outlined"
-            sx={{
-              borderRadius: 2,
-              borderColor: "#fc5d5d",
-              textTransform: "none",
-              color: "#fc5d5d",
-            }}
-            onClick={handleDelete}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Typography
+          sx={{
+            color: "#fc5d5d",
+            fontStyle: "italic",
+            mt: 1,
+          }}
+        >
+          All bookings for this room will also be deleted.
+        </Typography>
+      </ConfirmDialog>
     </Box>
   );
 }

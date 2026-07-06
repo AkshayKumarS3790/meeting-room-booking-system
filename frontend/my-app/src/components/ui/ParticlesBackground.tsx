@@ -4,8 +4,8 @@ import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 
 export default function ParticlesBackground() {
-  const particlesInit = async (engine: any) => {
-    await loadSlim(engine);
+  const particlesInit = async (engine: unknown) => {
+    await loadSlim(engine as never);
   };
 
   return (
@@ -14,17 +14,17 @@ export default function ParticlesBackground() {
       options={{
         fullScreen: { enable: true, zIndex: 0 },
         particles: {
-          number: { value: 30 },
+          number: { value: 25 },
           size: { value: 2 },
-          move: { enable: true, speed: 0.4 },
+          move: { enable: true, speed: 0.5 },
           links: {
             enable: true,
-            distance: 120,
-            color: "#7c4dff",
+            distance: 100,
+            color: "#a280ff",
             opacity: 0.2,
           },
-          color: { value: "#7c4dff" },
-          opacity: { value: 0.3 },
+          color: { value: "#a280ff" },
+          opacity: { value: 0.5 },
         },
       }}
       style={{
