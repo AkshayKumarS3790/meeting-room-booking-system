@@ -9,7 +9,6 @@ export default function SearchField(props: TextFieldProps) {
       {...props}
       sx={{
         width: "100%",
-        maxWidth: 150,
 
         background: "rgba(84, 66, 134, 0.4)",
 

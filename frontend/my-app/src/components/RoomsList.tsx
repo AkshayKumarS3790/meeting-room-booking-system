@@ -20,12 +20,15 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 export default function RoomsList() {
   const [roomSearch, setRoomSearch] = useState("");
-  const [capacitySearch, setCapacitySearch] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("all");
 
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
 
   const debouncedSearch = useDebounce(roomSearch, 500);
+
+  const searchValue = debouncedSearch.trim();
+
+  const isCapacitySearch = searchValue !== "" && !isNaN(Number(searchValue));
 
   const { data: bookingsData } = useGetBookingsQuery();
   const bookings = bookingsData || [];
@@ -35,22 +38,19 @@ export default function RoomsList() {
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const { data: allRoomsData } = useGetRoomsQuery({});
 
-  const { data, error, isLoading } = useGetRoomsQuery(
-    {
-      page,
-      limit: itemsPerPage,
-      search: debouncedSearch || undefined,
-      required_capacity: capacitySearch ? Number(capacitySearch) : undefined,
-      location: selectedLocation !== "all" ? selectedLocation : undefined,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const { data, error, isLoading } = useGetRoomsQuery({
+    page,
+    limit: itemsPerPage,
+    search: !isCapacitySearch ? searchValue || undefined : undefined,
+
+    required_capacity: isCapacitySearch ? Number(searchValue) : undefined,
+
+    location: selectedLocation !== "all" ? selectedLocation : undefined,
+  });
 
   const rooms = Array.isArray(data) ? data : [];
   const totalItems = rooms.length;
@@ -69,6 +69,15 @@ export default function RoomsList() {
   useEffect(() => {
     setPage(1);
   }, [roomSearch, selectedLocation]);
+
+  useEffect(() => {
+    console.log("Page Changed: ", page);
+    console.log("Items Per Page: ", itemsPerPage);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page, itemsPerPage]);
 
   const startIndex = (page - 1) * itemsPerPage;
 
@@ -103,8 +112,6 @@ export default function RoomsList() {
         <RoomFilters
           roomSearch={roomSearch}
           setRoomSearch={setRoomSearch}
-          capacitySearch={capacitySearch}
-          setCapacitySearch={setCapacitySearch}
           selectedLocation={selectedLocation}
           setSelectedLocation={setSelectedLocation}
           locationOptions={[
@@ -118,6 +125,11 @@ export default function RoomsList() {
               label: loc,
             })),
           ]}
+          clearFilters={() => {
+            setRoomSearch("");
+            setSelectedLocation("all");
+            setPage(1);
+          }}
           onAddRoom={() => setOpenRoomDialog(true)}
         />
       </Box>
@@ -126,14 +138,10 @@ export default function RoomsList() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr", //mobile
-              sm: "1fr 1fr", //tablet
-              md: "1fr 1fr 1fr", //desktop
-            },
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
             gap: 3,
+            justifyContent: "start",
             alignItems: "start",
-            minHeight: "400px",
           }}
         >
           {paginatedRooms.map((room: Room) => (

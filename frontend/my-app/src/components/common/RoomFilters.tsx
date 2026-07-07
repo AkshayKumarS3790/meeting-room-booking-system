@@ -5,13 +5,11 @@ import { Box } from "@mui/material";
 import SearchField from "./SearchField";
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
+import SecondaryButton from "./SecondaryButton";
 
 type Props = {
   roomSearch: string;
   setRoomSearch: (value: string) => void;
-
-  capacitySearch: string;
-  setCapacitySearch: (value: string) => void;
 
   selectedLocation: string;
   setSelectedLocation: (value: string) => void;
@@ -22,17 +20,18 @@ type Props = {
   }[];
 
   onAddRoom: () => void;
+
+  clearFilters: () => void;
 };
 
 export default function RoomFilters({
   roomSearch,
   setRoomSearch,
-  capacitySearch,
-  setCapacitySearch,
   selectedLocation,
   setSelectedLocation,
   locationOptions,
   onAddRoom,
+  clearFilters,
 }: Props) {
   return (
     <Box
@@ -41,22 +40,17 @@ export default function RoomFilters({
         gridTemplateColumns: {
           xs: "1fr",
           sm: "1fr 1fr",
-          md: "1fr 1fr 1fr auto",
+          md: "2fr 1.5fr auto",
         },
         gap: 2,
         alignItems: "center",
       }}
     >
       <SearchField
-        placeholder="Search rooms"
+        placeholder="Search rooms/capacity"
         value={roomSearch}
         onChange={(e) => setRoomSearch(e.target.value)}
-      />
-
-      <SearchField
-        placeholder="Search capacity"
-        value={capacitySearch}
-        onChange={(e) => setCapacitySearch(e.target.value)}
+        sx={{ maxWidth: 200 }}
       />
 
       <FilterSelect
@@ -66,7 +60,11 @@ export default function RoomFilters({
         options={locationOptions}
       />
 
-      <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
+      <Box display="flex" gap={1}>
+        <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
+
+        <SecondaryButton onClick={clearFilters}>Clear</SecondaryButton>
+      </Box>
     </Box>
   );
 }

@@ -78,7 +78,7 @@ export default function CalendarPage() {
 
     return {
       style: {
-        backgroundColor: color + "40",
+        backgroundColor: color + "60",
         border: `1.5px solid ${color}`,
         color: "#d9d9d9",
         borderRadius: "6px",

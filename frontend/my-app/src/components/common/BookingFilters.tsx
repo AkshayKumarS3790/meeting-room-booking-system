@@ -49,6 +49,7 @@ export default function BookingFilters({
         placeholder="Search User"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        sx={{ maxWidth: 150 }}
       />
 
       <SearchField
@@ -56,6 +57,7 @@ export default function BookingFilters({
         value={selectedDate}
         onChange={(e) => setSelectedDate(e.target.value)}
         sx={{
+          maxWidth: 150,
           "& input::-webkit-calendar-picker-indicator": {
             filter: "invert(1)",
             cursor: "pointer",

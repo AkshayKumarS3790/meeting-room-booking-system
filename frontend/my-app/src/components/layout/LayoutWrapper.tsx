@@ -27,7 +27,7 @@ export default function LayoutWrapper({
             flexGrow: 1,
             marginLeft: "60px",
             marginTop: "60px",
-            minHeight: "100vh",
+            minHeight: "calc(100vh - 60px)",
             background: "transparent",
           }}
         >

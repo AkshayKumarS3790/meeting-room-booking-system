@@ -39,7 +39,7 @@ export default function BookingList() {
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const { data, isLoading, error } = useGetBookingsQuery();
 
@@ -96,6 +96,13 @@ export default function BookingList() {
     setPage(1);
   }, [search, selectedRoom, selectedDate]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page, itemsPerPage]);
+
   const startIndex = (page - 1) * itemsPerPage;
 
   const paginatedBookings = activeBookings.slice(
@@ -108,13 +115,8 @@ export default function BookingList() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "1fr 1fr",
-            md: "1fr 1fr 1fr",
-          },
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: 3,
-          minHeight: "500px",
         }}
       >
         {[...Array(6)].map((_, i) => (
@@ -205,15 +207,10 @@ export default function BookingList() {
           mt={2}
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "1fr 1fr",
-              md: "1fr 1fr 1fr",
-            },
+            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 370px))",
             gap: 3,
             alignItems: "start",
-
-            minHeight: "500px",
+            justifyContent: "start",
           }}
         >
           {paginatedBookings.map((b: Booking) => (

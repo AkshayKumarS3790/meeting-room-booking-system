@@ -23,7 +23,7 @@ export default function Home() {
   const bookings =
     bookingsData && Array.isArray(bookingsData) ? bookingsData : [];
 
-  const totalRooms = rooms.length + 1;
+  const totalRooms = rooms.length;
   const totalBookings = bookings.length;
   const now = new Date();
 
@@ -68,7 +68,7 @@ export default function Home() {
               <TypeAnimation
                 sequence={[
                   "MeetSpace",
-                  2500,
+                  3000,
                   "Smart Scheduling",
                   2500,
                   "Seamless Booking",

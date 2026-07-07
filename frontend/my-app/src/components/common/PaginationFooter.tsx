@@ -41,13 +41,21 @@ export default function PaginationFooter({
             setItemsPerPage(Number(e.target.value));
             setPage(1);
           }}
+          MenuProps={{
+            disableScrollLock: true,
+          }}
           sx={{
+            width: 65,
             color: "#fff",
             backgroundColor: "#2e2e45",
             borderRadius: 2,
+
+            "& .MuiSvgIcon-root": { color: "#fff" },
+
+            "& .MuiSvgIcon-select": { textAlign: "center" },
           }}
         >
-          {[3, 6, 9, 12, 15, 18].map((num) => (
+          {[5, 10, 15, 20].map((num) => (
             <MenuItem key={num} value={num}>
               {num}
             </MenuItem>
@@ -57,7 +65,7 @@ export default function PaginationFooter({
         <Typography>
           {totalItems === 0
             ? "0-0 of 0"
-            : `${startItem}–${endItem} of ${totalItems + 1}`}
+            : `${startItem}–${endItem} of ${totalItems}`}
         </Typography>
       </Box>
 
@@ -66,9 +74,6 @@ export default function PaginationFooter({
         page={page}
         onChange={(_, value) => {
           setPage(value);
-          window.scrollTo({
-            behavior: "smooth",
-          });
         }}
         siblingCount={1}
         boundaryCount={1}

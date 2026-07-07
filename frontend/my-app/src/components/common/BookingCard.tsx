@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
 
 import PrimaryButton from "./PrimaryButton";
 import DangerButton from "./DangerButton";
@@ -41,37 +41,67 @@ export default function BookingCard({
           flexDirection: "column",
         }}
       >
-        <Typography>
+        <Typography mb={0.5}>
           <b>Room:</b> {booking.room_name}
         </Typography>
-
-        <Typography>
+        <Typography mb={0.5}>
           <b>Booked By:</b> {booking.booked_by}
         </Typography>
-
-        <Typography>
+        <Typography mb={0.5}>
           <b>Purpose:</b> {booking.purpose}
         </Typography>
-
-        <Typography>
+        <Typography mb={0.5}>
           <b>Time:</b> {booking.start_date_time} → {booking.end_date_time}
         </Typography>
-
         <Typography>
           <b>Capacity:</b> {booking.required_capacity}
         </Typography>
 
-        {canModify && (
-          <Box display="flex" gap={2}>
-            <PrimaryButton sx={{ mt: 2 }} onClick={onEdit}>
-              Edit Booking
-            </PrimaryButton>
+        <Box display="flex" gap={2}>
+          <Tooltip
+            title={!canModify ? "You can only modify your own bookings" : ""}
+          >
+            <span>
+              <PrimaryButton
+                sx={{
+                  mt: 2,
 
-            <DangerButton sx={{ mt: 2 }} onClick={onDelete}>
-              Delete
-            </DangerButton>
-          </Box>
-        )}
+                  "&.Mui-disabled": {
+                    background: "#6f42c1",
+                    color: "#d8c7ff",
+                    opacity: 0.6,
+                  },
+                }}
+                onClick={onEdit}
+                disabled={!canModify}
+              >
+                Edit Booking
+              </PrimaryButton>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            title={!canModify ? "You can only modify your own bookings" : ""}
+          >
+            <span>
+              <DangerButton
+                sx={{
+                  mt: 2,
+
+                  "&.Mui-disabled": {
+                    borderColor: "#ff6b6b",
+                    color: "#ff8a8a",
+                    opacity: 0.6,
+                  },
+                }}
+                onClick={onDelete}
+                disabled={!canModify}
+              >
+                Delete
+              </DangerButton>
+            </span>
+          </Tooltip>
+        </Box>
       </CardContent>
     </Card>
   );

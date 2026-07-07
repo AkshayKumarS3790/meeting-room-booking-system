@@ -124,15 +124,6 @@ type CurrentUser = {
   email: string;
 };
 
-// type BookingFilterParams = {
-//   search?: string;
-//   room_name?: string;
-//   user_id?: number;
-//   start_date_time?: string;
-//   end_date_time?: string;
-//   only_active?: boolean;
-// };
-
 export type RoomResponse = Room[] | { message: string };
 
 export const api = createApi({

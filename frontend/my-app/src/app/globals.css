@@ -17,15 +17,22 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background: #12121c;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2e2e45;
+  background: #535375;
+  border-radius: 999px;
+  border: 2px solid #12121c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6d6d9c;
 }
 
 /* Reset */
@@ -103,8 +110,8 @@ a {
 /* Header row (Sun, Mon, etc) */
 .rbc-header {
   background-color: #1e1e2f !important;
-  color: #ccc !important;
-  border-bottom: 1px solid #989898 !important;
+  color: #fff !important;
+  border-bottom: 1px solid #fff !important;
 }
 
 /* Day cells */
@@ -128,7 +135,7 @@ a {
 
 /* Date numbers */
 .rbc-date-cell {
-  color: #ddd !important;
+  color: #fff !important;
 }
 
 /* Grid lines */
