@@ -26,7 +26,7 @@ def create_booking(
     db: Session = Depends(get_db)
     ):
 
-    booking.user_id = current_user.user_id
+    booking.user_id = current_user["user_id"]
 
     return booking_crud.create_booking(db, booking)
 
@@ -35,6 +35,8 @@ def create_booking(
 # This API returns all bookings or shows a message if none exist
 @router.get("/", response_model=List[BookingResponse])
 def get_bookings(
+    page: int = 1,
+    limit: int = 10,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
     ):
@@ -92,13 +94,13 @@ def update_booking(
     if not existing_booking:
         raise booking_not_found(booking_id)
     
-    if existing_booking["user_id"] != current_user.user_id:
+    if existing_booking["user_id"] != current_user["user_id"]:
         raise HTTPException(
             status_code=403,
             detail="You can only edit your own bookings"
         )
 
-    booking.user_id = current_user.user_id
+    booking.user_id = current_user["user_id"]
 
     updated_booking = booking_crud.update_booking(db, booking_id, booking)
 
@@ -117,7 +119,7 @@ def delete_booking(
     if not existing_booking:
         raise booking_not_found(booking_id)
     
-    if existing_booking["user_id"] != current_user.user_id:
+    if existing_booking["user_id"] != current_user["user_id"]:
         raise HTTPException(
             status_code=403,
             detail="You can only delete your own bookings"

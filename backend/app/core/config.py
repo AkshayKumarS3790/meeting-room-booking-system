@@ -12,6 +12,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-
-# Implement refresh token
