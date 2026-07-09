@@ -9,9 +9,14 @@ import AppSnackbar from "@/components/common/AppSnackbar";
 
 import { useCreateBookingMutation, useGetBookingsQuery } from "../redux/api";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+
+import { datePickerFieldSx } from "@/utils/datePickerFieldSx";
 
 export default function BookingForm({
   room_name,
@@ -43,6 +48,7 @@ export default function BookingForm({
 
   const {
     register,
+    control,
     handleSubmit: handleFormSubmit,
     formState: { errors },
     watch,
@@ -144,7 +150,7 @@ export default function BookingForm({
     }
   };
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  //const todayStr = new Date().toISOString().split("T")[0];
 
   return (
     <Box mt={2}>
@@ -164,6 +170,7 @@ export default function BookingForm({
         />
 
         <DarkTextField
+          required
           label="Purpose"
           variant="outlined"
           fullWidth
@@ -172,74 +179,91 @@ export default function BookingForm({
           helperText={errors.purpose?.message}
         />
 
-        <DarkTextField
-          label="Date"
-          type="date"
-          fullWidth
-          inputProps={{
-            min: todayStr,
-          }}
-          slotProps={{
-            inputLabel: { shrink: true },
-          }}
-          {...register("date")}
-          error={!!errors.date}
-          helperText={errors.date?.message}
-          sx={{
-            "& input::-webkit-calendar-picker-indicator": {
-              filter: "invert(1)",
-              cursor: "pointer",
-            },
-          }}
+        <Controller
+          name="date"
+          control={control}
+          render={({ field }) => (
+            <DatePicker
+              label="Date"
+              value={field.value ? dayjs(field.value) : null}
+              onChange={(value) =>
+                field.onChange(value ? value.format("YYYY-MM-DD") : "")
+              }
+              disablePast
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  required: true,
+                  error: !!errors.date,
+                  helperText: errors.date?.message,
+                  sx: datePickerFieldSx,
+                },
+              }}
+            />
+          )}
         />
 
         <Box display="flex" gap={2}>
-          <DarkTextField
-            label="Start Time"
-            type="time"
-            fullWidth
-            {...register("start_time")}
-            slotProps={{ inputLabel: { shrink: true } }}
-            error={!!errors.start_time || isPastTime || isInvalidTimeRange}
-            helperText={
-              // hasSubmitted &&
-              errors.start_time?.message ||
-              (isPastTime
-                ? "Cannot select past time"
-                : isInvalidTimeRange
-                  ? "Start time must be before end time"
-                  : "")
-            }
-            sx={{
-              "& input::-webkit-calendar-picker-indicator": {
-                filter: "invert(1)",
-                cursor: "pointer",
-              },
-            }}
+          <Controller
+            name="start_time"
+            control={control}
+            render={({ field }) => (
+              <TimePicker
+                label="Start Time"
+                value={field.value ? dayjs(`2026-01-01T${field.value}`) : null}
+                onChange={(value) => {
+                  field.onChange(value ? value.format("HH:mm") : "");
+                }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    required: true,
+                    error:
+                      !!errors.start_time || isPastTime || isInvalidTimeRange,
+                    helperText:
+                      errors.start_time?.message ||
+                      (isPastTime
+                        ? "Cannot select past time"
+                        : isInvalidTimeRange
+                          ? "Start time must be before end time"
+                          : ""),
+                    sx: datePickerFieldSx,
+                  },
+                }}
+              />
+            )}
           />
 
-          <DarkTextField
-            label="End Time"
-            type="time"
-            fullWidth
-            slotProps={{ inputLabel: { shrink: true } }}
-            {...register("end_time")}
-            error={!!errors.end_time || isInvalidTimeRange}
-            helperText={
-              // hasSubmitted &&
-              errors.end_time?.message ||
-              (isInvalidTimeRange ? "End time must be after start time" : "")
-            }
-            sx={{
-              "& input::-webkit-calendar-picker-indicator": {
-                filter: "invert(1)",
-                cursor: "pointer",
-              },
-            }}
+          <Controller
+            name="end_time"
+            control={control}
+            render={({ field }) => (
+              <TimePicker
+                label="End Time"
+                value={field.value ? dayjs(`2026-01-01T${field.value}`) : null}
+                onChange={(value) => {
+                  field.onChange(value ? value.format("HH:mm") : "");
+                }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    required: true,
+                    error: !!errors.end_time || isInvalidTimeRange,
+                    helperText:
+                      errors.end_time?.message ||
+                      (isInvalidTimeRange
+                        ? "End time must be after start time"
+                        : ""),
+                    sx: datePickerFieldSx,
+                  },
+                }}
+              />
+            )}
           />
         </Box>
 
         <DarkTextField
+          required
           label="Capacity"
           fullWidth
           {...register("required_capacity", { valueAsNumber: true })}

@@ -39,7 +39,7 @@ export default function BookingList() {
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   const { data, isLoading, error } = useGetBookingsQuery();
 
@@ -81,7 +81,20 @@ export default function BookingList() {
     return true;
   });
 
-  const totalItems = activeBookings.length;
+  const sortedBookings = [...activeBookings].sort((a, b) => {
+    const aIsMine = a.user_id === currentUserId;
+    const bIsMine = b.user_id === currentUserId;
+
+    if (aIsMine && !bIsMine) return -1;
+    if (!aIsMine && bIsMine) return 1;
+
+    return (
+      new Date(a.start_date_time).getTime() -
+      new Date(b.start_date_time).getTime()
+    );
+  });
+
+  const totalItems = sortedBookings.length;
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -105,7 +118,7 @@ export default function BookingList() {
 
   const startIndex = (page - 1) * itemsPerPage;
 
-  const paginatedBookings = activeBookings.slice(
+  const paginatedBookings = sortedBookings.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
@@ -207,7 +220,7 @@ export default function BookingList() {
           mt={2}
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 370px))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
             gap: 3,
             alignItems: "start",
             justifyContent: "start",
@@ -218,6 +231,7 @@ export default function BookingList() {
               key={b.booking_id}
               booking={b}
               canModify={b.user_id === currentUserId}
+              isMyBooking={b.user_id === currentUserId}
               onEdit={() => {
                 setSelectedBooking(b);
                 setOpenEditDialog(true);
@@ -285,6 +299,7 @@ export default function BookingList() {
         totalItems={totalItems}
         startItem={startItem}
         endItem={endItem}
+        pageSizeOptions={[6, 9, 12, 15]}
       />
 
       <AppSnackbar

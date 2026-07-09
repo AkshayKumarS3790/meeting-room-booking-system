@@ -1,6 +1,13 @@
 "use client";
 
-import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Tooltip,
+  Chip,
+} from "@mui/material";
 
 import PrimaryButton from "./PrimaryButton";
 import DangerButton from "./DangerButton";
@@ -12,6 +19,7 @@ type Props = {
   onEdit: () => void;
   onDelete: () => void;
   canModify?: boolean;
+  isMyBooking?: boolean;
 };
 
 export default function BookingCard({
@@ -19,6 +27,7 @@ export default function BookingCard({
   onEdit,
   onDelete,
   canModify = true,
+  isMyBooking = false,
 }: Props) {
   return (
     <Card
@@ -41,9 +50,24 @@ export default function BookingCard({
           flexDirection: "column",
         }}
       >
-        <Typography mb={0.5}>
-          <b>Room:</b> {booking.room_name}
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography mb={0.5}>
+            <b>Room:</b> {booking.room_name}
+          </Typography>
+
+          {isMyBooking && (
+            <Chip
+              label="My Booking"
+              size="small"
+              sx={{
+                backgroundColor: "#995eff",
+                color: "#fff",
+                fontWeight: 600,
+              }}
+            />
+          )}
+        </Box>
+
         <Typography mb={0.5}>
           <b>Booked By:</b> {booking.booked_by}
         </Typography>

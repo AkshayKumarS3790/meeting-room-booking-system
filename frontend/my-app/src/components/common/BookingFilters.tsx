@@ -34,6 +34,9 @@ export default function BookingFilters({
   roomOptions,
   clearFilters,
 }: Props) {
+  const hasActiveFilters =
+    search.trim() !== "" || selectedDate !== "" || selectedRoom !== "all";
+
   return (
     <Box
       display="grid"
@@ -72,7 +75,19 @@ export default function BookingFilters({
         options={roomOptions}
       />
 
-      <SecondaryButton onClick={clearFilters}>Clear</SecondaryButton>
+      <SecondaryButton
+        onClick={clearFilters}
+        disabled={!hasActiveFilters}
+        sx={{
+          "&.Mui-disabled": {
+            color: "#8e5ae8",
+            borderColor: "#8e5ae8",
+            opacity: 0.4,
+          },
+        }}
+      >
+        Clear
+      </SecondaryButton>
     </Box>
   );
 }

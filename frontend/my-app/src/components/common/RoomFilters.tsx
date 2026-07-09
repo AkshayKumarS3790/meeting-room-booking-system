@@ -33,6 +33,9 @@ export default function RoomFilters({
   onAddRoom,
   clearFilters,
 }: Props) {
+  const hasActiveFilters =
+    roomSearch.trim() !== "" || selectedLocation !== "all";
+
   return (
     <Box
       sx={{
@@ -63,7 +66,19 @@ export default function RoomFilters({
       <Box display="flex" gap={1}>
         <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
 
-        <SecondaryButton onClick={clearFilters}>Clear</SecondaryButton>
+        <SecondaryButton
+          onClick={clearFilters}
+          disabled={!hasActiveFilters}
+          sx={{
+            "&.Mui-disabled": {
+              color: "#8e5ae8",
+              borderColor: "#8e5ae8",
+              opacity: 0.4,
+            },
+          }}
+        >
+          Clear
+        </SecondaryButton>
       </Box>
     </Box>
   );

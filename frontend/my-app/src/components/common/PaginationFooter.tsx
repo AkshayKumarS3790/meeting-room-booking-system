@@ -11,6 +11,7 @@ type Props = {
   totalItems: number;
   startItem: number;
   endItem: number;
+  pageSizeOptions: number[];
 };
 
 export default function PaginationFooter({
@@ -22,6 +23,7 @@ export default function PaginationFooter({
   totalItems,
   startItem,
   endItem,
+  pageSizeOptions,
 }: Props) {
   return (
     <Box
@@ -55,7 +57,7 @@ export default function PaginationFooter({
             "& .MuiSvgIcon-select": { textAlign: "center" },
           }}
         >
-          {[5, 10, 15, 20].map((num) => (
+          {pageSizeOptions.map((num) => (
             <MenuItem key={num} value={num}>
               {num}
             </MenuItem>

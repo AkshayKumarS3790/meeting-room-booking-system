@@ -38,7 +38,7 @@ export default function RoomsList() {
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const { data: allRoomsData } = useGetRoomsQuery({});
 
@@ -138,7 +138,7 @@ export default function RoomsList() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 260px))",
             gap: 3,
             justifyContent: "start",
             alignItems: "start",
@@ -171,6 +171,7 @@ export default function RoomsList() {
         totalItems={totalItems}
         startItem={startItem}
         endItem={endItem}
+        pageSizeOptions={[10, 15, 20, 25]}
       />
 
       <AppDialog

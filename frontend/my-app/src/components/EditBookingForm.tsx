@@ -10,6 +10,10 @@ import AppSnackbar from "./common/AppSnackbar";
 
 import { Booking, useUpdateBookingMutation } from "../redux/api";
 
+import { datePickerFieldSx } from "@/utils/datePickerFieldSx";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+
 export default function EditBookingForm({
   booking,
   onClose,
@@ -103,10 +107,10 @@ export default function EditBookingForm({
     }
   };
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  //const todayStr = new Date().toISOString().split("T")[0];
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} mt={2}>
+    <Box display="flex" flexDirection="column" gap={2} mt={1}>
       <DarkTextField
         label="Purpose"
         required
@@ -119,71 +123,74 @@ export default function EditBookingForm({
         }
       />
 
-      <DarkTextField
+      <DatePicker
         label="Date"
-        type="date"
-        required
-        value={form.date}
-        inputProps={{
-          min: todayStr,
+        value={dayjs(form.date)}
+        disablePast
+        onChange={(value) => {
+          if (value) {
+            setForm({
+              ...form,
+              date: value.format("YYYY-MM-DD"),
+            });
+          }
         }}
         slotProps={{
-          inputLabel: { shrink: true },
-        }}
-        sx={{
-          "& input::-webkit-calendar-picker-indicator": {
-            filter: "invert(1)",
-            cursor: "pointer",
+          textField: {
+            fullWidth: true,
+            required: true,
+            sx: datePickerFieldSx,
           },
         }}
-        onChange={(e) => setForm({ ...form, date: e.target.value })}
       />
 
       <Box display="flex" gap={2}>
-        <DarkTextField
+        <TimePicker
           label="Start Time"
-          type="time"
-          required
-          value={form.start_time}
-          onChange={(e) => setForm({ ...form, start_time: e.target.value })}
-          fullWidth
-          slotProps={{
-            inputLabel: { shrink: true },
+          value={dayjs(`2026-01-01T${form.start_time}`)}
+          onChange={(value) => {
+            if (value) {
+              setForm({
+                ...form,
+                start_time: value.format("HH:mm"),
+              });
+            }
           }}
-          error={isPastTime || isInvalidTimeRange}
-          helperText={
-            isPastTime
-              ? "Cannot select past time"
-              : isInvalidTimeRange
-                ? "Start time must be lesser than end time"
-                : ""
-          }
-          sx={{
-            "& input::-webkit-calendar-picker-indicator": {
-              filter: "invert(1)",
-              cursor: "pointer",
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              required: true,
+              error: isPastTime || isInvalidTimeRange,
+              helperText: isPastTime
+                ? "Cannot select past time"
+                : isInvalidTimeRange
+                  ? "Start time must be lesser than end time"
+                  : "",
+              sx: datePickerFieldSx,
             },
           }}
         />
 
-        <DarkTextField
+        <TimePicker
           label="End Time"
-          type="time"
-          required
-          value={form.end_time}
-          onChange={(e) => setForm({ ...form, end_time: e.target.value })}
-          fullWidth
-          slotProps={{
-            inputLabel: { shrink: true },
+          value={dayjs(`2026-01-01T${form.end_time}`)}
+          onChange={(value) => {
+            if (value) {
+              setForm({
+                ...form,
+                end_time: value.format("HH:mm"),
+              });
+            }
           }}
-          error={isInvalidTimeRange}
-          helperText={
-            isInvalidTimeRange ? "End time must be greater than start time" : ""
-          }
-          sx={{
-            "& input::-webkit-calendar-picker-indicator": {
-              filter: "invert(1)",
-              cursor: "pointer",
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              required: true,
+              error: isInvalidTimeRange,
+              helperText: isInvalidTimeRange
+                ? "End time must be greater than start time"
+                : "",
+              sx: datePickerFieldSx,
             },
           }}
         />

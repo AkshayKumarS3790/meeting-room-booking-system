@@ -109,14 +109,30 @@ a {
 
 /* Header row (Sun, Mon, etc) */
 .rbc-header {
-  background-color: #1e1e2f !important;
+  background-color: #232338 !important;
   color: #fff !important;
-  border-bottom: 1px solid #fff !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  padding: 10px 0 !important;
 }
 
 /* Day cells */
 .rbc-day-bg {
   background-color: #1e1e2f !important;
+}
+
+.calendar-view-day .rbc-day-slot .rbc-event {
+  max-width: 40% !important;
+  margin: 0 auto !important;
+}
+
+.calendar-view-day .rbc-day-slot .rbc-events-container {
+  margin-right: 40px !important;
+}
+
+.calendar-view-week .rbc-day-slot .rbc-event {
+  width: calc(71% - 30px) !important;
+  margin: 0 !important;
 }
 
 /* Today highlight */
@@ -143,7 +159,49 @@ a {
 .rbc-day-bg,
 .rbc-time-content,
 .rbc-time-header-content {
-  border-color: #989898 !important;
+  border-color: #fff !important;
+}
+
+.rbc-time-content {
+  overflow-y: auto;
+}
+
+.rbc-time-slot {
+  min-height: 25px;
+}
+
+.rbc-time-gutter,
+.rbc-time-header-gutter {
+  background: #232338 !important;
+}
+
+/* Remove empty all-day row */
+.rbc-allday-cell {
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Event card */
+.rbc-event {
+  color: #fff !important;
+  border-radius: 6px !important;
+  border: none !important;
+  padding: 2px 4px !important;
+}
+
+.rbc-event-content {
+  background: transparent !important;
+  padding: 2px 4px;
+  color: #fff !important;
+}
+
+.rbc-time-header-content {
+  background: #232338 !important;
+}
+
+.rbc-time-header {
+  border-bottom: 1px solid #fff !important;
 }
 
 /* ================= TOOLBAR ================= */
@@ -199,4 +257,318 @@ a {
 .rbc-event-content {
   background: transparent !important;
   padding: 2px 4px;
+}
+
+/*----- DatePicker Popup -----*/
+
+/* Calendar grid area */
+
+.MuiDayCalendar-root {
+  background-color: #2f2f44 !important;
+}
+
+.MuiDayCalendar-monthContainer {
+  background-color: #2f2f44 !important;
+}
+
+/* Entire calendar layout */
+
+.MuiPickersLayout-root {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersDay-root.Mui-disabled,
+.MuiPickersDay-root.Mui-disabled {
+  color: #666 !important;
+}
+
+/* Week container rows */
+
+.MuiDayCalendar-weekContainer {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersPopper-root .MuiPaper-root {
+  background-color: #2f2f44 !important;
+  color: #fff !important;
+}
+
+/* Header */
+
+.MuiPickersCalendarHeader-root {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersCalendarHeader-label {
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.MuiPickersArrowSwitcher-button,
+.MuiPickersCalendarHeader-switchViewButton {
+  color: #fff !important;
+}
+
+/* Weekday labels */
+
+.MuiDayCalendar-weekDayLabel {
+  color: #aaa !important;
+}
+
+/* Normal day numbers */
+
+.MuiPickersDay-root,
+.MuiPickersDay-dayWithMargin {
+  color: #fff !important;
+}
+
+/* Hover */
+
+.MuiPickersDay-root:hover {
+  background-color: rgba(124, 77, 255, 0.2) !important;
+}
+
+/* Selected day */
+
+.MuiPickersDay-root.Mui-selected {
+  background-color: #7c4dff !important;
+  color: #fff !important;
+}
+
+/* Today's date */
+
+.MuiPickersDay-root.MuiPickersDay-today {
+  border: 1px solid #b388ff !important;
+  color: #fff !important;
+}
+
+/* Today + Selected */
+
+.MuiPickersDay-root.Mui-selected.MuiPickersDay-today {
+  background-color: #7c4dff !important;
+  border: 1px solid #b388ff !important;
+}
+
+/* Previous / Next month disabled dates */
+
+.MuiPickersDay-root.Mui-disabled {
+  color: #666 !important;
+}
+
+/* Action buttons (Today, Clear etc.) */
+
+.MuiPickersActionBar-root {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersActionBar-root button {
+  color: #b388ff !important;
+}
+
+/* Force day text color */
+
+.MuiPickersDay-root *,
+.MuiPickersDay-root span,
+.MuiPickersDay-root button {
+  color: #fff !important;
+}
+
+/* Disabled day text */
+
+.MuiPickersDay-root.Mui-disabled *,
+.MuiPickersDay-root.Mui-disabled span,
+.MuiPickersDay-root.Mui-disabled button {
+  color: #666 !important;
+}
+
+/* Mobile / Responsive DatePicker Toolbar */
+
+.MuiDatePickerToolbar-root {
+  background-color: #2f2f44 !important;
+  color: #fff !important;
+}
+
+/* "SELECT DATE" text */
+
+.MuiDatePickerToolbar-title,
+.MuiPickersToolbarText-root {
+  color: #fff !important;
+}
+
+/* Selected toolbar value
+   Example:
+   Fri, Jul
+   10
+*/
+
+.MuiPickersToolbarText-root.Mui-selected {
+  color: #b388ff !important;
+}
+
+/* Toolbar container */
+
+.MuiPickersLayout-root {
+  background-color: #2f2f44 !important;
+}
+
+.MuiDialog-paper {
+  background-color: #2f2f44 !important;
+  color: #fff !important;
+}
+
+.MuiPickersLayout-contentWrapper {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersToolbarText-root {
+  color: #fff !important;
+}
+
+.MuiPickersToolbarText-root.Mui-selected {
+  color: #b388ff !important;
+}
+
+.MuiPickersLayout-contentWrapper {
+  background-color: #2f2f44 !important;
+}
+
+/* ===== FINAL DATE TEXT OVERRIDE ===== */
+
+.MuiDayCalendar-root button {
+  color: #ffffff !important;
+}
+
+.MuiDayCalendar-root button * {
+  color: #ffffff !important;
+}
+
+/* Disabled dates */
+
+.MuiDayCalendar-root button.Mui-disabled {
+  color: #666666 !important;
+}
+
+.MuiDayCalendar-root button.Mui-disabled * {
+  color: #666666 !important;
+}
+
+/* ----- TimePicker Popup -----*/
+
+/* Time picker popup */
+
+.MuiMultiSectionDigitalClock-root {
+  background-color: #2f2f44 !important;
+  color: white !important;
+}
+
+/* Time items */
+
+.MuiMenuItem-root {
+  color: white !important;
+}
+
+/* Selected time item */
+
+.Mui-selected {
+  background-color: #7c4dff !important;
+  color: white !important;
+}
+
+/* Hovered item */
+
+.MuiMenuItem-root:hover {
+  background-color: rgba(124, 77, 255, 0.2) !important;
+}
+
+/* TimePicker action bar */
+
+.MuiPickersLayout-actionBar {
+  background-color: #2f2f44 !important;
+}
+
+.MuiPickersLayout-actionBar button {
+  color: #b388ff !important;
+}
+
+/* =========================
+   TIME PICKER RESPONSIVE VIEW
+   ========================= */
+
+/* Toolbar */
+
+.MuiTimePickerToolbar-root {
+  background-color: #2f2f44 !important;
+}
+
+/* SELECT TIME text */
+
+.MuiPickersToolbar-root {
+  background-color: #2f2f44 !important;
+  color: #fff !important;
+}
+
+/* Large selected time */
+
+.MuiPickersToolbarText-root {
+  color: #ffffff !important;
+}
+
+/* Active time value */
+
+.MuiPickersToolbarText-root.Mui-selected {
+  color: #b388ff !important;
+}
+
+/* Clock face */
+
+.MuiClock-root {
+  background-color: #2f2f44 !important;
+}
+
+/* Clock numbers */
+
+.MuiClockNumber-root {
+  color: #ffffff !important;
+}
+
+/* Selected clock pointer */
+
+.MuiClock-pin,
+.MuiClockPointer-root,
+.MuiClockPointer-thumb {
+  background-color: #7c4dff !important;
+}
+
+/* AM / PM buttons */
+
+.MuiTimePickerToolbar-ampmSelection {
+  color: #ffffff !important;
+}
+
+.MuiTimePickerToolbar-ampmSelection.Mui-selected {
+  color: #b388ff !important;
+}
+
+/* SELECT TIME label */
+
+.MuiPickersToolbar-title,
+.MuiTimePickerToolbar-title {
+  color: #ffffff !important;
+}
+
+/* Hide TimePicker scrollbars */
+
+.MuiMultiSectionDigitalClockSection-root,
+.MuiMultiSectionDigitalClockSection-root ul,
+.MuiMultiSectionDigitalClockSection-root div {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.MuiMultiSectionDigitalClockSection-root::-webkit-scrollbar,
+.MuiMultiSectionDigitalClockSection-root ul::-webkit-scrollbar,
+.MuiMultiSectionDigitalClockSection-root div::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
 }

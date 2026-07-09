@@ -74,7 +74,7 @@ export default function Home() {
                   "Seamless Booking",
                   2500,
                   "MeetSpace",
-                  2500,
+                  3000,
                 ]}
                 speed={50}
                 repeat={1}
@@ -91,9 +91,9 @@ export default function Home() {
 
         <Grid container spacing={3} mb={5}>
           {[
-            { label: "Rooms", value: totalRooms },
-            { label: "Bookings", value: totalBookings },
-            { label: "Active", value: activeBookings },
+            { label: "Rooms Available", value: totalRooms },
+            { label: "Bookings Made", value: totalBookings },
+            { label: "Active Bookings", value: activeBookings },
           ].map((item, i) => (
             <Grid size={{ xs: 12, sm: 4 }} key={i}>
               <Box

@@ -38,8 +38,15 @@ export default function CalendarPage() {
   }
 
   const generateColor = (name: string) => {
-    const colors = ["#7c4dff", "#00bcd4", "#4caf50", "#ff9800", "#e91e63"];
-
+    const colors = [
+      "#8b5cf6",
+      "#06b6d4",
+      "#22c55e",
+      "#f59e0b",
+      "#ec4899",
+      "#3b82f6",
+      "#14b8a6",
+    ];
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash += name.charCodeAt(i);
@@ -59,45 +66,72 @@ export default function CalendarPage() {
 
   // CREATE EVENTS
   const events = filteredBookings.map((b) => ({
-    title: `${b.room_name} (${b.booked_by})`,
+    title: b.room_name,
     start: new Date(b.start_date_time.replace(" ", "T")),
     end: new Date(b.end_date_time.replace(" ", "T")),
-    resource: b.room_name,
+    resource: {
+      room: b.room_name,
+      bookedBy: b.booked_by,
+      purpose: b.purpose,
+    },
   }));
 
   type CalendarEvent = {
     title: string;
     start: Date;
     end: Date;
-    resource: string;
+    resource: {
+      room: string;
+      bookedBy: string;
+      purpose: string;
+    };
   };
 
   const eventStyleGetter = (event: CalendarEvent) => {
     console.log(event);
-    const color = generateColor(event.resource || "default");
+    const color = generateColor(event.resource.room);
 
     return {
       style: {
-        backgroundColor: color + "60",
-        border: `1.5px solid ${color}`,
+        backgroundColor: color + "90",
+        border: `1px solid ${color}`,
         color: "#d9d9d9",
         borderRadius: "6px",
       },
     };
   };
 
+  function EventComponent({ event }: { event: CalendarEvent }) {
+    return (
+      <Box
+        sx={{
+          overflow: "hidden",
+        }}
+      >
+        <Typography fontSize={12} fontWeight={600} noWrap>
+          {event.title}
+        </Typography>
+
+        <Typography fontSize={9} color="#eee" noWrap>
+          {event.resource.bookedBy}
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Typography
         variant="h5"
-        sx={{ fontWeight: "bold", mt: 1, mb: 1, color: "#fff" }}
+        sx={{ fontWeight: "bold", mb: 1, color: "#fff" }}
       >
         Calendar
       </Typography>
 
       <Box
+        className={`calendar-view-${view}`}
         sx={{
-          height: "75vh",
+          height: "77vh",
           backgroundColor: "#1e1e2f",
           borderRadius: 3,
           p: 2,
@@ -114,6 +148,14 @@ export default function CalendarPage() {
           onView={(newView) => setView(newView)}
           eventPropGetter={eventStyleGetter}
           style={{ height: "100%", color: "#fff" }}
+          components={{
+            event: EventComponent,
+          }}
+          views={[Views.MONTH, Views.WEEK, Views.DAY]}
+          toolbar={true}
+          scrollToTime={
+            new Date(new Date().setHours(new Date().getHours() - 1, 45, 0, 0))
+          }
         />
       </Box>
     </Box>
