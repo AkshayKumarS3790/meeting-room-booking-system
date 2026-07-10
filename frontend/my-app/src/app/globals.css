@@ -273,10 +273,6 @@ a {
 
 /* Entire calendar layout */
 
-.MuiPickersLayout-root {
-  background-color: #2f2f44 !important;
-}
-
 .MuiPickersDay-root.Mui-disabled,
 .MuiPickersDay-root.Mui-disabled {
   color: #666 !important;
@@ -390,8 +386,7 @@ a {
 
 /* "SELECT DATE" text */
 
-.MuiDatePickerToolbar-title,
-.MuiPickersToolbarText-root {
+.MuiDatePickerToolbar-title {
   color: #fff !important;
 }
 
@@ -411,25 +406,17 @@ a {
   background-color: #2f2f44 !important;
 }
 
-.MuiDialog-paper {
-  background-color: #2f2f44 !important;
-  color: #fff !important;
-}
-
 .MuiPickersLayout-contentWrapper {
   background-color: #2f2f44 !important;
+}
+
+.MuiPickersPopper-root .MuiPaper-root {
+  background-color: #2f2f44 !important;
+  color: #fff !important;
 }
 
 .MuiPickersToolbarText-root {
   color: #fff !important;
-}
-
-.MuiPickersToolbarText-root.Mui-selected {
-  color: #b388ff !important;
-}
-
-.MuiPickersLayout-contentWrapper {
-  background-color: #2f2f44 !important;
 }
 
 /* ===== FINAL DATE TEXT OVERRIDE ===== */
@@ -511,12 +498,6 @@ a {
 
 .MuiPickersToolbarText-root {
   color: #ffffff !important;
-}
-
-/* Active time value */
-
-.MuiPickersToolbarText-root.Mui-selected {
-  color: #b388ff !important;
 }
 
 /* Clock face */

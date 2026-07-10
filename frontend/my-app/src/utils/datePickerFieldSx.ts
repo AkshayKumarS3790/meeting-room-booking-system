@@ -1,5 +1,5 @@
 export const datePickerFieldSx = {
-  mb: 1,
+  mb: 2,
   borderRadius: 2,
 
   "& input": {

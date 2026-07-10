@@ -73,7 +73,7 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <Box mt={2}>
+    <Box mt={1}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <DarkTextField
           label="Room Name"

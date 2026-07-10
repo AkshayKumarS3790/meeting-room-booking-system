@@ -153,7 +153,7 @@ export default function BookingForm({
   //const todayStr = new Date().toISOString().split("T")[0];
 
   return (
-    <Box mt={2}>
+    <Box mt={1}>
       <form onSubmit={handleFormSubmit(handleSubmit)} noValidate>
         <DarkTextField
           label="User"

@@ -7,7 +7,7 @@ export default function DarkTextField(props: TextFieldProps) {
     <TextField
       {...props}
       sx={{
-        mb: 1,
+        mb: 2,
 
         "& .MuiOutlinedInput-root": {
           backgroundColor: "#37374c",
