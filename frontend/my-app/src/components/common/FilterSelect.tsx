@@ -86,6 +86,9 @@ export default function FilterSelect({
               backgroundColor: "#2e2e45",
               color: "#fff",
               borderRadius: 2,
+
+              maxHeight: 370,
+              overflowY: "auto",
             },
           },
         }}

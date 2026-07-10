@@ -18,14 +18,48 @@ export default function AppSnackbar({
   return (
     <Snackbar
       open={open}
-      autoHideDuration={3000}
+      autoHideDuration={5000}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "center",
       }}
       onClose={onClose}
+      sx={{
+        zIndex: 99999,
+      }}
     >
-      <Alert severity={severity} variant="filled">
+      <Alert
+        severity={severity}
+        variant="filled"
+        onClose={onClose}
+        sx={{
+          width: "100%",
+          maxWidth: "900px",
+          fontWeight: 600,
+
+          "& .MuiAlert-message": {
+            lineHeight: 1.5,
+          },
+
+          ...(severity === "error" && {
+            backgroundColor: "#f23737",
+            color: "#fff",
+
+            "& .MuiAlert-icon": {
+              color: "#fff",
+            },
+          }),
+
+          ...(severity === "success" && {
+            backgroundColor: "#24cd3e",
+            color: "#fff",
+
+            "& .MuiAlert-icon": {
+              color: "#fff",
+            },
+          }),
+        }}
+      >
         {message}
       </Alert>
     </Snackbar>

@@ -13,7 +13,6 @@ from app.exc_handling.room_exceptions import *
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])  # Creates router group
 
-
 # API 1 - Create Room
 # This API creates a new room in DB
 @router.post("/", response_model=RoomResponse)
@@ -117,18 +116,15 @@ def filter_rooms(
 # This API updates the room details
 @router.put("/{room_name}", response_model=RoomResponse)
 def update_room(
-    room_name: str, updated_room: RoomCreate, db: Session = Depends(get_db)
+    room_name: str,
+    updated_room: RoomCreate,
+    db: Session = Depends(get_db)
 ):
     room = room_crud.update_room(db, room_name, updated_room)
+    
     if not room:
         raise room_not_found_exception()
     
-    room.capacity = updated_room.capacity
-    room.location = updated_room.location
-
-    db.commit()
-    db.refresh(room)
-
     return room
 
 

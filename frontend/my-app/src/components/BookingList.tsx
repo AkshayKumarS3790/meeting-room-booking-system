@@ -197,10 +197,12 @@ export default function BookingList() {
             { value: "all", label: "All Rooms" },
 
             ...(Array.isArray(rooms)
-              ? rooms.map((room) => ({
-                  value: room.room_name,
-                  label: room.room_name,
-                }))
+              ? [...rooms]
+                  .sort((a, b) => a.room_name.localeCompare(b.room_name))
+                  .map((room) => ({
+                    value: room.room_name,
+                    label: room.room_name,
+                  }))
               : []),
           ]}
           clearFilters={() => {

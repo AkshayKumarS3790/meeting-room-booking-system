@@ -52,7 +52,10 @@ export default function RoomsList() {
     location: selectedLocation !== "all" ? selectedLocation : undefined,
   });
 
-  const rooms = Array.isArray(data) ? data : [];
+  const rooms = Array.isArray(data)
+    ? [...data].sort((a, b) => a.room_name.localeCompare(b.room_name))
+    : [];
+
   const totalItems = rooms.length;
 
   const allRooms = Array.isArray(allRoomsData) ? allRoomsData : [];

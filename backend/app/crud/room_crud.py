@@ -8,6 +8,9 @@ from app.models.booking import Booking  # importing booking table
 from typing import Optional
 from fastapi import HTTPException
 
+from datetime import datetime
+from fastapi import HTTPException
+
 def get_available_rooms(
     db: Session, start_date_time, end_date_time, required_capacity: int
 ):
@@ -65,12 +68,53 @@ def get_room(db: Session, room_name: str):
 
 def update_room(db: Session, room_name: str, updated_room: RoomCreate):
     room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
-    if room:  # If room exists
-        room.capacity = updated_room.capacity
-        room.location = updated_room.location  # Update all these values
 
-        db.commit()  # Then save changes
-        db.refresh(room)  # Then reload updated data
+    if not room:
+        return None
+
+    # Check if room details that affect existing bookings are being changed
+    capacity_reduced = updated_room.capacity < room.capacity
+    location_changed = updated_room.location != room.location
+
+    if capacity_reduced or location_changed:
+        active_bookings = (
+            db.query(Booking)
+            .filter(
+                Booking.room_name == room_name,
+                Booking.end_date_time > datetime.now(),
+            )
+            .all()
+        )
+
+        if active_bookings:
+            if capacity_reduced:
+                raise HTTPException(
+                    status_code=409,
+                    detail=(
+                        f"Cannot reduce room capacity. "
+                        f"Room '{room_name}' currently has "
+                        f"{len(active_bookings)} active booking(s). "
+                        f"Please wait until the bookings expire before reducing capacity."
+                    ),
+                )
+
+            if location_changed:
+                raise HTTPException(
+                    status_code=409,
+                    detail=(
+                        f"Cannot change room location. "
+                        f"Room '{room_name}' currently has "
+                        f"{len(active_bookings)} active booking(s). "
+                        f"Please wait until the bookings expire before changing the location."
+                    ),
+                )
+        
+    room.capacity = updated_room.capacity
+    room.location = updated_room.location  # Update all these values
+
+    db.commit()  # Then save changes
+    db.refresh(room)  # Then reload updated data
+    
     return room
 
 

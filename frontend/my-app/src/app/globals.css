@@ -450,13 +450,13 @@ a {
 
 /* Time items */
 
-.MuiMenuItem-root {
+.MuiMultiSectionDigitalClock-root .MuiMenuItem-root {
   color: white !important;
 }
 
-/* Selected time item */
+/* Selected time item only */
 
-.Mui-selected {
+.MuiMultiSectionDigitalClock-root .Mui-selected {
   background-color: #7c4dff !important;
   color: white !important;
 }

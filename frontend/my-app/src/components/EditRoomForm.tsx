@@ -9,6 +9,7 @@ import ConfirmDialog from "./common/ConfirmDialog";
 import DangerButton from "./common/DangerButton";
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
+import AppSnackbar from "./common/AppSnackbar";
 
 export default function EditRoomForm({
   room,
@@ -30,6 +31,10 @@ export default function EditRoomForm({
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+
   const isValid = Number(form.capacity) > 0 && form.location.trim() !== "";
 
   const handleSubmit = async () => {
@@ -40,13 +45,22 @@ export default function EditRoomForm({
         location: form.location,
       }).unwrap();
 
-      onSuccess("Room updated successfully", "success");
+      setMsg("Room updated successfully");
+      setSeverity("success");
+      setOpenSnackbar(true);
 
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch {
-      onSuccess("Update failed", "error");
+    } catch (error) {
+      const err = error as {
+        data?: {
+          detail?: string;
+        };
+      };
+      setMsg(err.data?.detail || "Update failed");
+      setSeverity("error");
+      setOpenSnackbar(true);
     }
   };
 
@@ -87,6 +101,7 @@ export default function EditRoomForm({
           },
         }}
       />
+
       <DarkTextField
         label="Capacity"
         fullWidth
@@ -100,6 +115,7 @@ export default function EditRoomForm({
         }
         sx={{ mb: 3 }}
       />
+
       <DarkTextField
         label="Location"
         fullWidth
@@ -112,6 +128,7 @@ export default function EditRoomForm({
           })
         }
       />
+
       <Box display="flex" gap={2} mt={1}>
         <PrimaryButton
           fullWidth
@@ -147,6 +164,13 @@ export default function EditRoomForm({
           All bookings for this room will also be deleted.
         </Typography>
       </ConfirmDialog>
+
+      <AppSnackbar
+        open={openSnackbar}
+        message={msg}
+        severity={severity}
+        onClose={() => setOpenSnackbar(false)}
+      />
     </Box>
   );
 }

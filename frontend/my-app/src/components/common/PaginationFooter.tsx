@@ -45,6 +45,25 @@ export default function PaginationFooter({
           }}
           MenuProps={{
             disableScrollLock: true,
+            PaperProps: {
+              sx: {
+                backgroundColor: "#2e2e45",
+                color: "#fff",
+
+                "& .MuiMenuItem-root": {
+                  color: "#fff",
+                },
+
+                "& .MuiMenuItem-root.Mui-selected": {
+                  backgroundColor: "#7c4dff",
+                  color: "#fff",
+                },
+
+                "& .MuiMenuItem-root.Mui-selected:hover": {
+                  backgroundColor: "#7340ff",
+                },
+              },
+            },
           }}
           sx={{
             width: 65,
