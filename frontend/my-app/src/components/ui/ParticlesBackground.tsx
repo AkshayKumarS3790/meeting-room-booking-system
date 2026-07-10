@@ -15,10 +15,10 @@ export default function ParticlesBackground() {
         fullScreen: { enable: true, zIndex: 0 },
         particles: {
           number: { value: 25 },
-          size: { value: 2 },
-          move: { enable: true, speed: 0.5 },
+          size: { value: 1.5 },
+          move: { enable: true, speed: 0.3 },
           links: {
-            enable: true,
+            enable: false,
             distance: 100,
             color: "#a280ff",
             opacity: 0.2,

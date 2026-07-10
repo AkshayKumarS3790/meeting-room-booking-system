@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -116,123 +115,228 @@ export default function LoginPage() {
     >
       <Card
         sx={{
-          width: 400,
-          p: 4,
-          borderRadius: 3,
-          backgroundColor: "#1e1e2f",
-          boxShadow: "0px 8px 30px rgba(0,0,0,0.5)",
+          width: {
+            xs: "95%",
+            md: 850,
+          },
+
+          minHeight: {
+            xs: "auto",
+            md: 500,
+          },
+
+          display: "flex",
+
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+
+          background: "linear-gradient(180deg, #1c1c3b 0%, #16162a 100%)",
+
+          borderRadius: 4,
+          overflow: "hidden",
+
+          boxShadow: "0px 10px 30px rgba(0,0,0,0.4)",
         }}
       >
-        {/* TITLE */}
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          textAlign="center"
-          sx={{ mb: 1, color: "#7c4dff" }}
-        >
-          MeetSpace Login
-        </Typography>
-
-        {/* EMAIL */}
-        <TextField
-          fullWidth
-          label="Email"
-          variant="outlined"
-          margin="normal"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={!!emailError}
-          helperText={emailError}
+        <Box
           sx={{
-            "& .MuiOutlinedInput-root": {
-              color: "#fff",
-              "& fieldset": {
-                borderColor: "#555",
-                borderRadius: 2,
-              },
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
-              },
+            width: {
+              xs: "100%",
+              md: "50%",
             },
-            "& .MuiInputLabel-root": {
+            background: "linear-gradient(135deg, #a674fd, #7340ff)",
+            color: "#fff",
+            p: 5,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "2rem",
+                md: "3rem",
+              },
+              fontWeight: "bold",
+              lineHeight: 1.2,
+              maxWidth: 450,
+            }}
+          >
+            Welcome to Meetspace
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 2,
+              lineHeight: 2,
+              fontSize: {
+                xs: "0.95rem",
+                md: "1.05rem",
+              },
+              textAlign: "left",
+            }}
+          >
+            <b>• Book meeting rooms easily</b>
+            <br />
+            <b>• Manage room availability</b>
+            <br />
+            <b>• Track upcoming bookings</b>
+            <br />
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            width: {
+              xs: "100%",
+              md: "60%",
+            },
+            p: {
+              xs: 3,
+              md: 5,
+            },
+
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          {/* TITLE */}
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            textAlign="center"
+            sx={{
+              color: "#7c4dff",
+              mb: 1,
+            }}
+          >
+            Login
+          </Typography>
+
+          <Typography
+            textAlign="center"
+            sx={{
               color: "#aaa",
-            },
-          }}
-        />
+              mb: 1,
+            }}
+          >
+            Sign in to access your workspace
+          </Typography>
 
-        {/* PASSWORD */}
-        <TextField
-          fullWidth
-          label="Password"
-          type="password"
-          margin="normal"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={!!passwordError}
-          helperText={passwordError}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              color: "#fff",
-              "& fieldset": {
-                borderColor: "#555",
-                borderRadius: 2,
+          {/* EMAIL */}
+          <TextField
+            fullWidth
+            label="Email"
+            variant="outlined"
+            margin="normal"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={!!emailError}
+            helperText={emailError}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "#fff",
+                "& fieldset": {
+                  borderColor: "#555",
+                  borderRadius: 2,
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7c4dff",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#7c4dff",
+                },
               },
-              "&:hover fieldset": {
-                borderColor: "#7c4dff",
+              "& .MuiInputLabel-root": {
+                color: "#aaa",
               },
-              "&.Mui-focused fieldset": {
-                borderColor: "#7c4dff",
+            }}
+          />
+
+          {/* PASSWORD */}
+          <TextField
+            fullWidth
+            label="Password"
+            type="password"
+            margin="normal"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={!!passwordError}
+            helperText={passwordError}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "#fff",
+                "& fieldset": {
+                  borderColor: "#555",
+                  borderRadius: 2,
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7c4dff",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#7c4dff",
+                },
               },
-            },
-            "& .MuiInputLabel-root": {
-              color: "#aaa",
-            },
-          }}
-        />
+              "& .MuiInputLabel-root": {
+                color: "#aaa",
+              },
+            }}
+          />
 
-        {/* BUTTON */}
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={handleLogin}
-          disabled={loading}
-          sx={{
-            mt: 2,
-            py: 1.2,
-            borderRadius: 2,
-            textTransform: "none",
-            background: "linear-gradient(55deg, #7340ff, #a674fd)",
-            "&:hover": {
-              background: "linear-gradient(55deg, #5f30e0, #8e5ae8)",
-            },
-          }}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </Button>
+          {/* BUTTON */}
+          <Button
+            fullWidth
+            onClick={handleLogin}
+            disabled={loading}
+            variant="contained"
+            sx={{
+              mt: 2,
+              py: 1,
 
-        <Typography
-          textAlign="center"
-          sx={{ mt: 2, fontSize: 14, color: "#aaa" }}
-        >
-          New user?{" "}
-          <Link href="/register" style={{ color: "#7c4dff" }}>
-            Register
-          </Link>
-        </Typography>
+              fontSize: "1rem",
+              fontWeight: 600,
 
-        <Typography
-          textAlign="center"
-          sx={{ mt: 1, fontSize: 14, color: "#aaa" }}
-        >
-          <Link href="/forgot-password" style={{ color: "#7c4dff" }}>
-            Forgot password?
-          </Link>
-        </Typography>
+              textTransform: "none",
+
+              borderRadius: 2,
+
+              background: "linear-gradient(90deg, #7c4dff, #9b6dff)",
+
+              "&:hover": {
+                background: "linear-gradient(90deg, #7340ff, #8f63ff)",
+              },
+            }}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+
+          <Typography textAlign="center" sx={{ mt: 2, color: "#aaa" }}>
+            Don&apos;t have an account?{" "}
+            <Typography
+              component="span"
+              sx={{
+                color: "#7c4dff",
+                cursor: "pointer",
+                fontWeight: 600,
+
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+              onClick={() => router.push("/register")}
+            >
+              Register
+            </Typography>
+          </Typography>
+        </Box>
       </Card>
 
       {/* Snackbar */}
