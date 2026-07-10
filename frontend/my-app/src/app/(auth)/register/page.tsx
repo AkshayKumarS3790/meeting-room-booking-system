@@ -281,15 +281,100 @@ export default function RegisterPage() {
           {showPasswordHelp && (
             <Box
               sx={{
+                position: "relative",
+                display: {
+                  xs: "block",
+                  md: "none",
+                },
+                mt: 1,
+                p: 2,
+                background: "linear-gradient(45deg, #1c1c3b 0%, #16162a 100%)",
+                border: "1px solid #444",
+                borderRadius: 2,
+
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+
+                  left: "50%",
+                  top: -8,
+
+                  transform: "translateX(-50%) rotate(45deg)",
+
+                  width: 16,
+                  height: 16,
+
+                  background:
+                    "linear-gradient(180deg, #1c1c3b 0%, #16162a 100%)",
+
+                  borderTop: "1px solid #444",
+                  borderLeft: "1px solid #444",
+
+                  zIndex: 1,
+                },
+              }}
+            >
+              <Typography color={passwordRules.length ? "#24cd3e" : "#f23737"}>
+                {passwordRules.length ? "✓" : "✗"} At least 6 characters
+              </Typography>
+
+              <Typography
+                color={passwordRules.uppercase ? "#24cd3e" : "#f23737"}
+              >
+                {passwordRules.uppercase ? "✓" : "✗"} One uppercase letter
+              </Typography>
+
+              <Typography
+                color={passwordRules.lowercase ? "#24cd3e" : "#f23737"}
+              >
+                {passwordRules.lowercase ? "✓" : "✗"} One lowercase letter
+              </Typography>
+
+              <Typography color={passwordRules.number ? "#24cd3e" : "#f23737"}>
+                {passwordRules.number ? "✓" : "✗"} One number
+              </Typography>
+
+              <Typography color={passwordRules.special ? "#24cd3e" : "#f23737"}>
+                {passwordRules.special ? "✓" : "✗"} One special character
+              </Typography>
+            </Box>
+          )}
+
+          {showPasswordHelp && (
+            <Box
+              sx={{
+                display: {
+                  xs: "none",
+                  md: "block",
+                },
+
                 position: "absolute",
-                left: "calc(100% + 20px)",
-                top: "50%",
-                transform: "translateY(-50%)",
 
+                left: {
+                  xs: 0,
+                  md: "calc(100% + 20px)",
+                },
+
+                top: {
+                  xs: "100%",
+                  md: "50%",
+                },
+
+                transform: {
+                  xs: "none",
+                  md: "translateY(-50%)",
+                },
+
+                mt: {
+                  xs: 1,
+                  md: 0,
+                },
+
+                width: {
+                  xs: "100%",
+                  md: 280,
+                },
                 zIndex: 10,
-
-                width: 280,
-
                 background: "linear-gradient(180deg, #1c1c3b 0%, #16162a 100%)",
                 border: "1px solid #444",
                 borderRadius: 2,
@@ -302,10 +387,20 @@ export default function RegisterPage() {
                   content: '""',
                   position: "absolute",
 
-                  left: -8,
-                  top: "50%",
+                  left: {
+                    xs: "50%",
+                    md: -8,
+                  },
 
-                  transform: "translateY(-50%) rotate(45deg)",
+                  top: {
+                    xs: -8,
+                    md: "50%",
+                  },
+
+                  transform: {
+                    xs: "translateX(-50%) rotate(45deg)",
+                    md: "translateY(-50%) rotate(45deg)",
+                  },
 
                   width: 16,
                   height: 16,
