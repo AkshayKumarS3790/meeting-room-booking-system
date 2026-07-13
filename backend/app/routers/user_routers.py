@@ -68,8 +68,6 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
-        "user_id": user.user_id,
-        "user_name": user.user_name,
     }
 
 #Token refresh
