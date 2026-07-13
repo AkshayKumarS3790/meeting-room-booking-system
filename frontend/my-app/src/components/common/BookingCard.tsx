@@ -105,7 +105,7 @@ export default function BookingCard({
           </Tooltip>
 
           <Tooltip
-            title={!canModify ? "You can only modify your own bookings" : ""}
+            title={!canModify ? "You can only delete your own bookings" : ""}
           >
             <span>
               <DangerButton
