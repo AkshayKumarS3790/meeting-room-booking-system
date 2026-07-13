@@ -13,6 +13,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+
+type TokenPayload = {
+  user_id: number;
+  user_name: string;
+};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -62,7 +68,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://127.0.0.1:8000/users/login", {
+      const res = await fetch("http://127.0.0.1:8000/api/v1/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,9 +83,11 @@ export default function LoginPage() {
 
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        localStorage.setItem("user_id", String(data.user_id));
+        const decoded = jwtDecode<TokenPayload>(data.access_token);
 
-        localStorage.setItem("user_name", data.user_name);
+        localStorage.setItem("user_id", String(decoded.user_id));
+
+        localStorage.setItem("user_name", String(decoded.user_name));
 
         setSnackbarMsg("Login successful");
         setSeverity("success");

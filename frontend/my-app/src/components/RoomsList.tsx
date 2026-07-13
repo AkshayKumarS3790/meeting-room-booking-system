@@ -30,7 +30,7 @@ export default function RoomsList() {
 
   const isCapacitySearch = searchValue !== "" && !isNaN(Number(searchValue));
 
-  const { data: bookingsData } = useGetBookingsQuery();
+  const { data: bookingsData } = useGetBookingsQuery({});
   const bookings = bookingsData || [];
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -42,15 +42,20 @@ export default function RoomsList() {
 
   const { data: allRoomsData } = useGetRoomsQuery({});
 
-  const { data, error, isLoading } = useGetRoomsQuery({
-    page,
-    limit: itemsPerPage,
-    search: !isCapacitySearch ? searchValue || undefined : undefined,
+  const { data, error, isLoading } = useGetRoomsQuery(
+    {
+      page,
+      limit: itemsPerPage,
+      search: !isCapacitySearch ? searchValue || undefined : undefined,
 
-    required_capacity: isCapacitySearch ? Number(searchValue) : undefined,
+      required_capacity: isCapacitySearch ? Number(searchValue) : undefined,
 
-    location: selectedLocation !== "all" ? selectedLocation : undefined,
-  });
+      location: selectedLocation !== "all" ? selectedLocation : undefined,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const rooms = Array.isArray(data)
     ? [...data].sort((a, b) => a.room_name.localeCompare(b.room_name))
@@ -101,7 +106,7 @@ export default function RoomsList() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          flexWrap: "wrap",
+
           gap: 2,
           mb: 2,
         }}
@@ -110,41 +115,56 @@ export default function RoomsList() {
         <Typography variant="h5" sx={{ fontWeight: "bold", color: "#fff" }}>
           Rooms
         </Typography>
-
         {/* RIGHT SIDE - FILTERS */}
-        <RoomFilters
-          roomSearch={roomSearch}
-          setRoomSearch={setRoomSearch}
-          selectedLocation={selectedLocation}
-          setSelectedLocation={setSelectedLocation}
-          locationOptions={[
-            {
-              value: "all",
-              label: "All Locations",
-            },
-
-            ...uniqueLocations.map((loc) => ({
-              value: loc,
-              label: loc,
-            })),
-          ]}
-          clearFilters={() => {
-            setRoomSearch("");
-            setSelectedLocation("all");
-            setPage(1);
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            ml: 2,
           }}
-          onAddRoom={() => setOpenRoomDialog(true)}
-        />
+        >
+          <RoomFilters
+            roomSearch={roomSearch}
+            setRoomSearch={setRoomSearch}
+            selectedLocation={selectedLocation}
+            setSelectedLocation={setSelectedLocation}
+            locationOptions={[
+              {
+                value: "all",
+                label: "All Locations",
+              },
+
+              ...uniqueLocations.map((loc) => ({
+                value: loc,
+                label: loc,
+              })),
+            ]}
+            clearFilters={() => {
+              setRoomSearch("");
+              setSelectedLocation("all");
+              setPage(1);
+            }}
+            onAddRoom={() => setOpenRoomDialog(true)}
+          />
+        </Box>
       </Box>
 
       {rooms.length > 0 ? (
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 260px))",
+
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(4, 1fr)",
+              xl: "repeat(5, 1fr)",
+            },
+
             gap: 3,
-            justifyContent: "start",
-            alignItems: "start",
+            width: "100%",
           }}
         >
           {paginatedRooms.map((room: Room) => (

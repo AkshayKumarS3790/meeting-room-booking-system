@@ -27,7 +27,7 @@ export default function CalendarPage() {
   const [date, setDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
 
-  const { data: bookingsData, isLoading, error } = useGetBookingsQuery();
+  const { data: bookingsData, isLoading, error } = useGetBookingsQuery({});
 
   if (isLoading) {
     return <div style={{ color: "white" }}>Loading calendar...</div>;

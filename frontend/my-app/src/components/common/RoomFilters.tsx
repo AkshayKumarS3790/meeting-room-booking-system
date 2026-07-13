@@ -43,7 +43,7 @@ export default function RoomFilters({
         gridTemplateColumns: {
           xs: "1fr",
           sm: "1fr 1fr",
-          md: "2fr 1.5fr auto",
+          md: "1fr 1fr auto auto",
         },
         gap: 2,
         alignItems: "center",
@@ -53,7 +53,7 @@ export default function RoomFilters({
         placeholder="Search rooms/capacity"
         value={roomSearch}
         onChange={(e) => setRoomSearch(e.target.value)}
-        sx={{ maxWidth: 200 }}
+        sx={{ maxWidth: 190 }}
       />
 
       <FilterSelect
@@ -63,23 +63,21 @@ export default function RoomFilters({
         options={locationOptions}
       />
 
-      <Box display="flex" gap={1}>
-        <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
+      <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
 
-        <SecondaryButton
-          onClick={clearFilters}
-          disabled={!hasActiveFilters}
-          sx={{
-            "&.Mui-disabled": {
-              color: "#8e5ae8",
-              borderColor: "#8e5ae8",
-              opacity: 0.4,
-            },
-          }}
-        >
-          Clear
-        </SecondaryButton>
-      </Box>
+      <SecondaryButton
+        onClick={clearFilters}
+        disabled={!hasActiveFilters}
+        sx={{
+          "&.Mui-disabled": {
+            color: "#8e5ae8",
+            borderColor: "#8e5ae8",
+            opacity: 0.4,
+          },
+        }}
+      >
+        Clear
+      </SecondaryButton>
     </Box>
   );
 }

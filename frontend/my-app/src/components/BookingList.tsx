@@ -41,7 +41,15 @@ export default function BookingList() {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
-  const { data, isLoading, error } = useGetBookingsQuery();
+  const { data, isLoading, error } = useGetBookingsQuery(
+    {
+      page,
+      limit: itemsPerPage,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const bookings = data || [];
 

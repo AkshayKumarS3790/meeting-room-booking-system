@@ -42,7 +42,7 @@ export default function RoomCard({
   return (
     <Card
       sx={{
-        maxWidth: 260,
+        maxWidth: "100%",
         backgroundColor: "#2e2e45",
         color: "#fff",
         borderRadius: 3,

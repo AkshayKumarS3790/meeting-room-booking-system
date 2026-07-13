@@ -68,7 +68,7 @@ export default function BookingForm({
 
   const currentUserName = localStorage.getItem("user_name") || "";
 
-  const { data: bookings } = useGetBookingsQuery();
+  const { data: bookings } = useGetBookingsQuery({});
 
   const [createBooking, { isLoading }] = useCreateBookingMutation();
 

@@ -11,9 +11,12 @@ import { useEffect } from "react";
 
 export default function Home() {
   const { data: roomsData } = useGetRoomsQuery({});
-  const { data: bookingsData } = useGetBookingsQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: bookingsData } = useGetBookingsQuery(
+    { page: 1, limit: 1000 },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,7 +77,7 @@ export default function Home() {
                   "Seamless Booking",
                   2500,
                   "MeetSpace",
-                  3000,
+                  2500,
                 ]}
                 speed={50}
                 repeat={1}

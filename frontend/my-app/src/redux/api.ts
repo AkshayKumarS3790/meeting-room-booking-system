@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_VERSION } from "@/config/version";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000",
+  baseUrl: "http://localhost:8000/api/v1",
 
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
@@ -9,6 +10,8 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
+
+    headers.set("X-API-Version", API_VERSION);
 
     return headers;
   },
@@ -145,9 +148,16 @@ export const api = createApi({
       providesTags: [{ type: "Rooms", id: "LIST" }],
     }),
 
-    getBookings: builder.query<Booking[], void>({
+    getVersion: builder.query<{ version: string }, void>({
       query: () => ({
+        url: "/version",
+      }),
+    }),
+
+    getBookings: builder.query<Booking[], { page?: number; limit?: number }>({
+      query: ({ page = 1, limit = 6 }) => ({
         url: "/bookings",
+        params: { page, limit },
       }),
       providesTags: (result) =>
         result
@@ -245,4 +255,5 @@ export const {
   useUpdateRoomMutation,
   useDeleteRoomMutation,
   useUpdateBookingMutation,
+  useGetVersionQuery,
 } = api;
