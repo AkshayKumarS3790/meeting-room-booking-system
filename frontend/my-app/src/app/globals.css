@@ -99,6 +99,14 @@ a {
   color: #7c4dff !important;
 }
 
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #7c4dff !important;
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: #7c4dff !important;
+}
+
 /* ================= REACT BIG CALENDAR ================= */
 
 /* Calendar background */
@@ -324,25 +332,12 @@ a {
   background-color: rgba(124, 77, 255, 0.2) !important;
 }
 
-/* Selected day */
-
-.MuiPickersDay-root.Mui-selected {
-  background-color: #7c4dff !important;
-  color: #fff !important;
-}
-
-/* Today's date */
-
-.MuiPickersDay-root.MuiPickersDay-today {
-  border: 1px solid #b388ff !important;
-  color: #fff !important;
-}
-
 /* Today + Selected */
 
 .MuiPickersDay-root.Mui-selected.MuiPickersDay-today {
   background-color: #7c4dff !important;
-  border: 1px solid #b388ff !important;
+  color: #fff !important;
+  border: none !important;
 }
 
 /* Previous / Next month disabled dates */
@@ -390,12 +385,6 @@ a {
   color: #fff !important;
 }
 
-/* Selected toolbar value
-   Example:
-   Fri, Jul
-   10
-*/
-
 .MuiPickersToolbarText-root.Mui-selected {
   color: #b388ff !important;
 }
@@ -419,7 +408,64 @@ a {
   color: #fff !important;
 }
 
+.MuiYearCalendar-root button {
+  color: #ffffff !important;
+}
+
+.MuiYearCalendar-root button.Mui-disabled {
+  color: #666666 !important;
+}
+
+.MuiYearCalendar-root button.Mui-selected {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+}
+
+.Mui-selected {
+  background-color: #7c4dff !important;
+}
+
+/* Current Day */
+
+.MuiPickerDay-root.MuiPickerDay-today {
+  border: 2px solid #7c4dff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 4px rgba(124, 77, 255, 0.4) !important;
+}
+
+/* Current Day + Selected */
+
+.MuiPickerDay-root.Mui-selected.MuiPickerDay-today {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
 /* ===== FINAL DATE TEXT OVERRIDE ===== */
+
+/* Selected day */
+
+.MuiPickersDay-root.Mui-selected,
+.MuiPickersDay-root.Mui-selected:hover,
+.MuiPickersDay-root.Mui-selected:focus {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+}
+
+/* Today's date */
+
+.MuiPickersDay-root.MuiPickersDay-today:not(.Mui-selected) {
+  border: 1px solid #7c4dff !important;
+  color: #ffffff !important;
+}
+
+/* Today + Selected */
+
+.MuiPickersDay-root.MuiPickersDay-today.Mui-selected {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+  border: none !important;
+}
 
 .MuiDayCalendar-root button {
   color: #ffffff !important;
@@ -437,6 +483,28 @@ a {
 
 .MuiDayCalendar-root button.Mui-disabled * {
   color: #666666 !important;
+}
+
+/* FINAL OVERRIDE - SELECTED DAY */
+
+button.MuiPickersDay-root.Mui-selected,
+button.MuiPickersDay-root.Mui-selected:hover,
+button.MuiPickersDay-root.Mui-selected:focus {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+}
+
+/* FINAL OVERRIDE - TODAY */
+
+button.MuiPickersDay-root.MuiPickersDay-today {
+  border-color: #7c4dff !important;
+  box-shadow: inset 0 0 0 1px #7c4dff !important;
+}
+
+button.MuiPickersDay-root.MuiPickersDay-today.Mui-selected {
+  background-color: #7c4dff !important;
+  color: #ffffff !important;
+  border: none !important;
 }
 
 /* ----- TimePicker Popup -----*/
@@ -552,4 +620,8 @@ a {
   width: 0 !important;
   height: 0 !important;
   display: none !important;
+}
+
+.MuiDialogActions-root button {
+  text-transform: none !important;
 }

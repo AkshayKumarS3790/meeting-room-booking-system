@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Checkbox, FormControlLabel } from "@mui/material";
 import { useUpdateRoomMutation, useDeleteRoomMutation } from "../redux/api";
 import { Room } from "../redux/api";
 
@@ -34,6 +34,8 @@ export default function EditRoomForm({
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [msg, setMsg] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const [acknowledged, setAcknowledged] = useState(false);
 
   const isValid = Number(form.capacity) > 0 && form.location.trim() !== "";
 
@@ -141,7 +143,10 @@ export default function EditRoomForm({
         <DangerButton
           fullWidth
           disabled={isDeleting}
-          onClick={() => setConfirmDelete(true)}
+          onClick={() => {
+            setAcknowledged(false);
+            setConfirmDelete(true);
+          }}
         >
           {isDeleting ? "Deleting..." : "Delete Room"}
         </DangerButton>
@@ -153,16 +158,29 @@ export default function EditRoomForm({
         message="Are you sure you want to delete this room?"
         onClose={() => setConfirmDelete(false)}
         onConfirm={handleDelete}
+        confirmDisabled={!acknowledged}
       >
-        <Typography
-          sx={{
-            color: "#fc5d5d",
-            fontStyle: "italic",
-            mt: 1,
-          }}
-        >
-          All bookings for this room will also be deleted.
-        </Typography>
+        <FormControlLabel
+          sx={{ mt: 1, alignItems: "flex-start" }}
+          control={
+            <Checkbox
+              checked={acknowledged}
+              onChange={(e) => setAcknowledged(e.target.checked)}
+              sx={{
+                color: "#ffffff", // unchecked color
+
+                "&.Mui-checked": {
+                  color: "#4ade80", // green when checked
+                },
+
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            />
+          }
+          label="I understand that deleting this room will permanently delete all associated bookings."
+        />
       </ConfirmDialog>
 
       <AppSnackbar

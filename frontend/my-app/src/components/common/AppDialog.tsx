@@ -8,6 +8,7 @@ type Props = {
   onClose: () => void;
   children: React.ReactNode;
   fullWidth?: boolean;
+  maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
 };
 
 export default function AppDialog({
@@ -16,6 +17,7 @@ export default function AppDialog({
   onClose,
   children,
   fullWidth = false,
+  maxWidth = "sm",
 }: Props) {
   return (
     <Dialog
@@ -23,12 +25,15 @@ export default function AppDialog({
       onClose={onClose}
       disableScrollLock
       fullWidth={fullWidth}
+      maxWidth={maxWidth}
       PaperProps={{
         sx: {
           backgroundColor: "#1e1e2f",
           color: "#fff",
           borderRadius: 3,
           padding: 2,
+
+          maxWidth: 500,
         },
       }}
     >

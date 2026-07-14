@@ -1,6 +1,6 @@
 "use client";
 
-import { DialogContent, Typography } from "@mui/material";
+import { DialogContent, Typography, Tooltip } from "@mui/material";
 
 import AppDialog from "./AppDialog";
 import AppDialogActions from "./AppDialogActions";
@@ -15,6 +15,7 @@ type Props = {
   onConfirm: () => void;
   confirmText?: string;
   children?: React.ReactNode;
+  confirmDisabled?: boolean;
 };
 
 export default function ConfirmDialog({
@@ -25,9 +26,10 @@ export default function ConfirmDialog({
   onConfirm,
   confirmText = "Delete",
   children,
+  confirmDisabled = false,
 }: Props) {
   return (
-    <AppDialog open={open} onClose={onClose} title={title}>
+    <AppDialog open={open} onClose={onClose} title={title} maxWidth="xs">
       <DialogContent>
         <Typography>{message}</Typography>
 
@@ -37,7 +39,16 @@ export default function ConfirmDialog({
       <AppDialogActions>
         <PrimaryButton onClick={onClose}>Cancel</PrimaryButton>
 
-        <DangerButton onClick={onConfirm}>{confirmText}</DangerButton>
+        <Tooltip
+          title={confirmDisabled ? "Please select the checkbox first" : ""}
+          arrow
+        >
+          <span>
+            <DangerButton onClick={onConfirm} disabled={confirmDisabled}>
+              {confirmText}
+            </DangerButton>
+          </span>
+        </Tooltip>
       </AppDialogActions>
     </AppDialog>
   );

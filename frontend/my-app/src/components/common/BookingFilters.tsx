@@ -6,6 +6,11 @@ import SearchField from "./SearchField";
 import FilterSelect from "./FilterSelect";
 import SecondaryButton from "./SecondaryButton";
 
+import { datePickerFieldSx } from "@/utils/datePickerFieldSx";
+
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+
 type Props = {
   search: string;
   setSearch: (value: string) => void;
@@ -55,15 +60,30 @@ export default function BookingFilters({
         sx={{ maxWidth: 150 }}
       />
 
-      <SearchField
-        type="date"
-        value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
-        sx={{
-          maxWidth: 150,
-          "& input::-webkit-calendar-picker-indicator": {
-            filter: "invert(1)",
-            cursor: "pointer",
+      <DatePicker
+        label="Date"
+        value={selectedDate ? dayjs(selectedDate) : null}
+        onChange={(value) =>
+          setSelectedDate(value ? value.format("YYYY-MM-DD") : "")
+        }
+        disablePast
+        slotProps={{
+          textField: {
+            size: "small",
+            sx: {
+              ...datePickerFieldSx,
+              width: 150,
+              mb: 0,
+              "& .MuiPickersInputBase-root": {
+                background: "rgba(84, 66, 134, 0.4)",
+                borderRadius: "8px",
+              },
+
+              "& .MuiPickersOutlinedInput-notchedOutline": {
+                borderColor: "transparent",
+                borderRadius: "8px",
+              },
+            },
           },
         }}
       />

@@ -39,11 +39,6 @@ app.add_middleware(
 def home():
     return {"message": "Meeting Room Booking API Running"}
 
-@app.get("/version")
-def get_version():
-    return {
-        "version": app.version
-    }
 
 @app.middleware("http")
 async def add_version_header(request, call_next):

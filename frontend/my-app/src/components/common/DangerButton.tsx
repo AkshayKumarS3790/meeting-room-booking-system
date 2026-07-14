@@ -14,6 +14,12 @@ export default function DangerButton(props: ButtonProps) {
         borderColor: "#fc5d5d",
         textTransform: "none",
 
+        "&.Mui-disabled": {
+          color: "rgba(252, 93, 93, 0.5)",
+          borderColor: "rgba(252, 93, 93, 0.35)",
+          opacity: 1,
+        },
+
         ...(props.sx || {}),
       }}
     />
