@@ -10,8 +10,8 @@ export default function AppDialogActions({
   return (
     <DialogActions
       sx={{
-        px: 3,
-        pb: 2,
+        px: 2.5,
+        pb: 0.5,
       }}
     >
       {children}

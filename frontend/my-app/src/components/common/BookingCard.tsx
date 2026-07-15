@@ -46,6 +46,7 @@ export default function BookingCard({
       <CardContent
         sx={{
           p: 2,
+          mb: -0.5,
           display: "flex",
           flexDirection: "column",
         }}

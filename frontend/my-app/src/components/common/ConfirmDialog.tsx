@@ -30,21 +30,27 @@ export default function ConfirmDialog({
 }: Props) {
   return (
     <AppDialog open={open} onClose={onClose} title={title} maxWidth="xs">
-      <DialogContent>
+      <DialogContent sx={{ pt: 0.5, pr: 0.5, pb: 0.5 }}>
         <Typography>{message}</Typography>
 
         {children}
       </DialogContent>
 
       <AppDialogActions>
-        <PrimaryButton onClick={onClose}>Cancel</PrimaryButton>
+        <PrimaryButton sx={{ mt: 0.5 }} onClick={onClose}>
+          Cancel
+        </PrimaryButton>
 
         <Tooltip
           title={confirmDisabled ? "Please select the checkbox first" : ""}
           arrow
         >
           <span>
-            <DangerButton onClick={onConfirm} disabled={confirmDisabled}>
+            <DangerButton
+              sx={{ mt: 0.5 }}
+              onClick={onConfirm}
+              disabled={confirmDisabled}
+            >
               {confirmText}
             </DangerButton>
           </span>

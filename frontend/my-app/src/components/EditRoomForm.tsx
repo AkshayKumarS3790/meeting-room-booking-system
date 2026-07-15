@@ -161,7 +161,7 @@ export default function EditRoomForm({
         confirmDisabled={!acknowledged}
       >
         <FormControlLabel
-          sx={{ mt: 1, alignItems: "flex-start" }}
+          sx={{ mt: 1, maxWidth: 360, alignItems: "flex-start" }}
           control={
             <Checkbox
               checked={acknowledged}

@@ -150,8 +150,6 @@ export default function BookingForm({
     }
   };
 
-  //const todayStr = new Date().toISOString().split("T")[0];
-
   return (
     <Box mt={1}>
       <form onSubmit={handleFormSubmit(handleSubmit)} noValidate>
@@ -191,6 +189,11 @@ export default function BookingForm({
               }
               disablePast
               slotProps={{
+                popper: {
+                  sx: {
+                    zIndex: 1500,
+                  },
+                },
                 textField: {
                   fullWidth: true,
                   required: true,

@@ -31,7 +31,7 @@ export default function AppDialog({
           backgroundColor: "#1e1e2f",
           color: "#fff",
           borderRadius: 3,
-          padding: 2,
+          padding: 1,
 
           maxWidth: 500,
         },

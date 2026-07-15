@@ -55,7 +55,10 @@ export default function BookingList() {
 
   const now = new Date();
 
-  const currentUserId = Number(localStorage.getItem("user_id") ?? 0);
+  const currentUserId =
+    typeof window !== "undefined"
+      ? Number(localStorage.getItem("user_id") ?? 0)
+      : 0;
 
   const activeBookings = bookings.filter((b: Booking) => {
     const end = new Date(b.end_date_time);
@@ -223,7 +226,9 @@ export default function BookingList() {
 
       {activeBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2, color: "#fff" }}>
-          No bookings yet
+          {search.trim() !== "" || selectedDate !== "" || selectedRoom !== "all"
+            ? "No bookings match the selected filters."
+            : "No bookings available."}
         </Typography>
       ) : (
         <Box

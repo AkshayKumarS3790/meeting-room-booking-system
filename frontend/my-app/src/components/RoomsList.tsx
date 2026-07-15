@@ -181,7 +181,11 @@ export default function RoomsList() {
           ))}
         </Box>
       ) : (
-        <Typography sx={{ opacity: 0.7 }}>No rooms available</Typography>
+        <Typography sx={{ opacity: 0.7 }}>
+          {roomSearch.trim() !== "" || selectedLocation !== "all"
+            ? "No rooms match the selected filters."
+            : "No rooms available."}
+        </Typography>
       )}
 
       {/* PAGINATION */}
