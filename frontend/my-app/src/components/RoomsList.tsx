@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Skeleton, Card, CardContent } from "@mui/material";
 
 import { useState, useEffect } from "react";
 
@@ -12,7 +12,6 @@ import RoomCard from "./RoomCard";
 import AppDialog from "./common/AppDialog";
 import AppSnackbar from "./common/AppSnackbar";
 import PageError from "./common/PageError";
-import PageLoader from "./common/PageLoader";
 import PaginationFooter from "./common/PaginationFooter";
 import RoomFilters from "./common/RoomFilters";
 
@@ -91,8 +90,36 @@ export default function RoomsList() {
 
   const paginatedRooms = rooms.slice(startIndex, startIndex + itemsPerPage);
 
-  if (isLoading) {
-    return <PageLoader message="Loading page..." />;
+  function RoomSkeleton() {
+    return (
+      <Card
+        sx={{
+          backgroundColor: "#2e2e45",
+          borderRadius: 3,
+        }}
+      >
+        <CardContent>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Skeleton variant="text" width="45%" height={40} />
+
+            <Skeleton variant="circular" width={12} height={12} />
+          </Box>
+
+          <Skeleton variant="text" width="50%" />
+          <Skeleton variant="text" width="60%" />
+
+          <Box mt={3} display="flex" gap={2}>
+            <Skeleton variant="rounded" width={120} height={45} />
+
+            <Skeleton variant="rounded" width={105} height={45} />
+          </Box>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (error) {
@@ -150,7 +177,28 @@ export default function RoomsList() {
         </Box>
       </Box>
 
-      {rooms.length > 0 ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "grid",
+
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(4, 1fr)",
+              xl: "repeat(5, 1fr)",
+            },
+
+            gap: 3,
+            width: "100%",
+          }}
+        >
+          {[...Array(itemsPerPage)].map((_, i) => (
+            <RoomSkeleton key={i} />
+          ))}
+        </Box>
+      ) : rooms.length > 0 ? (
         <Box
           sx={{
             display: "grid",
@@ -191,13 +239,13 @@ export default function RoomsList() {
       {/* PAGINATION */}
       <PaginationFooter
         page={page}
-        totalPages={totalPages}
+        totalPages={isLoading ? 1 : totalPages}
         itemsPerPage={itemsPerPage}
         setPage={setPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={totalItems}
-        startItem={startItem}
-        endItem={endItem}
+        totalItems={isLoading ? 0 : totalItems}
+        startItem={isLoading ? 0 : startItem}
+        endItem={isLoading ? 0 : endItem}
         pageSizeOptions={[10, 15, 20, 25]}
       />
 

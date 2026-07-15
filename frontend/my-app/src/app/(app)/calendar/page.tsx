@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Calendar, dateFnsLocalizer, Views, View } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Skeleton } from "@mui/material";
 import { useGetBookingsQuery } from "@/redux/api";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -28,10 +28,6 @@ export default function CalendarPage() {
   const [view, setView] = useState<View>(Views.MONTH);
 
   const { data: bookingsData, isLoading, error } = useGetBookingsQuery({});
-
-  if (isLoading) {
-    return <div style={{ color: "white" }}>Loading calendar...</div>;
-  }
 
   if (error) {
     return <div style={{ color: "red" }}>Error loading calendar</div>;
@@ -101,6 +97,51 @@ export default function CalendarPage() {
     };
   };
 
+  function CalendarSkeleton() {
+    return (
+      <Box
+        sx={{
+          height: "77vh",
+          backgroundColor: "#1e1e2f",
+          borderRadius: 3,
+          p: 2,
+        }}
+      >
+        {/* Toolbar */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Box display="flex" gap={1}>
+            <Skeleton variant="rounded" width={70} height={36} />
+            <Skeleton variant="rounded" width={70} height={36} />
+            <Skeleton variant="rounded" width={70} height={36} />
+          </Box>
+
+          <Skeleton variant="text" width={180} height={40} />
+
+          <Box display="flex" gap={1}>
+            <Skeleton variant="rounded" width={70} height={36} />
+            <Skeleton variant="rounded" width={70} height={36} />
+            <Skeleton variant="rounded" width={70} height={36} />
+          </Box>
+        </Box>
+
+        {/* Calendar Body */}
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height="90%"
+          sx={{
+            bgcolor: "rgba(255,255,255,0.08)",
+          }}
+        />
+      </Box>
+    );
+  }
+
   function EventComponent({ event }: { event: CalendarEvent }) {
     return (
       <Box
@@ -128,36 +169,40 @@ export default function CalendarPage() {
         Calendar
       </Typography>
 
-      <Box
-        className={`calendar-view-${view}`}
-        sx={{
-          height: "77vh",
-          backgroundColor: "#1e1e2f",
-          borderRadius: 3,
-          p: 2,
-        }}
-      >
-        <Calendar<CalendarEvent>
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          date={date}
-          view={view}
-          onNavigate={(newDate) => setDate(newDate)}
-          onView={(newView) => setView(newView)}
-          eventPropGetter={eventStyleGetter}
-          style={{ height: "100%", color: "#fff" }}
-          components={{
-            event: EventComponent,
+      {isLoading ? (
+        <CalendarSkeleton />
+      ) : (
+        <Box
+          className={`calendar-view-${view}`}
+          sx={{
+            height: "77vh",
+            backgroundColor: "#1e1e2f",
+            borderRadius: 3,
+            p: 2,
           }}
-          views={[Views.MONTH, Views.WEEK, Views.DAY]}
-          toolbar={true}
-          scrollToTime={
-            new Date(new Date().setHours(new Date().getHours() - 1, 45, 0, 0))
-          }
-        />
-      </Box>
+        >
+          <Calendar<CalendarEvent>
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            date={date}
+            view={view}
+            onNavigate={(newDate) => setDate(newDate)}
+            onView={(newView) => setView(newView)}
+            eventPropGetter={eventStyleGetter}
+            style={{ height: "100%", color: "#fff" }}
+            components={{
+              event: EventComponent,
+            }}
+            views={[Views.MONTH, Views.WEEK, Views.DAY]}
+            toolbar={true}
+            scrollToTime={
+              new Date(new Date().setHours(new Date().getHours() - 1, 45, 0, 0))
+            }
+          />
+        </Box>
+      )}
     </Box>
   );
 }

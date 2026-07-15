@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Typography, Box, Grid } from "@mui/material";
+import { Container, Typography, Box, Grid, Skeleton } from "@mui/material";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import EventIcon from "@mui/icons-material/Event";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -10,13 +10,17 @@ import { useGetRoomsQuery, useGetBookingsQuery } from "@/redux/api";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { data: roomsData } = useGetRoomsQuery({});
-  const { data: bookingsData } = useGetBookingsQuery(
-    { page: 1, limit: 1000 },
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const { data: roomsData, isLoading: roomsLoading } = useGetRoomsQuery({});
+
+  const { data: bookingsData, isLoading: bookingsLoading } =
+    useGetBookingsQuery(
+      { page: 1, limit: 1000 },
+      {
+        refetchOnMountOrArgChange: true,
+      },
+    );
+
+  const isLoading = roomsLoading || bookingsLoading;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,7 +35,6 @@ export default function Home() {
   const now = new Date();
 
   const activeBookings = bookings.filter((b) => {
-    // const start = new Date(b.start_date_time.replace(" ", "T"));
     const end = new Date(b.end_date_time.replace(" ", "T"));
 
     return now <= end;
@@ -68,26 +71,47 @@ export default function Home() {
                 justifyContent: "center",
               }}
             >
-              <TypeAnimation
-                sequence={[
-                  "MeetSpace",
-                  3000,
-                  "Smart Scheduling",
-                  2500,
-                  "Seamless Booking",
-                  2500,
-                  "MeetSpace",
-                  2500,
-                ]}
-                speed={50}
-                repeat={1}
-                cursor={false}
-              />
+              {isLoading ? (
+                <Skeleton
+                  variant="text"
+                  width={320}
+                  height={80}
+                  sx={{
+                    bgcolor: "rgba(255,255,255,0.08)",
+                  }}
+                />
+              ) : (
+                <TypeAnimation
+                  sequence={[
+                    "MeetSpace",
+                    3000,
+                    "Smart Scheduling",
+                    2500,
+                    "Seamless Booking",
+                    2500,
+                    "MeetSpace",
+                    2500,
+                  ]}
+                  speed={50}
+                  repeat={1}
+                  cursor={false}
+                />
+              )}
             </Typography>
 
             <Typography sx={{ color: "#aaa", mt: 2, fontSize: 18 }}>
-              Smart meeting room booking system to manage rooms, schedules and
-              availability effortlessly
+              {isLoading ? (
+                <Skeleton
+                  variant="text"
+                  width="70%"
+                  sx={{
+                    mx: "auto",
+                    bgcolor: "rgba(255,255,255,0.08)",
+                  }}
+                />
+              ) : (
+                "Smart meeting room booking system to manage rooms, schedules and availability effortlessly"
+              )}
             </Typography>
           </Box>
         </motion.div>
@@ -111,11 +135,34 @@ export default function Home() {
                   },
                 }}
               >
-                <Typography fontSize={28} fontWeight={700}>
-                  {item.value}
-                </Typography>
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    width={80}
+                    height={50}
+                    sx={{
+                      mx: "auto",
+                      bgcolor: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                ) : (
+                  <Typography fontSize={28} fontWeight={700}>
+                    {item.value}
+                  </Typography>
+                )}
 
-                <Typography sx={{ color: "#aaa" }}>{item.label}</Typography>
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    width={120}
+                    sx={{
+                      mx: "auto",
+                      bgcolor: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                ) : (
+                  <Typography sx={{ color: "#aaa" }}>{item.label}</Typography>
+                )}
               </Box>
             </Grid>
           ))}
@@ -135,8 +182,20 @@ export default function Home() {
             variant="h5"
             sx={{ fontWeight: "bold", color: "#fff", pt: 2, pb: 2 }}
           >
-            Features
+            {isLoading ? (
+              <Skeleton
+                variant="text"
+                width={140}
+                sx={{
+                  mx: "auto",
+                  bgcolor: "rgba(255,255,255,0.08)",
+                }}
+              />
+            ) : (
+              "Features"
+            )}
           </Typography>
+
           <Grid container spacing={4} mb={6}>
             {[
               {
@@ -178,13 +237,57 @@ export default function Home() {
                       },
                     }}
                   >
-                    {item.icon}
-                    <Typography mt={1} fontWeight={600}>
-                      {item.title}
-                    </Typography>
-                    <Typography sx={{ color: "#aaa", fontSize: 13 }}>
-                      {item.desc}
-                    </Typography>
+                    {isLoading ? (
+                      <Skeleton
+                        variant="circular"
+                        width={40}
+                        height={40}
+                        sx={{
+                          mx: "auto",
+                          bgcolor: "rgba(255,255,255,0.08)",
+                        }}
+                      />
+                    ) : (
+                      item.icon
+                    )}
+
+                    {isLoading ? (
+                      <Skeleton
+                        variant="text"
+                        width="60%"
+                        sx={{
+                          mx: "auto",
+                          bgcolor: "rgba(255,255,255,0.08)",
+                        }}
+                      />
+                    ) : (
+                      <Typography mt={1} fontWeight={600}>
+                        {item.title}
+                      </Typography>
+                    )}
+
+                    {isLoading ? (
+                      <>
+                        <Skeleton
+                          variant="text"
+                          sx={{
+                            bgcolor: "rgba(255,255,255,0.08)",
+                          }}
+                        />
+                        <Skeleton
+                          variant="text"
+                          width="80%"
+                          sx={{
+                            mx: "auto",
+                            bgcolor: "rgba(255,255,255,0.08)",
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <Typography sx={{ color: "#aaa", fontSize: 13 }}>
+                        {item.desc}
+                      </Typography>
+                    )}
                   </Box>
                 </motion.div>
               </Grid>
@@ -206,15 +309,55 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            <Typography fontWeight={600} mb={2} sx={{ color: "#fff" }}>
-              Why MeetSpace?
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "#fff",
+                pb: 2,
+              }}
+            >
+              {isLoading ? (
+                <Skeleton
+                  variant="text"
+                  width={180}
+                  sx={{
+                    mx: "auto",
+                    bgcolor: "rgba(255,255,255,0.08)",
+                  }}
+                />
+              ) : (
+                "Why MeetSpace?"
+              )}
             </Typography>
 
-            <Typography sx={{ color: "#aaa", maxWidth: 600, margin: "0 auto" }}>
-              MeetSpace simplifies room booking by providing an intuitive
-              interface, real-time availability tracking, and seamless
-              scheduling — helping teams collaborate more efficiently and avoid
-              conflicts.
+            <Typography
+              sx={{
+                color: "#aaa",
+                maxWidth: 750,
+                margin: "0 auto",
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <Skeleton
+                    variant="text"
+                    sx={{
+                      bgcolor: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                  <Skeleton
+                    variant="text"
+                    width="80%"
+                    sx={{
+                      mx: "auto",
+                      bgcolor: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                </>
+              ) : (
+                "MeetSpace simplifies room booking by providing an intuitive interface, real-time availability tracking, and seamless scheduling — helping teams collaborate more efficiently and avoid conflicts."
+              )}
             </Typography>
           </Box>
         </motion.div>

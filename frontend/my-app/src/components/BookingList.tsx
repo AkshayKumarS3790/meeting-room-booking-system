@@ -134,26 +134,6 @@ export default function BookingList() {
     startIndex + itemsPerPage,
   );
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: 3,
-        }}
-      >
-        {[...Array(6)].map((_, i) => (
-          <BookingSkeleton key={i} />
-        ))}
-      </Box>
-    );
-  }
-
-  if (error) {
-    return <PageError message="Error Loading bookings" />;
-  }
-
   function BookingSkeleton() {
     return (
       <Card
@@ -163,19 +143,32 @@ export default function BookingList() {
         }}
       >
         <CardContent>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Skeleton variant="text" width="40%" height={40} />
+
+            <Skeleton variant="rounded" width={90} height={30} />
+          </Box>
+
           <Skeleton variant="text" width="70%" />
-          <Skeleton variant="text" width="60%" />
-          <Skeleton variant="text" width="80%" />
+          <Skeleton variant="text" width="65%" />
           <Skeleton variant="text" width="90%" />
           <Skeleton variant="text" width="50%" />
 
-          <Box mt={2} display="flex" gap={2}>
-            <Skeleton variant="rectangular" width={110} height={35} />
-            <Skeleton variant="rectangular" width={110} height={35} />
+          <Box mt={3} display="flex" gap={2}>
+            <Skeleton variant="rounded" width={120} height={45} />
+            <Skeleton variant="rounded" width={95} height={45} />
           </Box>
         </CardContent>
       </Card>
     );
+  }
+
+  if (error) {
+    return <PageError message="Error Loading bookings" />;
   }
 
   return (
@@ -224,7 +217,20 @@ export default function BookingList() {
         />
       </Box>
 
-      {activeBookings.length === 0 ? (
+      {isLoading ? (
+        <Box
+          mt={2}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+            gap: 3,
+          }}
+        >
+          {[...Array(6)].map((_, i) => (
+            <BookingSkeleton key={i} />
+          ))}
+        </Box>
+      ) : activeBookings.length === 0 ? (
         <Typography sx={{ opacity: 0.7, mt: 2, color: "#fff" }}>
           {search.trim() !== "" || selectedDate !== "" || selectedRoom !== "all"
             ? "No bookings match the selected filters."
@@ -307,13 +313,13 @@ export default function BookingList() {
 
       <PaginationFooter
         page={page}
-        totalPages={totalPages}
+        totalPages={isLoading ? 1 : totalPages}
         itemsPerPage={itemsPerPage}
         setPage={setPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={totalItems}
-        startItem={startItem}
-        endItem={endItem}
+        totalItems={isLoading ? 0 : totalItems}
+        startItem={isLoading ? 0 : startItem}
+        endItem={isLoading ? 0 : endItem}
         pageSizeOptions={[6, 9, 12, 15]}
       />
 
