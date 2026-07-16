@@ -10,6 +10,7 @@ import {
   Button,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -323,7 +324,14 @@ export default function LoginPage() {
               },
             }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <>
+                <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
 
           <Typography textAlign="center" sx={{ mt: 2, color: "#aaa" }}>

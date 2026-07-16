@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import DarkTextField from "@/components/common/DarkTextField";
 import PrimaryButton from "@/components/common/PrimaryButton";
@@ -284,7 +284,14 @@ export default function BookingForm({
           // disabled={!isFormValid || isLoading}
           disabled={isLoading}
         >
-          {isLoading ? "Booking..." : "Confirm Booking"}
+          {isLoading ? (
+            <>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+              Booking...
+            </>
+          ) : (
+            "Confirm Booking"
+          )}
         </PrimaryButton>
       </form>
 

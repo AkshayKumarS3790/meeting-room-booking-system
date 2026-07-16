@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useAddRoomMutation } from "../redux/api";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
@@ -107,7 +107,14 @@ export default function AddRoomForm({ onClose }: { onClose: () => void }) {
             disabled={isLoading}
             sx={{ mb: 2 }}
           >
-            {isLoading ? "Adding..." : "Add Room"}
+            {isLoading ? (
+              <>
+                <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                Adding...
+              </>
+            ) : (
+              "Add Room"
+            )}
           </PrimaryButton>
 
           <SecondaryButton onClick={onClose} sx={{ mb: 2 }}>

@@ -10,6 +10,7 @@ import {
   Button,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -488,6 +489,7 @@ export default function RegisterPage() {
           fullWidth
           variant="contained"
           onClick={handleRegister}
+          disabled={loading}
           sx={{
             mt: 2,
             py: 1,
@@ -506,7 +508,14 @@ export default function RegisterPage() {
             },
           }}
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? (
+            <>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+              Registering...
+            </>
+          ) : (
+            "Register"
+          )}
         </Button>
 
         <Typography

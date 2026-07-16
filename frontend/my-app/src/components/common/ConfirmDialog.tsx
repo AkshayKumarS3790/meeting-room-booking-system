@@ -1,6 +1,11 @@
 "use client";
 
-import { DialogContent, Typography, Tooltip } from "@mui/material";
+import {
+  DialogContent,
+  Typography,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 
 import AppDialog from "./AppDialog";
 import AppDialogActions from "./AppDialogActions";
@@ -16,6 +21,7 @@ type Props = {
   confirmText?: string;
   children?: React.ReactNode;
   confirmDisabled?: boolean;
+  isLoading?: boolean;
 };
 
 export default function ConfirmDialog({
@@ -25,6 +31,7 @@ export default function ConfirmDialog({
   onClose,
   onConfirm,
   confirmText = "Delete",
+  isLoading,
   children,
   confirmDisabled = false,
 }: Props) {
@@ -49,9 +56,16 @@ export default function ConfirmDialog({
             <DangerButton
               sx={{ mt: 0.5 }}
               onClick={onConfirm}
-              disabled={confirmDisabled}
+              disabled={confirmDisabled || isLoading}
             >
-              {confirmText}
+              {isLoading ? (
+                <>
+                  <CircularProgress size={18} color="inherit" sx={{ mr: 1 }} />
+                  Deleting...
+                </>
+              ) : (
+                confirmText
+              )}
             </DangerButton>
           </span>
         </Tooltip>

@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+} from "@mui/material";
 import { useUpdateRoomMutation, useDeleteRoomMutation } from "../redux/api";
 import { Room } from "../redux/api";
 
@@ -137,7 +142,14 @@ export default function EditRoomForm({
           disabled={!isValid || isLoading}
           onClick={handleSubmit}
         >
-          {isLoading ? "Updating..." : "Update Room"}
+          {isLoading ? (
+            <>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+              Updating...
+            </>
+          ) : (
+            "Update Room"
+          )}
         </PrimaryButton>
 
         <DangerButton
@@ -148,7 +160,7 @@ export default function EditRoomForm({
             setConfirmDelete(true);
           }}
         >
-          {isDeleting ? "Deleting..." : "Delete Room"}
+          Delete Room
         </DangerButton>
       </Box>
 
@@ -159,6 +171,7 @@ export default function EditRoomForm({
         onClose={() => setConfirmDelete(false)}
         onConfirm={handleDelete}
         confirmDisabled={!acknowledged}
+        isLoading={isDeleting}
       >
         <FormControlLabel
           sx={{ mt: 1, maxWidth: 360, alignItems: "flex-start" }}

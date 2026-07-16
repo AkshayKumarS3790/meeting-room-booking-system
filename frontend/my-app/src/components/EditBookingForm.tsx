@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
@@ -220,7 +220,14 @@ export default function EditBookingForm({
           px: 2,
         }}
       >
-        {isLoading ? "Updating..." : "Update Booking"}
+        {isLoading ? (
+          <>
+            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+            Updating...
+          </>
+        ) : (
+          "Update Booking"
+        )}
       </PrimaryButton>
 
       <AppSnackbar

@@ -114,7 +114,8 @@ export default function BookingList() {
 
   const { data: rooms } = useGetRoomsQuery({});
 
-  const [deleteBooking] = useDeleteBookingMutation();
+  const [deleteBooking, { isLoading: isDeletingBooking }] =
+    useDeleteBookingMutation();
 
   useEffect(() => {
     setPage(1);
@@ -271,6 +272,7 @@ export default function BookingList() {
         title="Delete Booking"
         message="Are you sure you want to delete this booking?"
         onClose={() => setOpenDialog(false)}
+        isLoading={isDeletingBooking}
         onConfirm={async () => {
           try {
             if (selectedId) {
