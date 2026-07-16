@@ -18,7 +18,7 @@ import { useRouter, usePathname } from "next/navigation";
 const collapsedWidth = 60;
 
 const menuItems = [
-  { text: "Home", icon: <HomeIcon />, path: "/" },
+  { text: "Dashboard", icon: <HomeIcon />, path: "/dashboard" },
   { text: "Rooms", icon: <MeetingRoomIcon />, path: "/rooms" },
   { text: "Bookings", icon: <EventIcon />, path: "/bookings" },
   { text: "Calendar", icon: <CalendarMonthIcon />, path: "/calendar" },

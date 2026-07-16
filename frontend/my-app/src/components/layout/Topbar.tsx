@@ -24,7 +24,7 @@ export default function Topbar() {
   const pathname = usePathname();
 
   const pageTitles: Record<string, string> = {
-    "/": "Dashboard",
+    "/dashboard": "Dashboard",
     "/rooms": "Rooms",
     "/bookings": "Bookings",
     "/calendar": "Calendar",
@@ -42,7 +42,7 @@ export default function Topbar() {
     handleClose();
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   useEffect(() => {

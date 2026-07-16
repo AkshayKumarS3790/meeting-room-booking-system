@@ -12,9 +12,10 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import FloatingOrbs from "@/components/ui/FloatingOrbs";
 
 type TokenPayload = {
   user_id: number;
@@ -35,6 +36,22 @@ export default function LoginPage() {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode<{ exp: number }>(token);
+      if (decoded.exp * 1000 > Date.now()) {
+        router.replace("/dashboard");
+      }
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+    }
+  }, [router]);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -95,7 +112,7 @@ export default function LoginPage() {
         setSnackbarOpen(true);
 
         setTimeout(() => {
-          router.push("/");
+          router.push("/dashboard");
         }, 1000);
       } else {
         setSnackbarMsg(data.detail || "Invalid credentials");
@@ -122,6 +139,8 @@ export default function LoginPage() {
         justifyContent: "center",
       }}
     >
+      <FloatingOrbs />
+
       <Card
         sx={{
           width: {
@@ -142,6 +161,9 @@ export default function LoginPage() {
           },
 
           background: "linear-gradient(180deg, #1c1c3b 0%, #16162a 100%)",
+
+          position: "relative",
+          zIndex: 1,
 
           borderRadius: 4,
           overflow: "hidden",

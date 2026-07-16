@@ -12,8 +12,10 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+import FloatingOrbs from "@/components/ui/FloatingOrbs";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -35,6 +37,23 @@ export default function RegisterPage() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPasswordHelp, setShowPasswordHelp] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode<{ exp: number }>(token);
+
+      if (decoded.exp * 1000 > Date.now()) {
+        router.replace("/dashboard");
+      }
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+    }
+  }, [router]);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -147,6 +166,8 @@ export default function RegisterPage() {
         justifyContent: "center",
       }}
     >
+      <FloatingOrbs />
+
       <Card
         sx={{
           width: {
