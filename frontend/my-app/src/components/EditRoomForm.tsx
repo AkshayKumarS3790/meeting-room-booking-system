@@ -168,6 +168,8 @@ export default function EditRoomForm({
         open={confirmDelete}
         title="Delete Room"
         message="Are you sure you want to delete this room?"
+        confirmText="Delete"
+        loadingText="Deleting..."
         onClose={() => setConfirmDelete(false)}
         onConfirm={handleDelete}
         confirmDisabled={!acknowledged}

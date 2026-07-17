@@ -22,6 +22,7 @@ type Props = {
   children?: React.ReactNode;
   confirmDisabled?: boolean;
   isLoading?: boolean;
+  loadingText?: string;
 };
 
 export default function ConfirmDialog({
@@ -30,16 +31,23 @@ export default function ConfirmDialog({
   message,
   onClose,
   onConfirm,
-  confirmText = "Delete",
-  isLoading,
+  confirmText = "Confirm",
+  isLoading = false,
   children,
+  loadingText = "Processing...",
   confirmDisabled = false,
 }: Props) {
   return (
     <AppDialog open={open} onClose={onClose} title={title} maxWidth="xs">
-      <DialogContent sx={{ pt: 0.5, pr: 0.5, pb: 0.5 }}>
+      <DialogContent
+        sx={{
+          px: 0,
+          pt: 1,
+          pb: 1,
+        }}
+      >
+        {" "}
         <Typography>{message}</Typography>
-
         {children}
       </DialogContent>
 
@@ -61,7 +69,7 @@ export default function ConfirmDialog({
               {isLoading ? (
                 <>
                   <CircularProgress size={18} color="inherit" sx={{ mr: 1 }} />
-                  Deleting...
+                  {loadingText}
                 </>
               ) : (
                 confirmText

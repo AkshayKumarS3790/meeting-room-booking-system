@@ -98,13 +98,11 @@ export default function LoginPage() {
 
       if (res.ok) {
         localStorage.setItem("token", data.access_token);
-
         localStorage.setItem("refresh_token", data.refresh_token);
 
         const decoded = jwtDecode<TokenPayload>(data.access_token);
 
         localStorage.setItem("user_id", String(decoded.user_id));
-
         localStorage.setItem("user_name", String(decoded.user_name));
 
         setSnackbarMsg("Login successful");
@@ -144,8 +142,10 @@ export default function LoginPage() {
       <Card
         sx={{
           width: {
-            xs: "95%",
-            md: 850,
+            xs: "80%",
+            sm: 450,
+            md: 750,
+            lg: 850,
           },
 
           minHeight: {
@@ -179,7 +179,7 @@ export default function LoginPage() {
             },
             background: "linear-gradient(135deg, #a674fd, #7340ff)",
             color: "#fff",
-            p: 5,
+            p: 4,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -206,8 +206,8 @@ export default function LoginPage() {
               mt: 2,
               lineHeight: 2,
               fontSize: {
-                xs: "0.95rem",
-                md: "1.05rem",
+                xs: "0.9rem",
+                md: "1.0rem",
               },
               textAlign: "left",
             }}
@@ -245,6 +245,10 @@ export default function LoginPage() {
             sx={{
               color: "#7c4dff",
               mb: 1,
+              fontSize: {
+                xs: "2rem",
+                md: "3rem",
+              },
             }}
           >
             Login
@@ -255,6 +259,10 @@ export default function LoginPage() {
             sx={{
               color: "#aaa",
               mb: 1,
+              fontSize: {
+                xs: "0.9rem",
+                md: "1.0rem",
+              },
             }}
           >
             Sign in to access your workspace
@@ -332,7 +340,10 @@ export default function LoginPage() {
               mt: 2,
               py: 1,
 
-              fontSize: "1rem",
+              fontSize: {
+                xs: "0.9rem",
+                md: "1.0rem",
+              },
               fontWeight: 600,
 
               textTransform: "none",
@@ -356,7 +367,17 @@ export default function LoginPage() {
             )}
           </Button>
 
-          <Typography textAlign="center" sx={{ mt: 2, color: "#aaa" }}>
+          <Typography
+            textAlign="center"
+            sx={{
+              mt: 2,
+              color: "#aaa",
+              fontSize: {
+                xs: "0.9rem",
+                md: "1.0rem",
+              },
+            }}
+          >
             Don&apos;t have an account?{" "}
             <Typography
               component="span"

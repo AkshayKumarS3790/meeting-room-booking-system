@@ -190,6 +190,10 @@ export default function RegisterPage() {
           sx={{
             mb: 1,
             color: "#7c4dff",
+            fontSize: {
+              xs: "2rem",
+              md: "3rem",
+            },
           }}
         >
           Sign Up
@@ -200,6 +204,10 @@ export default function RegisterPage() {
           sx={{
             color: "#aaa",
             mb: 1,
+            fontSize: {
+              xs: "0.9rem",
+              md: "1.0rem",
+            },
           }}
         >
           Create your account to continue
@@ -303,12 +311,12 @@ export default function RegisterPage() {
           {showPasswordHelp && (
             <Box
               sx={{
-                position: "relative",
-                display: {
-                  xs: "block",
-                  md: "none",
-                },
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: "100%",
                 mt: 1,
+                zIndex: 20,
                 p: 2,
                 background: "linear-gradient(45deg, #1c1c3b 0%, #16162a 100%)",
                 border: "1px solid #444",
@@ -515,13 +523,14 @@ export default function RegisterPage() {
             mt: 2,
             py: 1,
 
-            fontSize: "1rem",
+            fontSize: {
+              xs: "0.9rem",
+              md: "1.0rem",
+            },
+
             fontWeight: 600,
-
             textTransform: "none",
-
             borderRadius: 2,
-
             background: "linear-gradient(90deg, #7c4dff, #9b6dff)",
 
             "&:hover": {
@@ -544,6 +553,10 @@ export default function RegisterPage() {
           sx={{
             mt: 2,
             color: "#aaa",
+            fontSize: {
+              xs: "0.9rem",
+              md: "1.0rem",
+            },
           }}
         >
           Already have an account?{" "}

@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import LogoutIcon from "@mui/icons-material/Logout";
+import ConfirmDialog from "../common/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { getUserFromToken } from "@/utils/auth";
@@ -20,6 +21,9 @@ import { usePathname } from "next/navigation";
 export default function Topbar() {
   const [userName, setUserName] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const pathname = usePathname();
 
@@ -40,9 +44,23 @@ export default function Topbar() {
 
   const handleLogout = () => {
     handleClose();
-    localStorage.removeItem("token");
-    localStorage.removeItem("refresh_token");
-    window.location.href = "/";
+    setOpenLogoutDialog(true);
+  };
+
+  const confirmLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+
+      // Small delay so user sees the loader
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+
+      window.location.href = "/";
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   useEffect(() => {
@@ -63,7 +81,6 @@ export default function Topbar() {
         backgroundColor: "#1e1e2f",
         width: "100%",
 
-        // ✅ FIXED TOPBAR
         position: "fixed",
         top: 0,
         left: 0,
@@ -145,6 +162,17 @@ export default function Topbar() {
           <ListItemText>Logout</ListItemText>
         </MenuItem>
       </Menu>
+
+      <ConfirmDialog
+        open={openLogoutDialog}
+        title="Logout"
+        message="Are you sure you want to logout from MeetSpace?"
+        confirmText="Logout"
+        loadingText="Logging out..."
+        isLoading={isLoggingOut}
+        onClose={() => setOpenLogoutDialog(false)}
+        onConfirm={confirmLogout}
+      />
     </Box>
   );
 }
