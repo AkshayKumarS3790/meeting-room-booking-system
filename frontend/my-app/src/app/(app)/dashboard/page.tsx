@@ -62,13 +62,19 @@ export default function Home() {
               variant="h3"
               sx={{
                 pt: 2,
-                fontWeight: 700,
+                fontWeight: 800,
+                lineHeight: 1.1,
                 color: "#fff",
                 textShadow: "0 0 20px rgba(124, 77, 255, 0.6)", // background glow
                 minHeight: "72px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                fontSize: {
+                  xs: "2.5rem",
+                  sm: "3rem",
+                  md: "3.5rem",
+                },
               }}
             >
               {isLoading ? (
