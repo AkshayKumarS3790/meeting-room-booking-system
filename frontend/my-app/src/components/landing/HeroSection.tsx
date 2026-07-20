@@ -4,6 +4,7 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
 import StatsSection from "./StatsSection";
+import { TypeAnimation } from "react-type-animation";
 
 type HeroSectionProps = {
   onLogin: () => void;
@@ -71,7 +72,7 @@ export default function HeroSection({ onLogin, onRegister }: HeroSectionProps) {
             <Box
               component="span"
               sx={{
-                background: "linear-gradient(90deg,#7c4dff,#a674fd,#d0bcff)",
+                background: "linear-gradient(90deg, #7c4dff, #a674fd, #d0bcff)",
 
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -81,9 +82,56 @@ export default function HeroSection({ onLogin, onRegister }: HeroSectionProps) {
             </Box>
           </Typography>
 
+          <Box
+            sx={{
+              mt: 3,
+              height: {
+                xs: 50,
+                md: 60,
+              },
+
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              sx={{
+                fontWeight: 800,
+
+                fontSize: {
+                  xs: "1.6rem",
+                  md: "2rem",
+                },
+
+                letterSpacing: "-0.2px",
+                background: "linear-gradient(90deg,#7c4dff,#a674fd,#d0bcff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "0 0 25px rgba(124,77,255,.45)",
+              }}
+            >
+              <TypeAnimation
+                sequence={[
+                  "MeetSpace",
+                  2000,
+
+                  "Smart Scheduling",
+                  2000,
+
+                  "Seamless Booking",
+                  2000,
+                ]}
+                speed={40}
+                repeat={2}
+                cursor={false}
+              />
+            </Typography>
+          </Box>
+
           <Typography
             sx={{
-              mt: 4,
+              mt: 3,
               maxWidth: 900,
               color: "#9ca3af",
               lineHeight: 1.8,
@@ -141,7 +189,7 @@ export default function HeroSection({ onLogin, onRegister }: HeroSectionProps) {
               sx={{
                 textTransform: "none",
                 borderRadius: "999px",
-                px: 5,
+                px: 4,
                 py: 1.4,
                 color: "#fff",
                 borderColor: "#7c4dff",
