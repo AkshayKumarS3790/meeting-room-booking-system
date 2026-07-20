@@ -155,7 +155,6 @@ export default function RoomsList() {
           <Typography
             sx={{
               color: "#888",
-              mt: 0.5,
               fontSize: {
                 xs: "0.7rem",
                 md: "0.95rem",
