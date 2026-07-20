@@ -35,7 +35,9 @@ export default function Sidebar() {
         top: "60px",
         height: "100%",
         position: "fixed",
-        backgroundColor: "#1e1e2f",
+        background: "rgba(18,18,28,.75)",
+        backdropFilter: "blur(12px)",
+        borderRight: "1px solid rgba(255,255,255,.06)",
         color: "#fff",
         display: "flex",
         flexDirection: "column",
@@ -63,20 +65,29 @@ export default function Sidebar() {
             <ListItemButton
               onClick={() => router.push(item.path)}
               sx={{
-                mx: 0.5,
+                mx: 0.7,
                 my: 0.5,
                 borderRadius: 2,
                 height: 48,
                 justifyContent: "center",
-                background: pathname === item.path ? "#2e2e45" : "transparent",
+                background:
+                  pathname === item.path
+                    ? "linear-gradient(90deg,#7c4dff,#a674fd)"
+                    : "transparent",
                 "&:hover": {
-                  background: "#2e2e45",
+                  background:
+                    pathname === item.path
+                      ? "linear-gradient(90deg,#7c4dff,#a674fd)"
+                      : "rgba(124,77,255,.12)",
                 },
               }}
             >
               <ListItemIcon
                 sx={{
                   color: "#fff",
+                  "& svg": {
+                    fontSize: 24,
+                  },
                   minWidth: 0,
                   display: "flex",
                   justifyContent: "center",

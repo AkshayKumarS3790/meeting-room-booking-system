@@ -77,19 +77,30 @@ export default function Topbar() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        px: 2,
-        backgroundColor: "#1e1e2f",
+        px: 3,
         width: "100%",
-
         position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         zIndex: 1300,
+        background: "rgba(18,18,28,.75)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid rgba(255,255,255,.06)",
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography variant="h6" sx={{ color: "#fff", fontWeight: "bold" }}>
+        <Typography
+          sx={{
+            color: "#fff",
+            fontWeight: 700,
+            letterSpacing: "0.5px",
+            fontSize: {
+              xs: "1.2rem",
+              md: "1.5rem",
+            },
+          }}
+        >
           {pageTitles[pathname] || "Dashboard"}
         </Typography>
       </Box>
@@ -100,21 +111,24 @@ export default function Topbar() {
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1,
+          gap: 1.25,
           cursor: "pointer",
-          py: 0.5,
-          px: 0.5,
-          borderRadius: 2,
+          px: 1.25,
+          py: 0.75,
+          borderRadius: "6px",
+          transition: "all .3s ease",
+
           "&:hover": {
-            backgroundColor: "#2e2e45",
+            background: "rgba(124,77,255,.12)",
           },
         }}
       >
         <Avatar
           sx={{
-            width: 30,
-            height: 30,
-            fontSize: 13,
+            width: 35,
+            height: 35,
+            fontSize: 14,
+            fontWeight: 700,
             bgcolor: "#7c4dff",
           }}
         >

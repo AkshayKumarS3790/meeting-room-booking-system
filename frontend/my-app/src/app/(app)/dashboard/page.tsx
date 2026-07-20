@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { motion } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { useGetRoomsQuery, useGetBookingsQuery } from "@/redux/api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: roomsData, isLoading: roomsLoading } = useGetRoomsQuery({});
@@ -21,9 +21,16 @@ export default function Home() {
     );
 
   const isLoading = roomsLoading || bookingsLoading;
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const storedUserName = localStorage.getItem("user_name");
+
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
   }, []);
 
   const rooms = Array.isArray(roomsData) ? roomsData : [];
@@ -53,7 +60,14 @@ export default function Home() {
         {/* HERO SECTION */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
           transition={{ duration: 0.6 }}
         >
           <Box textAlign="center" mb={6}>
@@ -62,18 +76,26 @@ export default function Home() {
               variant="h3"
               sx={{
                 pt: 2,
-                fontWeight: 800,
-                lineHeight: 1.1,
+                fontWeight: 900,
                 color: "#fff",
-                textShadow: "0 0 20px rgba(124, 77, 255, 0.6)", // background glow
-                minHeight: "72px",
+
+                letterSpacing: "-2px",
+
+                textShadow: "0 0 30px rgba(124,77,255,.35)",
+
+                minHeight: {
+                  xs: "90px",
+                  md: "120px",
+                },
+
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+
                 fontSize: {
-                  xs: "2.5rem",
+                  xs: "2rem",
                   sm: "3rem",
-                  md: "3.5rem",
+                  md: "4rem",
                 },
               }}
             >
@@ -88,24 +110,27 @@ export default function Home() {
                 />
               ) : (
                 <TypeAnimation
-                  sequence={[
-                    "MeetSpace",
-                    3000,
-                    "Smart Scheduling",
-                    2500,
-                    "Seamless Booking",
-                    2500,
-                    "MeetSpace",
-                    2500,
-                  ]}
-                  speed={50}
-                  repeat={1}
+                  sequence={[`Welcome ${userName}`]}
+                  speed={40}
                   cursor={false}
                 />
               )}
             </Typography>
 
-            <Typography sx={{ color: "#aaa", mt: 2, fontSize: 18 }}>
+            <Typography
+              sx={{
+                mt: 1,
+                maxWidth: 750,
+                mx: "auto",
+                color: "#9ca3af",
+                lineHeight: 1.5,
+
+                fontSize: {
+                  xs: "1rem",
+                  md: "1.1rem",
+                },
+              }}
+            >
               {isLoading ? (
                 <Skeleton
                   variant="text"
@@ -132,12 +157,16 @@ export default function Home() {
               <Box
                 sx={{
                   p: 3,
-                  borderRadius: 3,
-                  background: "#1e1e2f",
+                  borderRadius: 4,
+                  background: "linear-gradient(180deg,#24243e,#1a1a2e)",
+                  border: "1px solid rgba(255,255,255,.06)",
                   textAlign: "center",
-                  transition: "0.3s",
+                  transition: "all .3s ease",
+
                   "&:hover": {
-                    transform: "translateY(-4px)",
+                    transform: "translateY(-6px)",
+                    boxShadow: "0 0 25px rgba(124,77,255,.15)",
+                    borderColor: "rgba(124,77,255,.25)",
                   },
                 }}
               >
@@ -152,9 +181,17 @@ export default function Home() {
                     }}
                   />
                 ) : (
-                  <Typography fontSize={28} fontWeight={700}>
-                    {item.value}
-                  </Typography>
+                  <>
+                    <Typography
+                      sx={{
+                        fontSize: "2rem",
+                        fontWeight: 800,
+                        color: "#fff",
+                      }}
+                    >
+                      {item.value}
+                    </Typography>
+                  </>
                 )}
 
                 {isLoading ? (
@@ -198,7 +235,7 @@ export default function Home() {
                 }}
               />
             ) : (
-              "Features"
+              "Everything you need"
             )}
           </Typography>
 
@@ -230,7 +267,8 @@ export default function Home() {
                 >
                   <Box
                     sx={{
-                      background: "#2e2e45",
+                      background: "linear-gradient(180deg, #24243e, #1a1a2e)",
+                      border: "1px solid rgba(255,255,255,.06)",
                       p: 3,
                       mb: 3,
                       borderRadius: 3,
@@ -238,8 +276,9 @@ export default function Home() {
                       transition: "0.3s",
                       cursor: "pointer",
                       "&:hover": {
-                        transform: "scale(1.05)",
-                        background: "#282846",
+                        transform: "translateY(-6px)",
+                        boxShadow: "0 0 25px rgba(124,77,255,.15)",
+                        borderColor: "rgba(124,77,255,.25)",
                       },
                     }}
                   >
@@ -309,7 +348,8 @@ export default function Home() {
         >
           <Box
             sx={{
-              background: "#1e1e2f",
+              background: "linear-gradient(180deg,#24243e,#1a1a2e)",
+              border: "1px solid rgba(255,255,255,.06)",
               borderRadius: 3,
               p: 4,
               textAlign: "center",
@@ -333,7 +373,7 @@ export default function Home() {
                   }}
                 />
               ) : (
-                "Why MeetSpace?"
+                "Why Teams Choose MeetSpace"
               )}
             </Typography>
 
@@ -362,7 +402,7 @@ export default function Home() {
                   />
                 </>
               ) : (
-                "MeetSpace simplifies room booking by providing an intuitive interface, real-time availability tracking, and seamless scheduling — helping teams collaborate more efficiently and avoid conflicts."
+                "MeetSpace simplifies room booking by providing an intuitive interface, real-time availability tracking, and seamless scheduling - helping teams collaborate more efficiently and avoid conflicts."
               )}
             </Typography>
           </Box>
