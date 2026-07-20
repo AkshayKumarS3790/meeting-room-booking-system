@@ -243,9 +243,11 @@ export default function BookingList() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              md: "repeat(auto-fit, minmax(350px, 1fr))",
+              sm: "repeat(2, minmax(0, 1fr))",
+              lg: "repeat(3, minmax(0, 1fr))",
             },
             gap: 3,
+            justifyContent: "start",
           }}
         >
           {[...Array(6)].map((_, i) => (
@@ -293,8 +295,10 @@ export default function BookingList() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              md: "repeat(auto-fit, minmax(350px, 1fr))",
+              sm: "repeat(2, minmax(0, 1fr))",
+              lg: "repeat(3, minmax(0, 1fr))",
             },
+
             gap: 3,
             alignItems: "start",
             justifyContent: "start",
