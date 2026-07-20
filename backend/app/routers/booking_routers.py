@@ -94,13 +94,16 @@ def update_booking(
     if not existing_booking:
         raise booking_not_found(booking_id)
     
-    if existing_booking["user_id"] != current_user["user_id"]:
+    if (
+        existing_booking["user_id"] != current_user.get("user_id")
+        and "edit_any_booking" not in current_user.get("permissions", [])
+    ):
         raise HTTPException(
             status_code=403,
-            detail="You can only edit your own bookings"
+            detail="You can edit only your own booking"
         )
 
-    booking.user_id = current_user["user_id"]
+    booking.user_id = existing_booking["user_id"]
 
     updated_booking = booking_crud.update_booking(db, booking_id, booking)
 
@@ -113,16 +116,20 @@ def delete_booking(
     booking_id: int,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
-    ):
+):
     existing_booking = booking_crud.get_booking(db, booking_id)
 
     if not existing_booking:
         raise booking_not_found(booking_id)
     
-    if existing_booking["user_id"] != current_user["user_id"]:
+    if (
+        existing_booking["user_id"] != current_user.get("user_id")
+        and "delete_any_booking"
+            not in current_user.get("permissions", [])
+    ):
         raise HTTPException(
             status_code=403,
-            detail="You can only delete your own bookings"
+            detail="You can delete only your own booking"
         )
     
     booking_crud.delete_booking(db, booking_id)

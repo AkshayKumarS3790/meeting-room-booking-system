@@ -14,9 +14,13 @@ from app.models.room import Room
 from app.models.booking import Booking
 from app.models.user import User
 
+from app.models.role import Role
+from app.models.permission import Permission
+from app.models.role_permission import RolePermission
+
 from fastapi.middleware.cors import CORSMiddleware
 
-Base.metadata.create_all(bind=engine)  # This line creates database tables automatically
+# Base.metadata.create_all(bind=engine)  # This line creates database tables automatically
 
 app = FastAPI(title="Meeting Room Booking System", version="1.0.1")  # Created the API Application
 

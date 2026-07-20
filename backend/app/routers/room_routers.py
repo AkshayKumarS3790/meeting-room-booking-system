@@ -10,13 +10,18 @@ from typing import Optional
 from app.models.booking import Booking
 
 from app.exc_handling.room_exceptions import *
+from app.auth.dependencies import require_permission
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])  # Creates router group
 
 # API 1 - Create Room
 # This API creates a new room in DB
 @router.post("/", response_model=RoomResponse)
-def create_room(room: RoomCreate, db: Session = Depends(get_db)):
+def create_room(
+    room: RoomCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_permission("create_room"))
+):
     return room_crud.create_room(db, room)
 
 
@@ -118,20 +123,23 @@ def filter_rooms(
 def update_room(
     room_name: str,
     updated_room: RoomCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_permission("update_room"))
 ):
     room = room_crud.update_room(db, room_name, updated_room)
-    
     if not room:
         raise room_not_found_exception()
-    
     return room
 
 
 # API 6 - Delete Room
 # This API deletes a room from DB
 @router.delete("/{room_name}")
-def delete_room(room_name: str, db: Session = Depends(get_db)):
+def delete_room(
+    room_name: str,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_permission("delete_room"))  
+):
     room = room_crud.delete_room(db, room_name)
     if not room:
         raise room_not_found_exception()

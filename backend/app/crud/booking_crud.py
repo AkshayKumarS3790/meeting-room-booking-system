@@ -162,6 +162,13 @@ def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
     if not booking:
         return None
 
+    print(type(booking_data.start_date_time))
+    print(booking_data.start_date_time)
+
+    print(type(booking_data.end_date_time))
+    print(booking_data.end_date_time)
+
+
     start_date_time = datetime.strptime(booking_data.start_date_time, "%Y-%m-%d %H:%M")
     end_date_time = datetime.strptime(booking_data.end_date_time, "%Y-%m-%d %H:%M")
 
