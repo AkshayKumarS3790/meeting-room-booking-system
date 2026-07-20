@@ -139,7 +139,9 @@ export default function BookingList() {
     return (
       <Card
         sx={{
-          backgroundColor: "#2e2e45",
+          background: "linear-gradient(180deg, #303050, #1c1c32)",
+
+          border: "1px solid rgba(255,255,255,.06)",
           borderRadius: 3,
         }}
       >
@@ -150,7 +152,6 @@ export default function BookingList() {
             alignItems="center"
           >
             <Skeleton variant="text" width="40%" height={40} />
-
             <Skeleton variant="rounded" width={90} height={30} />
           </Box>
 
@@ -180,16 +181,33 @@ export default function BookingList() {
         alignItems="center"
         mb={2}
       >
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: "bold",
-            mt: 1,
-            color: "#fff",
-          }}
-        >
-          Bookings
-        </Typography>
+        <Box>
+          <Typography
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+
+              fontSize: {
+                xs: "1.4rem",
+                md: "2rem",
+              },
+            }}
+          >
+            Booking Management
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#888",
+              fontSize: {
+                xs: "0.7rem",
+                md: "0.95rem",
+              },
+            }}
+          >
+            Manage upcoming meetings and room reservations.
+          </Typography>
+        </Box>
 
         <BookingFilters
           search={search}
@@ -223,7 +241,10 @@ export default function BookingList() {
           mt={2}
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(auto-fit, minmax(350px, 1fr))",
+            },
             gap: 3,
           }}
         >
@@ -232,17 +253,48 @@ export default function BookingList() {
           ))}
         </Box>
       ) : activeBookings.length === 0 ? (
-        <Typography sx={{ opacity: 0.7, mt: 2, color: "#fff" }}>
-          {search.trim() !== "" || selectedDate !== "" || selectedRoom !== "all"
-            ? "No bookings match the selected filters."
-            : "No bookings available."}
-        </Typography>
+        <Box
+          sx={{
+            py: 8,
+            textAlign: "center",
+            borderRadius: 4,
+            background: "linear-gradient(180deg,#24243e,#1a1a2e)",
+            border: "1px solid rgba(255,255,255,.06)",
+          }}
+        >
+          <Typography
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: "1.3rem",
+            }}
+          >
+            No Bookings Found
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 1,
+
+              color: "#888",
+            }}
+          >
+            {search.trim() !== "" ||
+            selectedDate !== "" ||
+            selectedRoom !== "all"
+              ? "Try changing your filters."
+              : "No active bookings available."}
+          </Typography>
+        </Box>
       ) : (
         <Box
           mt={2}
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(auto-fit, minmax(350px, 1fr))",
+            },
             gap: 3,
             alignItems: "start",
             justifyContent: "start",

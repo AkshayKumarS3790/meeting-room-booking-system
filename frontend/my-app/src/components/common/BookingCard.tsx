@@ -32,14 +32,16 @@ export default function BookingCard({
   return (
     <Card
       sx={{
-        backgroundColor: "#2e2e45",
+        background: "linear-gradient(180deg, #303050, #1c1c32)",
+        border: "1px solid rgba(255,255,255,.06)",
         color: "#fff",
         borderRadius: 3,
         transition: "0.3s",
 
         "&:hover": {
-          backgroundColor: "#26263a",
-          transform: "translateY(-4px)",
+          transform: "translateY(-6px)",
+          borderColor: "rgba(124,77,255,.25)",
+          boxShadow: "0 0 25px rgba(124,77,255,.15)",
         },
       }}
     >
@@ -52,8 +54,8 @@ export default function BookingCard({
         }}
       >
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography mb={0.5}>
-            <b>Room:</b> {booking.room_name}
+          <Typography sx={{ fontSize: "1.35rem", fontWeight: "bold" }}>
+            <b> {booking.room_name} </b>
           </Typography>
 
           {isMyBooking && (
@@ -61,7 +63,7 @@ export default function BookingCard({
               label="My Booking"
               size="small"
               sx={{
-                backgroundColor: "#995eff",
+                background: "linear-gradient(90deg, #7c4dff, #a674fd)",
                 color: "#fff",
                 fontWeight: 600,
               }}
@@ -69,17 +71,60 @@ export default function BookingCard({
           )}
         </Box>
 
-        <Typography mb={0.5}>
-          <b>Booked By:</b> {booking.booked_by}
+        <Typography sx={{ color: "#bbb" }}>
+          Booked By:
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+              ml: 0.5,
+            }}
+          >
+            {booking.booked_by}
+          </Box>
         </Typography>
-        <Typography mb={0.5}>
-          <b>Purpose:</b> {booking.purpose}
+
+        <Typography sx={{ color: "#bbb" }}>
+          Purpose:
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+              ml: 0.5,
+            }}
+          >
+            {booking.purpose}
+          </Box>
         </Typography>
-        <Typography mb={0.5}>
-          <b>Time:</b> {booking.start_date_time} → {booking.end_date_time}
+
+        <Typography sx={{ color: "#bbb" }}>
+          Time:
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+              ml: 0.5,
+            }}
+          >
+            {booking.start_date_time} → {booking.end_date_time}
+          </Box>
         </Typography>
-        <Typography>
-          <b>Capacity:</b> {booking.required_capacity}
+
+        <Typography sx={{ color: "#bbb" }}>
+          Capacity:
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+              ml: 0.5,
+            }}
+          >
+            {booking.required_capacity}
+          </Box>
         </Typography>
 
         <Box display="flex" gap={2}>
