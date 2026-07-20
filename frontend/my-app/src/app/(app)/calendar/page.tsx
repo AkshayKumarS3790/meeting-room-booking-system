@@ -84,13 +84,12 @@ export default function CalendarPage() {
   };
 
   const eventStyleGetter = (event: CalendarEvent) => {
-    console.log(event);
     const color = generateColor(event.resource.room);
 
     return {
       style: {
-        backgroundColor: color + "90",
-        border: `1px solid ${color}`,
+        backgroundColor: color + "80",
+        borderLeft: `4px solid ${color}`,
         color: "#d9d9d9",
         borderRadius: "6px",
       },
@@ -102,7 +101,8 @@ export default function CalendarPage() {
       <Box
         sx={{
           height: "77vh",
-          backgroundColor: "#1e1e2f",
+          background: "linear-gradient(180deg, #24243e, #1a1a2e)",
+          border: "1px solid rgba(255,255,255,.06)",
           borderRadius: 3,
           p: 2,
         }}
@@ -149,7 +149,7 @@ export default function CalendarPage() {
           overflow: "hidden",
         }}
       >
-        <Typography fontSize={12} fontWeight={600} noWrap>
+        <Typography fontSize={12} fontWeight={700} noWrap>
           {event.title}
         </Typography>
 
@@ -162,12 +162,34 @@ export default function CalendarPage() {
 
   return (
     <Box>
-      <Typography
-        variant="h5"
-        sx={{ fontWeight: "bold", mb: 1, color: "#fff" }}
-      >
-        Calendar
-      </Typography>
+      <Box mb={2}>
+        <Typography
+          sx={{
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: {
+              xs: "1.4rem",
+              md: "2rem",
+            },
+            mt: -1.5,
+          }}
+        >
+          Calendar View
+        </Typography>
+
+        <Typography
+          sx={{
+            color: "#888",
+            fontSize: {
+              xs: "0.7rem",
+              md: "0.95rem",
+            },
+            mb: -1,
+          }}
+        >
+          Visualize upcoming meetings and room schedules.
+        </Typography>
+      </Box>
 
       {isLoading ? (
         <CalendarSkeleton />
@@ -176,7 +198,8 @@ export default function CalendarPage() {
           className={`calendar-view-${view}`}
           sx={{
             height: "77vh",
-            backgroundColor: "#1e1e2f",
+            background: "linear-gradient(180deg, #24243e, #1a1a2e)",
+            border: "1px solid rgba(255,255,255,.06)",
             borderRadius: 3,
             p: 2,
           }}

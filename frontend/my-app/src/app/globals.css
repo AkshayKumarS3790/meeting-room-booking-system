@@ -115,7 +115,7 @@ a {
 
 /* Calendar background */
 .rbc-calendar {
-  background-color: #1e1e2f !important;
+  background: transparent !important;
   color: #fff !important;
 }
 
