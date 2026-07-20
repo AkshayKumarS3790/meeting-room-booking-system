@@ -43,7 +43,8 @@ export default function RoomCard({
     <Card
       sx={{
         maxWidth: "100%",
-        backgroundColor: "#2e2e45",
+        background: "linear-gradient(180deg, #303050, #1c1c32)",
+        border: "1px solid rgba(255,255,255,.06)",
         color: "#fff",
         borderRadius: 3,
         transition: "0.3s",
@@ -53,8 +54,9 @@ export default function RoomCard({
         justifyContent: "space-between",
 
         "&:hover": {
-          backgroundColor: "#26263a",
-          transform: "translateY(-4px)",
+          transform: "translateY(-6px)",
+          borderColor: "rgba(124,77,255,.25)",
+          boxShadow: "0 0 25px rgba(124,77,255,.15)",
         },
       }}
     >
@@ -64,7 +66,14 @@ export default function RoomCard({
         justifyContent="space-between"
         sx={{ mb: 0.2, p: 2, pb: 0.5 }}
       >
-        <Typography sx={{ mb: 0 }} variant="h6" fontWeight="bold">
+        <Typography
+          sx={{
+            mb: 0,
+            fontWeight: 700,
+            fontSize: "1.2rem",
+            letterSpacing: "-0.3px",
+          }}
+        >
           {room.room_name}
         </Typography>
 
@@ -91,8 +100,31 @@ export default function RoomCard({
           pt: 1,
         }}
       >
-        <Typography>Capacity: {room.capacity}</Typography>
-        <Typography>Location: {room.location}</Typography>
+        <Typography sx={{ color: "#ccc" }}>
+          Capacity:{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+            }}
+          >
+            {room.capacity}
+          </Box>
+        </Typography>
+
+        <Typography sx={{ color: "#ccc" }}>
+          Location:{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "#fff",
+              fontWeight: 600,
+            }}
+          >
+            {room.location}
+          </Box>
+        </Typography>
 
         <PrimaryButton
           sx={{

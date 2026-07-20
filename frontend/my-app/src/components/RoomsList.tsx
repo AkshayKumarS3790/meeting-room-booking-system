@@ -94,7 +94,8 @@ export default function RoomsList() {
     return (
       <Card
         sx={{
-          backgroundColor: "#2e2e45",
+          background: "linear-gradient(180deg, #24243e, #1a1a2e)",
+          border: "1px solid rgba(255,255,255,.06)",
           borderRadius: 3,
         }}
       >
@@ -105,7 +106,6 @@ export default function RoomsList() {
             alignItems="center"
           >
             <Skeleton variant="text" width="45%" height={40} />
-
             <Skeleton variant="circular" width={12} height={12} />
           </Box>
 
@@ -114,7 +114,6 @@ export default function RoomsList() {
 
           <Box mt={3} display="flex" gap={2}>
             <Skeleton variant="rounded" width={120} height={45} />
-
             <Skeleton variant="rounded" width={105} height={45} />
           </Box>
         </CardContent>
@@ -139,9 +138,34 @@ export default function RoomsList() {
         }}
       >
         {/* LEFT SIDE */}
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#fff" }}>
-          Rooms
-        </Typography>
+        <Box>
+          <Typography
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: {
+                xs: "1.4rem",
+                md: "2rem",
+              },
+            }}
+          >
+            Room Management
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#888",
+              mt: 0.5,
+              fontSize: {
+                xs: "0.7rem",
+                md: "0.95rem",
+              },
+            }}
+          >
+            Manage meeting rooms, capacity and availability.
+          </Typography>
+        </Box>
+
         {/* RIGHT SIDE - FILTERS */}
         <Box
           sx={{
@@ -229,11 +253,36 @@ export default function RoomsList() {
           ))}
         </Box>
       ) : (
-        <Typography sx={{ opacity: 0.7 }}>
-          {roomSearch.trim() !== "" || selectedLocation !== "all"
-            ? "No rooms match the selected filters."
-            : "No rooms available."}
-        </Typography>
+        <Box
+          sx={{
+            py: 8,
+            textAlign: "center",
+            borderRadius: 4,
+            background: "linear-gradient(180deg,#24243e,#1a1a2e)",
+            border: "1px solid rgba(255,255,255,.06)",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "1.3rem",
+              fontWeight: 700,
+              color: "#fff",
+            }}
+          >
+            No Rooms Found
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 1,
+              color: "#888",
+            }}
+          >
+            {roomSearch.trim() !== "" || selectedLocation !== "all"
+              ? "Try changing your filters."
+              : "Create a room to get started."}
+          </Typography>
+        </Box>
       )}
 
       {/* PAGINATION */}
