@@ -17,10 +17,10 @@ import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
 
-type TokenPayload = {
-  user_id: number;
-  user_name: string;
-};
+// type TokenPayload = {
+//   user_id: number;
+//   user_name: string;
+// };
 
 export default function LoginPage() {
   const router = useRouter();
@@ -100,10 +100,20 @@ export default function LoginPage() {
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        const decoded = jwtDecode<TokenPayload>(data.access_token);
+        const meRes = await fetch("http://127.0.0.1:8000/api/v1/users/me", {
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        });
 
-        localStorage.setItem("user_id", String(decoded.user_id));
-        localStorage.setItem("user_name", String(decoded.user_name));
+        const user = await meRes.json();
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // const decoded = jwtDecode<TokenPayload>(data.access_token);
+
+        // localStorage.setItem("user_id", String(decoded.user_id));
+        // localStorage.setItem("user_name", String(decoded.user_name));
 
         setSnackbarMsg("Login successful");
         setSeverity("success");

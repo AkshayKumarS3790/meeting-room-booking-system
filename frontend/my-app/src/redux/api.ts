@@ -121,10 +121,11 @@ type RoomFilterParams = {
   end_date_time?: string;
 };
 
-type CurrentUser = {
+export type CurrentUser = {
   user_id: number;
   user_name: string;
-  email: string;
+  role: string;
+  permissions: string[];
 };
 
 export type RoomResponse = Room[] | { message: string };
@@ -247,6 +248,7 @@ export const api = createApi({
 
 export const {
   useGetRoomsQuery,
+  useGetCurrentUserQuery,
   useCreateBookingMutation,
   useGetUsersQuery,
   useGetBookingsQuery,

@@ -26,10 +26,11 @@ export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const storedUserName = localStorage.getItem("user_name");
+    const user = localStorage.getItem("user");
 
-    if (storedUserName) {
-      setUserName(storedUserName);
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserName(parsedUser.user_name);
     }
   }, []);
 
@@ -43,7 +44,6 @@ export default function Home() {
 
   const activeBookings = bookings.filter((b) => {
     const end = new Date(b.end_date_time.replace(" ", "T"));
-
     return now <= end;
   }).length;
 
