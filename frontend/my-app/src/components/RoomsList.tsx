@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 
 import { useGetRoomsQuery, useGetBookingsQuery, Room } from "@/redux/api";
 
+import { getCurrentUser } from "@/utils/currentUser";
+
 import AddRoomForm from "./AddRoomForm";
 import RoomCard from "./RoomCard";
 
@@ -38,6 +40,8 @@ export default function RoomsList() {
 
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const [role, setRole] = useState("");
 
   const { data: allRoomsData } = useGetRoomsQuery({});
 
@@ -85,6 +89,14 @@ export default function RoomsList() {
       behavior: "smooth",
     });
   }, [page, itemsPerPage]);
+
+  useEffect(() => {
+    const user = getCurrentUser();
+
+    if (user) {
+      setRole(user.role);
+    }
+  }, []);
 
   const startIndex = (page - 1) * itemsPerPage;
 
@@ -195,7 +207,9 @@ export default function RoomsList() {
               setSelectedLocation("all");
               setPage(1);
             }}
-            onAddRoom={() => setOpenRoomDialog(true)}
+            onAddRoom={
+              role === "admin" ? () => setOpenRoomDialog(true) : undefined
+            }
           />
         </Box>
       </Box>

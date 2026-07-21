@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 
 import SearchField from "./SearchField";
 import FilterSelect from "./FilterSelect";
@@ -19,7 +19,7 @@ type Props = {
     label: string;
   }[];
 
-  onAddRoom: () => void;
+  onAddRoom?: () => void;
 
   clearFilters: () => void;
 };
@@ -63,7 +63,33 @@ export default function RoomFilters({
         options={locationOptions}
       />
 
-      <PrimaryButton onClick={onAddRoom}>Add Room</PrimaryButton>
+      <Tooltip
+        title={onAddRoom ? "Add a new room" : "Only Admins can add rooms"}
+        arrow
+      >
+        <span
+          style={{
+            display: "inline-block",
+            width: "100%",
+          }}
+        >
+          <PrimaryButton
+            onClick={onAddRoom}
+            disabled={!onAddRoom}
+            sx={{
+              width: "100%",
+
+              "&.Mui-disabled": {
+                background: "linear-gradient(90deg, #7c4dff, #a674fd)",
+                opacity: 0.35,
+                color: "#ffffff",
+              },
+            }}
+          >
+            Add Room
+          </PrimaryButton>
+        </span>
+      </Tooltip>
 
       <SecondaryButton
         onClick={clearFilters}

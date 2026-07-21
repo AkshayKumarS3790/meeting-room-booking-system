@@ -14,7 +14,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ConfirmDialog from "../common/ConfirmDialog";
 
 import { useEffect, useState } from "react";
-import { getUserFromToken } from "@/utils/auth";
+import { getCurrentUser } from "@/utils/auth";
 
 import { usePathname } from "next/navigation";
 
@@ -64,7 +64,7 @@ export default function Topbar() {
   };
 
   useEffect(() => {
-    const user = getUserFromToken();
+    const user = getCurrentUser();
     if (user) {
       setUserName(user.user_name);
     }

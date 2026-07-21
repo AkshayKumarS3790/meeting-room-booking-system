@@ -10,6 +10,8 @@ import PrimaryButton from "@/components/common/PrimaryButton";
 import SecondaryButton from "./common/SecondaryButton";
 import AppDialog from "@/components/common/AppDialog";
 
+import { getCurrentUser } from "@/utils/currentUser";
+
 export type Room = {
   room_name: string;
   capacity: number;
@@ -38,6 +40,10 @@ export default function RoomCard({
         return endTime > now;
       }).length
     : 0;
+
+  const user = getCurrentUser();
+
+  const isAdmin = user?.role === "admin";
 
   return (
     <Card
@@ -112,7 +118,6 @@ export default function RoomCard({
             {room.capacity}
           </Box>
         </Typography>
-
         <Typography sx={{ color: "#ccc" }}>
           Location:{" "}
           <Box
@@ -125,7 +130,6 @@ export default function RoomCard({
             {room.location}
           </Box>
         </Typography>
-
         <PrimaryButton
           sx={{
             mt: 2,
@@ -136,15 +140,17 @@ export default function RoomCard({
           Book Room
         </PrimaryButton>
 
-        <SecondaryButton
-          sx={{
-            mt: 2,
-            ml: 2,
-          }}
-          onClick={() => setOpenEdit(true)}
-        >
-          Edit Room
-        </SecondaryButton>
+        {isAdmin && (
+          <SecondaryButton
+            sx={{
+              mt: 2,
+              ml: 2,
+            }}
+            onClick={() => setOpenEdit(true)}
+          >
+            Edit Room
+          </SecondaryButton>
+        )}
 
         <AppDialog
           open={showForm}
@@ -159,17 +165,19 @@ export default function RoomCard({
           />
         </AppDialog>
 
-        <AppDialog
-          open={openEdit}
-          onClose={() => setOpenEdit(false)}
-          title="Edit Room"
-        >
-          <EditRoomForm
-            room={room}
+        {isAdmin && (
+          <AppDialog
+            open={openEdit}
             onClose={() => setOpenEdit(false)}
-            onSuccess={onAction}
-          />
-        </AppDialog>
+            title="Edit Room"
+          >
+            <EditRoomForm
+              room={room}
+              onClose={() => setOpenEdit(false)}
+              onSuccess={onAction}
+            />
+          </AppDialog>
+        )}
       </CardContent>
     </Card>
   );
