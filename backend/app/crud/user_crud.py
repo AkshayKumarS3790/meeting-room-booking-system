@@ -1,18 +1,27 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
+from app.models.role import Role
 from app.schemas.user_schema import UserCreate
 from app.auth.auth import hash_password
 
 def create_user(db: Session, user: UserCreate):
+    employee_role = (
+        db.query(Role)
+        .filter(Role.role_name == "employee")
+        .first()
+    )
+
     db_user = User(
         user_name=user.user_name,
         email=user.email,
         password=hash_password(user.password),
-        role=user.role,
+        role_id=employee_role.role_id,
     )
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
     return db_user
 
 

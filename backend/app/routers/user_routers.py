@@ -104,11 +104,6 @@ def refresh_access_token(data: RefreshTokenRequest):
         "access_token": access_token
     }
 
-# Create user
-@router.post("/", response_model=UserResponse)
-def create_user_route(user: UserCreate , db: Session = Depends(get_db)):
-    return user_crud.create_user(db, user)
-
 
 # Get all users
 @router.get("/", response_model=Union[list[UserResponse], dict])
