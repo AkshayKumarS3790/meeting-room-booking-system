@@ -10,7 +10,7 @@ from app.auth.auth import (
 )
 from app.auth.dependencies import require_permission
 from pydantic import BaseModel
-from app.schemas.user_schema import UserCreate, UserResponse
+from app.schemas.user_schema import UserCreate, UserResponse, ChangePasswordRequest
 from app.crud import user_crud
 from typing import Union
 
@@ -25,6 +25,11 @@ from app.exc_handling.user_exceptions import (
 from app.auth.dependencies import (
     get_current_user,
     require_permission
+)
+
+from app.auth.auth import (
+    verify_password,
+    hash_password,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -109,12 +114,71 @@ def refresh_access_token(data: RefreshTokenRequest):
         "access_token": access_token
     }
 
+# Change Password 
+@router.post("/change-password")
+def change_password(
+    data: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    user = db.query(User).filter(
+        User.user_id == current_user["user_id"]
+    ).first()
+
+    if not verify_password(
+        data.current_password,
+        user.password
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Current password is incorrect"
+        )
+    
+    if data.new_password != data.confirm_password:
+        raise HTTPException(
+            status_code=400,
+            detail="Passwords do not match"
+        )
+    
+    if len(data.new_password) < 8:
+        raise HTTPException(
+            status_code=400,
+            detail="Password must be at least 8 characters long"
+        )
+
+    if data.current_password == data.new_password:
+        raise HTTPException(
+            status_code=400,
+            detail="New password must be different from current password"
+        )
+
+    user.password = hash_password(
+        data.new_password
+    )
+
+    db.commit()
+
+    return {
+        "message": "Password changed successfully"
+    }
+
 # Current Logged-in User
 @router.get("/me")
 def get_me(
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    return current_user
+    user = db.query(User).filter(
+        User.user_id == current_user["user_id"]
+    ).first()
+
+    return {
+        "user_id": user.user_id,
+        "user_name": user.user_name,
+        "email": user.email,
+        "role": user.role.role_name,
+        "permissions": get_user_permissions(user),
+    }
 
 
 # Get all users

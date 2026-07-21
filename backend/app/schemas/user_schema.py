@@ -5,6 +5,11 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: str
+
 class UserResponse(BaseModel):
     user_id: int
     user_name: str
@@ -15,6 +20,7 @@ class UserResponse(BaseModel):
         return cls(
             user_id=user.user_id,
             user_name=user.user_name,
+            email=user.email,
             role=user.role.role_name if user.role else None
         )
 
