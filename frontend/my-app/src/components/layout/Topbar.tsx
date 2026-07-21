@@ -12,13 +12,17 @@ import {
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import ConfirmDialog from "../common/ConfirmDialog";
+import PersonIcon from "@mui/icons-material/Person";
+import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "@/utils/auth";
+import { getCurrentUser } from "@/utils/currentUser";
 
 import { usePathname } from "next/navigation";
 
 export default function Topbar() {
+  const router = useRouter();
+
   const [userName, setUserName] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -33,6 +37,7 @@ export default function Topbar() {
     "/rooms": "Rooms",
     "/bookings": "Bookings",
     "/calendar": "Calendar",
+    "/profile": "Profile",
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +51,11 @@ export default function Topbar() {
   const handleLogout = () => {
     handleClose();
     setOpenLogoutDialog(true);
+  };
+
+  const handleProfile = () => {
+    handleClose();
+    router.push("/profile");
   };
 
   const confirmLogout = async () => {
@@ -92,6 +102,38 @@ export default function Topbar() {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography
+          variant="h5"
+          onClick={() => router.push("/dashboard")}
+          sx={{
+            fontWeight: 800,
+            background: "linear-gradient(90deg, #7c4dff, #a674fd, #d0bcff)",
+
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+
+            mb: 0.5,
+            ml: -1,
+
+            letterSpacing: "0.5px",
+            fontSize: {
+              xs: "1.2rem",
+              md: "1.5rem",
+            },
+          }}
+        >
+          MeetSpace
+        </Typography>
+
+        <Typography
+          sx={{
+            color: "#d0bcff",
+            mb: 0.2,
+          }}
+        >
+          |
+        </Typography>
+
         <Typography
           sx={{
             color: "#fff",
@@ -140,28 +182,6 @@ export default function Topbar() {
         <Typography sx={{ color: "#fff", fontSize: 14 }}>
           {userName || "User"}
         </Typography>
-
-        {/* <Box>
-          <Typography
-            sx={{
-              color: "#fff",
-              fontSize: 14,
-              lineHeight: 1.2,
-            }}
-          >
-            {userName || "User"}
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#aaa",
-              fontSize: 11,
-              textTransform: "capitalize",
-            }}
-          >
-            {role}
-          </Typography>
-        </Box> */}
       </Box>
 
       {/* DROPDOWN */}
@@ -190,6 +210,22 @@ export default function Topbar() {
           },
         }}
       >
+        <MenuItem
+          onClick={handleProfile}
+          sx={{
+            gap: 1,
+            "&:hover": {
+              backgroundColor: "#3a3a55",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: "#fff" }}>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+
+          <ListItemText>Profile</ListItemText>
+        </MenuItem>
+
         <MenuItem
           onClick={handleLogout}
           sx={{ gap: 1, "&:hover": { backgroundColor: "#3a3a55" } }}

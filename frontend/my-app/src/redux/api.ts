@@ -124,6 +124,7 @@ type RoomFilterParams = {
 export type CurrentUser = {
   user_id: number;
   user_name: string;
+  email: string;
   role: string;
   permissions: string[];
 };
@@ -243,6 +244,21 @@ export const api = createApi({
       }),
       invalidatesTags: [{ type: "Rooms", id: "LIST" }],
     }),
+
+    changePassword: builder.mutation<
+      { message: string },
+      {
+        current_password: string;
+        new_password: string;
+        confirm_password: string;
+      }
+    >({
+      query: (data) => ({
+        url: "/users/change-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -258,4 +274,5 @@ export const {
   useDeleteRoomMutation,
   useUpdateBookingMutation,
   useGetVersionQuery,
+  useChangePasswordMutation,
 } = api;

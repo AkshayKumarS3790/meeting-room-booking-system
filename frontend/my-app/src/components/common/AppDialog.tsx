@@ -26,13 +26,19 @@ export default function AppDialog({
       disableScrollLock
       fullWidth={fullWidth}
       maxWidth={maxWidth}
+      BackdropProps={{
+        sx: {
+          backdropFilter: "blur(10px)",
+          backgroundColor: "rgba(0,0,0,.55)",
+        },
+      }}
       PaperProps={{
         sx: {
+          borderRadius: 4,
+          border: "1px solid rgba(255,255,255,.08)",
           backgroundColor: "#1e1e2f",
           color: "#fff",
-          borderRadius: 3,
           padding: 1,
-
           maxWidth: 500,
         },
       }}
