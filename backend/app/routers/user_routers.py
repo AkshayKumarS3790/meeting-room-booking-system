@@ -22,6 +22,11 @@ from app.exc_handling.user_exceptions import (
     user_deleted_successfully,
 )
 
+from app.auth.dependencies import (
+    get_current_user,
+    require_permission
+)
+
 router = APIRouter(prefix="/users", tags=["Users"])
 
 class LoginRequest(BaseModel):
@@ -103,6 +108,13 @@ def refresh_access_token(data: RefreshTokenRequest):
     return {
         "access_token": access_token
     }
+
+# Current Logged-in User
+@router.get("/me")
+def get_me(
+    current_user=Depends(get_current_user)
+):
+    return current_user
 
 
 # Get all users
