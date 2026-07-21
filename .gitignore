@@ -1,10 +1,26 @@
 # Frontend
 frontend/my-app/node_modules/
 frontend/my-app/.next/
+frontend/my-app/out/
 
 # Backend
 venv/
 __pycache__/
+*.pyc
 
-# Env
+# Environment files
 .env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
