@@ -18,6 +18,8 @@ import dayjs from "dayjs";
 
 import { datePickerFieldSx } from "@/utils/datePickerFieldSx";
 
+import { getCurrentUser } from "@/utils/currentUser";
+
 export default function BookingForm({
   room_name,
   room_capacity,
@@ -64,9 +66,11 @@ export default function BookingForm({
   const end_time = watch("end_time");
   const required_capacity = watch("required_capacity");
 
-  const currentUserId = Number(localStorage.getItem("user_id"));
+  const currentUser = getCurrentUser();
 
-  const currentUserName = localStorage.getItem("user_name") || "";
+  const currentUserId = currentUser?.user_id ?? 0;
+
+  const currentUserName = currentUser?.user_name ?? "";
 
   const { data: bookings } = useGetBookingsQuery({});
 

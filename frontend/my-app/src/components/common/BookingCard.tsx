@@ -130,6 +130,7 @@ export default function BookingCard({
         <Box display="flex" gap={2}>
           <Tooltip
             title={!canModify ? "You can only modify your own bookings" : ""}
+            arrow
           >
             <span>
               <PrimaryButton
@@ -152,6 +153,7 @@ export default function BookingCard({
 
           <Tooltip
             title={!canModify ? "You can only delete your own bookings" : ""}
+            arrow
           >
             <span>
               <DangerButton

@@ -24,6 +24,7 @@ export default function Topbar() {
 
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // const [role, setRole] = useState("");
 
   const pathname = usePathname();
 
@@ -67,6 +68,7 @@ export default function Topbar() {
     const user = getCurrentUser();
     if (user) {
       setUserName(user.user_name);
+      // setRole(user.role);
     }
   }, []);
 
@@ -138,6 +140,28 @@ export default function Topbar() {
         <Typography sx={{ color: "#fff", fontSize: 14 }}>
           {userName || "User"}
         </Typography>
+
+        {/* <Box>
+          <Typography
+            sx={{
+              color: "#fff",
+              fontSize: 14,
+              lineHeight: 1.2,
+            }}
+          >
+            {userName || "User"}
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#aaa",
+              fontSize: 11,
+              textTransform: "capitalize",
+            }}
+          >
+            {role}
+          </Typography>
+        </Box> */}
       </Box>
 
       {/* DROPDOWN */}

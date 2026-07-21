@@ -22,6 +22,10 @@ import ConfirmDialog from "./common/ConfirmDialog";
 import PageError from "./common/PageError";
 import PaginationFooter from "./common/PaginationFooter";
 
+import { getCurrentUser } from "@/utils/currentUser";
+
+import { canEditAnyBooking, canDeleteAnyBooking } from "@/utils/permissions";
+
 export default function BookingList() {
   const [search, setSearch] = useState("");
   const [selectedRoom, setSelectedRoom] = useState("all");
@@ -55,10 +59,9 @@ export default function BookingList() {
 
   const now = new Date();
 
-  const currentUserId =
-    typeof window !== "undefined"
-      ? Number(localStorage.getItem("user_id") ?? 0)
-      : 0;
+  const currentUser = getCurrentUser();
+
+  const currentUserId = currentUser?.user_id ?? 0;
 
   const activeBookings = bookings.filter((b: Booking) => {
     const end = new Date(b.end_date_time);
@@ -308,7 +311,11 @@ export default function BookingList() {
             <BookingCard
               key={b.booking_id}
               booking={b}
-              canModify={b.user_id === currentUserId}
+              canModify={
+                b.user_id === currentUserId ||
+                canEditAnyBooking() ||
+                canDeleteAnyBooking()
+              }
               isMyBooking={b.user_id === currentUserId}
               onEdit={() => {
                 setSelectedBooking(b);

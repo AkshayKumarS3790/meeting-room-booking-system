@@ -10,7 +10,7 @@ import PrimaryButton from "@/components/common/PrimaryButton";
 import SecondaryButton from "./common/SecondaryButton";
 import AppDialog from "@/components/common/AppDialog";
 
-import { getCurrentUser } from "@/utils/currentUser";
+import { canEditRoom } from "@/utils/permissions";
 
 export type Room = {
   room_name: string;
@@ -41,9 +41,7 @@ export default function RoomCard({
       }).length
     : 0;
 
-  const user = getCurrentUser();
-
-  const isAdmin = user?.role === "admin";
+  const canManageRoom = canEditRoom();
 
   return (
     <Card
@@ -118,6 +116,7 @@ export default function RoomCard({
             {room.capacity}
           </Box>
         </Typography>
+
         <Typography sx={{ color: "#ccc" }}>
           Location:{" "}
           <Box
@@ -130,6 +129,7 @@ export default function RoomCard({
             {room.location}
           </Box>
         </Typography>
+
         <PrimaryButton
           sx={{
             mt: 2,
@@ -140,7 +140,7 @@ export default function RoomCard({
           Book Room
         </PrimaryButton>
 
-        {isAdmin && (
+        {canManageRoom && (
           <SecondaryButton
             sx={{
               mt: 2,
@@ -165,7 +165,7 @@ export default function RoomCard({
           />
         </AppDialog>
 
-        {isAdmin && (
+        {canManageRoom && (
           <AppDialog
             open={openEdit}
             onClose={() => setOpenEdit(false)}
