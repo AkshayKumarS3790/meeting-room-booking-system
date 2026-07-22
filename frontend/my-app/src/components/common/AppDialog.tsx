@@ -39,11 +39,19 @@ export default function AppDialog({
           backgroundColor: "#1e1e2f",
           color: "#fff",
           padding: 1,
-          maxWidth: 500,
+          overflow: "visible",
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: "bold" }}>{title}</DialogTitle>
+      {title && (
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+          }}
+        >
+          {title}
+        </DialogTitle>
+      )}
 
       <DialogContent>{children}</DialogContent>
     </Dialog>
