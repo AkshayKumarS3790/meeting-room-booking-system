@@ -12,9 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 
-import SecurityIcon from "@mui/icons-material/Security";
-import BadgeIcon from "@mui/icons-material/Badge";
 import EmailIcon from "@mui/icons-material/Email";
+import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 
 import { getCurrentUser } from "@/utils/currentUser";
 
@@ -33,7 +32,8 @@ export default function ProfilePage() {
         sx={{
           color: "#fff",
           fontWeight: 700,
-          mb: 3,
+          mb: 1,
+          mt: -1.5,
           fontSize: {
             xs: "1.7rem",
             md: "2rem",
@@ -45,41 +45,46 @@ export default function ProfilePage() {
 
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            lg: "340px 1fr",
-          },
+          display: "flex",
+          flexDirection: "column",
           gap: 3,
         }}
       >
-        {/* LEFT PROFILE CARD */}
         <Card
           sx={{
             background: "linear-gradient(180deg,#252544,#1c1c32)",
             borderRadius: 4,
-            color: "#fff",
             border: "1px solid rgba(255,255,255,.06)",
-            height: "fit-content",
+            color: "#fff",
+
+            transition: "all .3s ease",
+
+            "&:hover": {
+              borderColor: "rgba(124,77,255,.25)",
+              boxShadow: "0 16px 45px rgba(124,77,255,.18)",
+            },
           }}
         >
           <CardContent
             sx={{
-              p: 4,
+              p: 3,
               textAlign: "center",
             }}
           >
             <Avatar
               sx={{
-                width: 110,
-                height: 110,
+                width: 90,
+                height: 90,
+
                 mx: "auto",
                 mb: 2,
 
                 background: "linear-gradient(135deg,#7c4dff,#a674fd)",
 
-                fontSize: "2.7rem",
+                fontSize: "3rem",
                 fontWeight: 700,
+
+                boxShadow: "0 12px 35px rgba(124,77,255,.35)",
               }}
             >
               {user?.user_name?.[0] || "U"}
@@ -87,143 +92,83 @@ export default function ProfilePage() {
 
             <Typography
               sx={{
-                fontSize: "1.7rem",
+                fontSize: {
+                  xs: "1.5rem",
+                  md: "2rem",
+                },
+
                 fontWeight: 700,
+                mb: 1,
               }}
             >
               {user?.user_name}
             </Typography>
 
-            <Typography
-              sx={{
-                mt: 1,
-                color: "#aaa",
-                wordBreak: "break-word",
-              }}
-            >
-              {user?.email}
-            </Typography>
-
             <Chip
               label={user?.role}
               sx={{
-                mt: 2,
                 textTransform: "capitalize",
                 background: "linear-gradient(90deg,#7c4dff,#a674fd)",
                 color: "#fff",
-                fontWeight: 600,
+                fontWeight: 500,
+                px: 1,
+                mb: 2,
               }}
             />
+
+            <Divider
+              sx={{
+                mb: 2,
+                borderColor: "rgba(255,255,255,.08)",
+              }}
+            />
+
+            <Box
+              sx={{
+                maxWidth: 500,
+                mx: "auto",
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                gap={1}
+                mb={0.5}
+              >
+                <EmailIcon
+                  sx={{
+                    color: "#a674fd",
+                    fontSize: 20,
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    color: "#eee",
+                    fontWeight: 500,
+                    fontSize: 15,
+                  }}
+                >
+                  Email Address
+                </Typography>
+              </Box>
+
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "1.1rem",
+                  wordBreak: "break-word",
+                }}
+              >
+                {user?.email}
+              </Typography>
+            </Box>
           </CardContent>
         </Card>
 
         {/* RIGHT CONTENT */}
         <Box display="flex" flexDirection="column" gap={3}>
-          {/* ACCOUNT DETAILS */}
-          <Card
-            sx={{
-              background: "linear-gradient(180deg,#252544,#1c1c32)",
-              borderRadius: 4,
-              border: "1px solid rgba(255,255,255,.06)",
-              color: "#fff",
-            }}
-          >
-            <CardContent sx={{ p: 4 }}>
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "1.3rem",
-                  mb: 3,
-                }}
-              >
-                Account Information
-              </Typography>
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: {
-                    xs: "1fr",
-                    md: "1fr 1fr",
-                  },
-                  gap: 3,
-                }}
-              >
-                <Box>
-                  <Box display="flex" alignItems="center" gap={1} mb={1}>
-                    <BadgeIcon
-                      sx={{
-                        color: "#a674fd",
-                        fontSize: 20,
-                      }}
-                    />
-
-                    <Typography color="#888">User ID</Typography>
-                  </Box>
-
-                  <Typography
-                    sx={{
-                      fontWeight: 700,
-                      fontSize: "1.2rem",
-                    }}
-                  >
-                    {user?.user_id}
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Box display="flex" alignItems="center" gap={1} mb={1}>
-                    <SecurityIcon
-                      sx={{
-                        color: "#a674fd",
-                        fontSize: 20,
-                      }}
-                    />
-
-                    <Typography color="#888">Role</Typography>
-                  </Box>
-
-                  <Typography
-                    sx={{
-                      textTransform: "capitalize",
-                      fontWeight: 700,
-                      fontSize: "1.2rem",
-                    }}
-                  >
-                    {user?.role}
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{
-                    gridColumn: {
-                      md: "1 / span 2",
-                    },
-                  }}
-                >
-                  <Box display="flex" alignItems="center" gap={1} mb={1}>
-                    <EmailIcon
-                      sx={{
-                        color: "#a674fd",
-                        fontSize: 20,
-                      }}
-                    />
-
-                    <Typography color="#888">Email Address</Typography>
-                  </Box>
-
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                    }}
-                  >
-                    {user?.email}
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-
           {/* SECURITY */}
           <Card
             sx={{
@@ -233,21 +178,29 @@ export default function ProfilePage() {
               color: "#fff",
             }}
           >
-            <CardContent sx={{ p: 4 }}>
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "1.3rem",
-                  mb: 2,
-                }}
-              >
-                Account Security
-              </Typography>
+            <CardContent sx={{ p: 3 }}>
+              <Box display="flex" alignItems="center" gap={1} mb={1}>
+                <SecurityRoundedIcon
+                  sx={{
+                    color: "#a674fd",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  Account Security
+                </Typography>
+              </Box>
 
               <Typography
                 sx={{
-                  color: "#aaa",
-                  mb: 3,
+                  color: "#fff",
+                  mb: 2,
+                  fontSize: 15,
                 }}
               >
                 Update your password periodically to keep your MeetSpace account
@@ -257,7 +210,7 @@ export default function ProfilePage() {
               <Divider
                 sx={{
                   borderColor: "rgba(255,255,255,.07)",
-                  mb: 3,
+                  mb: 2,
                 }}
               />
 
@@ -279,7 +232,7 @@ export default function ProfilePage() {
 
                   <Typography
                     sx={{
-                      color: "#888",
+                      color: "#fff",
                       fontSize: "0.9rem",
                     }}
                   >
