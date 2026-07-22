@@ -32,6 +32,13 @@ from app.auth.auth import (
     hash_password,
 )
 
+from app.schemas.user_schema import (
+    UserCreate,
+    UserResponse,
+    ChangePasswordRequest,
+    ResetPasswordRequest,
+)
+
 router = APIRouter(prefix="/users", tags=["Users"])
 
 class LoginRequest(BaseModel):
@@ -162,6 +169,49 @@ def change_password(
         "message": "Password changed successfully"
     }
 
+# Reset User Password
+@router.post("/{user_id}/reset-password")
+def reset_user_password(
+    user_id: int,
+    data: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_permission("delete_users")),
+):
+    user = db.query(User).filter(
+        User.user_id == user_id
+    ).first()
+
+    if not user:
+        raise user_not_found(user_id)
+
+    if data.new_password != data.confirm_password:
+        raise HTTPException(
+            status_code=400,
+            detail="Passwords do not match",
+        )
+
+    if len(data.new_password) < 8:
+        raise HTTPException(
+            status_code=400,
+            detail="Password must be at least 8 characters long",
+        )
+
+    if user.user_id == current_user["user_id"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Use change password for your own account",
+        )
+
+    user.password = hash_password(
+        data.new_password
+    )
+
+    db.commit()
+
+    return {
+        "message": "Password reset successfully"
+    }
+
 # Current Logged-in User
 @router.get("/me")
 def get_me(
@@ -223,3 +273,4 @@ def delete_user(
     if not user:
         raise user_not_found(user_id)
     return user_deleted_successfully()
+

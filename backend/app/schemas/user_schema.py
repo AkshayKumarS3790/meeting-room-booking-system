@@ -10,9 +10,14 @@ class ChangePasswordRequest(BaseModel):
     new_password: str
     confirm_password: str
 
+class ResetPasswordRequest(BaseModel):
+    new_password: str
+    confirm_password: str
+
 class UserResponse(BaseModel):
     user_id: int
     user_name: str
+    email: str
     role: str
 
     @classmethod
