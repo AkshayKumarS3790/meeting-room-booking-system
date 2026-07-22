@@ -12,26 +12,24 @@ import {
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
+import LockResetIcon from "@mui/icons-material/LockReset";
+
+import { useResetUserPasswordMutation } from "@/redux/api";
 
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
+import SecondaryButton from "./common/SecondaryButton";
 import AppSnackbar from "./common/AppSnackbar";
 
-import { useChangePasswordMutation } from "@/redux/api";
-
-export default function ChangePasswordForm({
-  onClose,
-}: {
+type Props = {
+  userId: number;
   onClose: () => void;
-}) {
-  const [currentPassword, setCurrentPassword] = useState("");
+};
 
+export default function ResetUserPasswordForm({ userId, onClose }: Props) {
   const [newPassword, setNewPassword] = useState("");
 
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [showCurrent, setShowCurrent] = useState(false);
 
   const [showNew, setShowNew] = useState(false);
 
@@ -45,7 +43,7 @@ export default function ChangePasswordForm({
 
   const [severity, setSeverity] = useState<"success" | "error">("success");
 
-  const [changePassword, { isLoading }] = useChangePasswordMutation();
+  const [resetPassword, { isLoading }] = useResetUserPasswordMutation();
 
   const validatePassword = (password: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/.test(password);
@@ -58,8 +56,8 @@ export default function ChangePasswordForm({
     special: /[@$!%*?&]/.test(newPassword),
   };
 
-  const handleSubmit = async () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
+  async function handleSubmit() {
+    if (!newPassword || !confirmPassword) {
       setMessage("All fields are required");
       setSeverity("error");
       setOpenSnackbar(true);
@@ -78,19 +76,20 @@ export default function ChangePasswordForm({
 
     if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match");
+
       setSeverity("error");
       setOpenSnackbar(true);
       return;
     }
 
     try {
-      await changePassword({
-        current_password: currentPassword,
+      await resetPassword({
+        user_id: userId,
         new_password: newPassword,
         confirm_password: confirmPassword,
       }).unwrap();
 
-      setMessage("Password changed successfully");
+      setMessage("Password reset successfully");
 
       setSeverity("success");
       setOpenSnackbar(true);
@@ -99,22 +98,27 @@ export default function ChangePasswordForm({
         onClose();
       }, 1500);
     } catch {
-      setMessage("Unable to change password");
+      setMessage("Unable to reset password");
 
       setSeverity("error");
       setOpenSnackbar(true);
     }
-  };
+  }
 
   return (
     <>
-      <Box>
+      <Box
+        sx={{
+          maxWidth: 520,
+          mx: "auto",
+        }}
+      >
         {/* HEADER */}
         <Box
           sx={{
             textAlign: "center",
             mb: 3,
-            mt: -2,
+            mt: -1,
           }}
         >
           <Box
@@ -130,14 +134,14 @@ export default function ChangePasswordForm({
 
               mx: "auto",
               mb: 1,
-              mt: 2,
+
               boxShadow: "0 8px 24px rgba(124,77,255,.35)",
             }}
           >
-            <SecurityRoundedIcon
+            <LockResetIcon
               sx={{
                 color: "#fff",
-                fontSize: 18,
+                fontSize: 20,
               }}
             />
           </Box>
@@ -147,66 +151,34 @@ export default function ChangePasswordForm({
               color: "#fff",
               fontWeight: 700,
               fontSize: {
-                xs: "1.5rem",
-                sm: "1.7rem",
-                md: "1.9rem",
+                xs: "1.4rem",
+                md: "1.8rem",
               },
             }}
           >
-            Account Security
+            Reset Password
           </Typography>
 
           <Typography
             sx={{
-              mt: 1,
               color: "#aaa",
-              fontSize: "0.8rem",
-              maxWidth: 450,
-              mx: "auto",
+              mt: 1,
+              fontSize: ".85rem",
             }}
           >
-            Create a strong password to keep your MeetSpace account secure.
+            Create a temporary password for this user account.
           </Typography>
         </Box>
 
-        {/* CURRENT PASSWORD */}
-        <DarkTextField
-          fullWidth
-          label="Current Password"
-          type={showCurrent ? "text" : "password"}
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  sx={{ color: "#777" }}
-                  onClick={() => setShowCurrent(!showCurrent)}
-                >
-                  {showCurrent ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-
         {/* NEW PASSWORD */}
-        <Box
-          sx={{
-            position: "relative",
-          }}
-        >
+        <Box position="relative">
           <DarkTextField
             fullWidth
             label="New Password"
-            type={showNew ? "text" : "password"}
             value={newPassword}
+            type={showNew ? "text" : "password"}
             onFocus={() => setShowPasswordHelp(true)}
-            onBlur={() =>
-              setTimeout(() => {
-                setShowPasswordHelp(false);
-              }, 200)
-            }
+            onBlur={() => setTimeout(() => setShowPasswordHelp(false), 200)}
             onChange={(e) => setNewPassword(e.target.value)}
             InputProps={{
               endAdornment: (
@@ -230,23 +202,14 @@ export default function ChangePasswordForm({
                 right: 0,
                 zIndex: 10,
                 p: 2,
-                background: "linear-gradient(180deg,#252544,#1c1c32)",
-                border: "1px solid rgba(124,77,255,.18)",
-                borderRadius: 3,
-                boxShadow: "0 15px 40px rgba(0,0,0,.35)",
 
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  left: "50%",
-                  top: -8,
-                  transform: "translateX(-50%) rotate(45deg)",
-                  width: 12,
-                  height: 12,
-                  background: "linear-gradient(180deg,#252544,#1c1c32)",
-                  borderTop: "1px solid rgba(124,77,255,.18)",
-                  borderLeft: "1px solid rgba(124,77,255,.18)",
-                },
+                background: "linear-gradient(180deg,#252544,#1c1c32)",
+
+                border: "1px solid rgba(124,77,255,.18)",
+
+                borderRadius: 3,
+
+                boxShadow: "0 15px 40px rgba(0,0,0,.35)",
               }}
             >
               <Typography
@@ -290,8 +253,8 @@ export default function ChangePasswordForm({
         <DarkTextField
           fullWidth
           label="Confirm Password"
-          type={showConfirm ? "text" : "password"}
           value={confirmPassword}
+          type={showConfirm ? "text" : "password"}
           onChange={(e) => setConfirmPassword(e.target.value)}
           InputProps={{
             endAdornment: (
@@ -312,7 +275,6 @@ export default function ChangePasswordForm({
             sx={{
               p: 1.25,
               mb: 2,
-
               borderRadius: 2,
 
               background:
@@ -341,37 +303,32 @@ export default function ChangePasswordForm({
           </Box>
         )}
 
-        <PrimaryButton
-          disabled={
-            isLoading ||
-            !currentPassword.trim() ||
-            !newPassword.trim() ||
-            !confirmPassword.trim()
-          }
-          onClick={handleSubmit}
-          sx={{
-            width: "100%",
-            py: 1.2,
-            boxShadow: "0 6px 20px rgba(124,77,255,.35)",
-            fontSize: "0.9rem",
-            fontWeight: 700,
+        <Box display="flex" justifyContent="flex-end" gap={1.5}>
+          <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
 
-            "&.Mui-disabled": {
-              opacity: 0.55,
-              color: "#fff",
-              background: "linear-gradient(90deg, #7c4dff, #a674fd)",
-            },
-          }}
-        >
-          {isLoading ? (
-            <>
-              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-              Updating...
-            </>
-          ) : (
-            "Update Password"
-          )}
-        </PrimaryButton>
+          <PrimaryButton
+            onClick={handleSubmit}
+            disabled={
+              isLoading || !newPassword.trim() || !confirmPassword.trim()
+            }
+            sx={{
+              "&.Mui-disabled": {
+                opacity: 0.55,
+                color: "#fff",
+                background: "linear-gradient(90deg, #7c4dff, #a674fd)",
+              },
+            }}
+          >
+            {isLoading ? (
+              <>
+                <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                Resetting...
+              </>
+            ) : (
+              "Reset Password"
+            )}
+          </PrimaryButton>
+        </Box>
       </Box>
 
       <AppSnackbar

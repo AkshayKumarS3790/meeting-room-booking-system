@@ -123,6 +123,12 @@ type RoomFilterParams = {
   end_date_time?: string;
 };
 
+type ResetUserPasswordRequest = {
+  user_id: number;
+  new_password: string;
+  confirm_password: string;
+};
+
 export type CurrentUser = {
   user_id: number;
   user_name: string;
@@ -221,6 +227,27 @@ export const api = createApi({
       ],
     }),
 
+    deleteUser: builder.mutation<{ message: string }, number>({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+      }),
+    }),
+
+    resetUserPassword: builder.mutation<
+      { message: string },
+      ResetUserPasswordRequest
+    >({
+      query: ({ user_id, new_password, confirm_password }) => ({
+        url: `/users/${user_id}/reset-password`,
+        method: "POST",
+        body: {
+          new_password,
+          confirm_password,
+        },
+      }),
+    }),
+
     addRoom: builder.mutation<AddRoomResponse, AddRoomInput>({
       query: (data) => ({
         url: "rooms/",
@@ -277,4 +304,6 @@ export const {
   useUpdateBookingMutation,
   useGetVersionQuery,
   useChangePasswordMutation,
+  useDeleteUserMutation,
+  useResetUserPasswordMutation,
 } = api;

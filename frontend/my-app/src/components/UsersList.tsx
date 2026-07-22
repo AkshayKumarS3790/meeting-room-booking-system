@@ -1,5 +1,7 @@
 "use client";
 
+import { useDeleteUserMutation } from "@/redux/api";
+
 import { useMemo, useState, useEffect } from "react";
 
 import { Box, Typography, Card } from "@mui/material";
@@ -11,6 +13,16 @@ import PaginationFooter from "./common/PaginationFooter";
 
 import { canViewUsers } from "@/utils/permissions";
 import PageError from "./common/PageError";
+
+import AppDialog from "./common/AppDialog";
+import ConfirmDialog from "./common/ConfirmDialog";
+import AppSnackbar from "./common/AppSnackbar";
+
+import LockResetIcon from "@mui/icons-material/LockReset";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import Button from "@mui/material/Button";
+
+import ResetUserPasswordForm from "./ResetUserPasswordForm";
 
 export default function UsersList() {
   const { data, isLoading, error } = useGetUsersQuery();
@@ -26,6 +38,20 @@ export default function UsersList() {
   const [page, setPage] = useState(1);
 
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const [message, setMessage] = useState("");
+
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const [deleteUser, { isLoading: deletingUser }] = useDeleteUserMutation();
 
   useEffect(() => {
     setPage(1);
@@ -149,7 +175,7 @@ export default function UsersList() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              md: "2fr 2.5fr 1fr",
+              md: "2fr 2.5fr 1.5fr 1fr",
             },
             px: 3,
             py: 2,
@@ -166,6 +192,8 @@ export default function UsersList() {
           <Typography fontWeight={700}>Email</Typography>
 
           <Typography fontWeight={700}>Role</Typography>
+
+          <Typography fontWeight={700}>Actions</Typography>
         </Box>
 
         {isLoading ? (
@@ -181,7 +209,7 @@ export default function UsersList() {
 
                 gridTemplateColumns: {
                   xs: "1fr",
-                  md: "2fr 2.5fr 1fr",
+                  md: "2fr 2.5fr 1.5fr 1fr",
                 },
 
                 px: 3,
@@ -222,10 +250,102 @@ export default function UsersList() {
               >
                 {user.role}
               </Typography>
+
+              <Box display="flex" gap={1}>
+                <Button
+                  startIcon={<LockResetIcon />}
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    setSelectedUserId(user.user_id);
+                    setResetDialogOpen(true);
+                  }}
+                  sx={{
+                    color: "#a674fd",
+                    fontWeight: 600,
+                    textTransform: "none",
+                    minWidth: "auto",
+                  }}
+                >
+                  Reset
+                </Button>
+
+                <Button
+                  startIcon={<DeleteOutlineIcon />}
+                  size="small"
+                  variant="outlined"
+                  color="error"
+                  onClick={() => {
+                    setSelectedUserId(user.user_id);
+                    setDeleteDialogOpen(true);
+                  }}
+                  sx={{
+                    fontWeight: 600,
+                    textTransform: "none",
+                    minWidth: "auto",
+
+                    "&:hover": {
+                      background: "rgba(255,107,107,.08)",
+                    },
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
             </Box>
           ))
         )}
       </Card>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title="Delete User"
+        message="Are you sure you want to delete this user?"
+        confirmText="Delete"
+        loadingText="Deleting..."
+        onClose={() => setDeleteDialogOpen(false)}
+        isLoading={deletingUser}
+        onConfirm={async () => {
+          try {
+            if (selectedUserId) {
+              await deleteUser(selectedUserId).unwrap();
+            }
+
+            setMessage("User deleted successfully");
+
+            setSeverity("success");
+            setOpenSnackbar(true);
+
+            setDeleteDialogOpen(false);
+          } catch {
+            setMessage("Delete failed");
+            setSeverity("error");
+            setOpenSnackbar(true);
+          }
+        }}
+      />
+
+      <AppDialog
+        open={resetDialogOpen}
+        onClose={() => setResetDialogOpen(false)}
+        title=""
+        fullWidth
+        maxWidth="xs"
+      >
+        {selectedUserId && (
+          <ResetUserPasswordForm
+            userId={selectedUserId}
+            onClose={() => setResetDialogOpen(false)}
+          />
+        )}
+      </AppDialog>
+
+      <AppSnackbar
+        open={openSnackbar}
+        onClose={() => setOpenSnackbar(false)}
+        message={message}
+        severity={severity}
+      />
 
       <PaginationFooter
         page={page}

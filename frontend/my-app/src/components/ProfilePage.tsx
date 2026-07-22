@@ -254,7 +254,7 @@ export default function ProfilePage() {
         onClose={() => setOpenPasswordDialog(false)}
         title=""
         fullWidth
-        maxWidth="md"
+        maxWidth="xs"
       >
         <ChangePasswordForm onClose={() => setOpenPasswordDialog(false)} />
       </AppDialog>
