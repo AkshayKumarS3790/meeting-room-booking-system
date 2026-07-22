@@ -38,6 +38,7 @@ export default function Topbar() {
     "/bookings": "Bookings",
     "/calendar": "Calendar",
     "/profile": "Profile",
+    "/users": "Users",
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

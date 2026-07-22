@@ -17,3 +17,5 @@ export const canDeleteRoom = () => hasPermission("delete_room");
 export const canEditAnyBooking = () => hasPermission("edit_any_booking");
 
 export const canDeleteAnyBooking = () => hasPermission("delete_any_booking");
+
+export const canViewUsers = () => hasPermission("view_users");

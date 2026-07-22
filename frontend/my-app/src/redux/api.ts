@@ -79,9 +79,11 @@ type BookingInput = {
 
 type BookingResponse = Booking[] | { message: string };
 
-type User = {
+export type User = {
   user_id: number;
   user_name: string;
+  email: string;
+  role: string;
 };
 
 export type Booking = {

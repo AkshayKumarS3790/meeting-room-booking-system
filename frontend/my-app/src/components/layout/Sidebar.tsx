@@ -12,6 +12,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import EventIcon from "@mui/icons-material/Event";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+
+import { canViewUsers } from "@/utils/permissions";
 
 import { useRouter, usePathname } from "next/navigation";
 
@@ -22,8 +25,11 @@ const menuItems = [
   { text: "Rooms", icon: <MeetingRoomIcon />, path: "/rooms" },
   { text: "Bookings", icon: <EventIcon />, path: "/bookings" },
   { text: "Calendar", icon: <CalendarMonthIcon />, path: "/calendar" },
-];
 
+  ...(canViewUsers()
+    ? [{ text: "Users", icon: <PeopleAltIcon />, path: "/users" }]
+    : []),
+];
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
