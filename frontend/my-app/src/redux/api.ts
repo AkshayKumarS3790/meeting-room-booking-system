@@ -136,6 +136,11 @@ type UpdateUserRequest = {
   role: string;
 };
 
+export type UpdateProfileRequest = {
+  user_name: string;
+  email: string;
+};
+
 export type CurrentUser = {
   user_id: number;
   user_name: string;
@@ -285,6 +290,14 @@ export const api = createApi({
       invalidatesTags: [{ type: "Rooms", id: "LIST" }],
     }),
 
+    updateProfile: builder.mutation<{ message: string }, UpdateProfileRequest>({
+      query: (body) => ({
+        url: "/users/me",
+        method: "PUT",
+        body,
+      }),
+    }),
+
     deleteRoom: builder.mutation({
       query: (room_name: string) => ({
         url: `rooms/${room_name}`,
@@ -326,4 +339,5 @@ export const {
   useDeleteUserMutation,
   useResetUserPasswordMutation,
   useUpdateUserMutation,
+  useUpdateProfileMutation,
 } = api;

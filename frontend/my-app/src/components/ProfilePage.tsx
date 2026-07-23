@@ -18,11 +18,15 @@ import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 import { getCurrentUser } from "@/utils/currentUser";
 
 import AppDialog from "./common/AppDialog";
-import ChangePasswordForm from "./ChangePasswordForm";
 import PrimaryButton from "./common/PrimaryButton";
+
+import ChangePasswordForm from "./ChangePasswordForm";
+import EditProfileForm from "./EditProfileForm";
 
 export default function ProfilePage() {
   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+
+  const [openEditProfileDialog, setOpenEditProfileDialog] = useState(false);
 
   const user = getCurrentUser();
 
@@ -163,6 +167,15 @@ export default function ProfilePage() {
               >
                 {user?.email}
               </Typography>
+
+              <Box display="flex" justifyContent="center" mt={2}>
+                <PrimaryButton
+                  sx={{ minWidth: "100px" }}
+                  onClick={() => setOpenEditProfileDialog(true)}
+                >
+                  Edit Profile
+                </PrimaryButton>
+              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -257,6 +270,16 @@ export default function ProfilePage() {
         maxWidth="xs"
       >
         <ChangePasswordForm onClose={() => setOpenPasswordDialog(false)} />
+      </AppDialog>
+
+      <AppDialog
+        open={openEditProfileDialog}
+        onClose={() => setOpenEditProfileDialog(false)}
+        title=""
+        fullWidth
+        maxWidth="xs"
+      >
+        <EditProfileForm onClose={() => setOpenEditProfileDialog(false)} />
       </AppDialog>
     </>
   );
