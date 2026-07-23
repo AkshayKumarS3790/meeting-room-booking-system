@@ -39,3 +39,37 @@ def delete_user(db: Session, user_id: int):
         db.delete(user)
         db.commit()
     return user
+
+def update_user(
+    db: Session,
+    user_id: int,
+    user_name: str,
+    email: str,
+    role: str,
+):
+    user = (
+        db.query(User)
+        .filter(User.user_id == user_id)
+        .first()
+    )
+
+    if not user:
+        return None
+
+    role_obj = (
+        db.query(Role)
+        .filter(Role.role_name == role)
+        .first()
+    )
+
+    if not role_obj:
+        return None
+
+    user.user_name = user_name
+    user.email = email
+    user.role_id = role_obj.role_id
+
+    db.commit()
+    db.refresh(user)
+
+    return user

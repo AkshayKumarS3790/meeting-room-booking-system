@@ -37,6 +37,7 @@ from app.schemas.user_schema import (
     UserResponse,
     ChangePasswordRequest,
     ResetPasswordRequest,
+    UpdateUserRequest,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -181,6 +182,12 @@ def reset_user_password(
         User.user_id == user_id
     ).first()
 
+    if user_id == current_user["user_id"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Use change password for your own account",
+        )
+
     if not user:
         raise user_not_found(user_id)
 
@@ -262,6 +269,29 @@ def get_user(
     return UserResponse.from_user(user)
 
 
+# Edit User details
+@router.put("/{user_id}")
+def update_user(
+    user_id: int,
+    data: UpdateUserRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_permission("view_users")),
+):
+    user = user_crud.update_user(
+        db,
+        user_id,
+        data.user_name,
+        data.email,
+        data.role,
+    )
+
+    if not user:
+        raise user_not_found(user_id)
+
+    return {
+        "message": "User updated successfully"
+    }
+
 # Delete user
 @router.delete("/{user_id}")
 def delete_user(
@@ -269,6 +299,12 @@ def delete_user(
     db: Session = Depends(get_db),
     current_user=Depends(require_permission("delete_users"))
 ):
+    if user_id == current_user["user_id"]:
+        raise HTTPException(
+            status_code=400,
+            detail="You cannot delete your own account",
+        )
+    
     user = user_crud.delete_user(db, user_id)
     if not user:
         raise user_not_found(user_id)
