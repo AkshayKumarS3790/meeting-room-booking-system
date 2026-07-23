@@ -86,6 +86,13 @@ export type User = {
   role: string;
 };
 
+type CreateUserRequest = {
+  user_name: string;
+  email: string;
+  password: string;
+  role: string;
+};
+
 export type Booking = {
   booking_id: number;
   user_id: number;
@@ -191,6 +198,17 @@ export const api = createApi({
               { type: "Bookings", id: "LIST" },
             ]
           : [{ type: "Bookings", id: "LIST" }],
+    }),
+
+    createUser: builder.mutation<
+      { message: string; user_id: number },
+      CreateUserRequest
+    >({
+      query: (body) => ({
+        url: "/users/register",
+        method: "POST",
+        body,
+      }),
     }),
 
     getUsers: builder.query<User[], void>({
@@ -340,4 +358,5 @@ export const {
   useResetUserPasswordMutation,
   useUpdateUserMutation,
   useUpdateProfileMutation,
+  useCreateUserMutation,
 } = api;

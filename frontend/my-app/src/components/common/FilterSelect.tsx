@@ -6,6 +6,8 @@ import {
   Select,
   SelectChangeEvent,
   MenuItem,
+  SxProps,
+  Theme,
 } from "@mui/material";
 
 type Option = {
@@ -20,6 +22,7 @@ type Props = {
   options: Option[];
   minWidth?: number;
   fullWidth?: boolean;
+  sx?: SxProps<Theme>;
 };
 
 export default function FilterSelect({
@@ -29,6 +32,7 @@ export default function FilterSelect({
   options,
   minWidth = 150,
   fullWidth = false,
+  sx,
 }: Props) {
   return (
     <FormControl
@@ -74,6 +78,8 @@ export default function FilterSelect({
         "& .MuiSvgIcon-root": {
           color: "#995eff",
         },
+
+        ...sx,
       }}
     >
       <InputLabel>{label}</InputLabel>

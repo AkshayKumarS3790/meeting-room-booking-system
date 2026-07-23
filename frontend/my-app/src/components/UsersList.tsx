@@ -19,11 +19,16 @@ import ConfirmDialog from "./common/ConfirmDialog";
 import AppSnackbar from "./common/AppSnackbar";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+
 import Button from "@mui/material/Button";
 
 import EditIcon from "@mui/icons-material/Edit";
 
 import AppDialog from "./common/AppDialog";
+import PrimaryButton from "./common/PrimaryButton";
+
+import CreateUserForm from "./CreateUserForm";
 import EditUserForm from "./EditUserForm";
 
 export default function UsersList() {
@@ -51,6 +56,8 @@ export default function UsersList() {
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -64,6 +71,13 @@ export default function UsersList() {
   useEffect(() => {
     setPage(1);
   }, [search, roleFilter, sortOrder]);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page, itemsPerPage]);
 
   const filteredUsers = useMemo(() => {
     const users = Array.isArray(data) ? data : [];
@@ -126,33 +140,51 @@ export default function UsersList() {
           flexWrap: "wrap",
         }}
       >
-        <Box>
-          <Typography
-            sx={{
-              color: "#fff",
-              fontWeight: 700,
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: {
+                  xs: "1.4rem",
+                  md: "2rem",
+                },
+                mt: -1,
+              }}
+            >
+              Users Management
+            </Typography>
 
-              fontSize: {
-                xs: "1.4rem",
-                md: "2rem",
-              },
-            }}
+            <Typography
+              sx={{
+                color: "#888",
+                fontSize: {
+                  xs: "0.7rem",
+                  md: "0.95rem",
+                },
+              }}
+            >
+              Manage user accounts, roles and permissions.
+            </Typography>
+          </Box>
+
+          <PrimaryButton
+            startIcon={<PersonAddAlt1Icon />}
+            onClick={() => setCreateDialogOpen(true)}
+            sx={{ mt: -1, width: 120 }}
           >
-            Users Management
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#888",
-
-              fontSize: {
-                xs: "0.7rem",
-                md: "0.95rem",
-              },
-            }}
-          >
-            Manage user accounts, roles and permissions.
-          </Typography>
+            Add User
+          </PrimaryButton>
         </Box>
 
         <UsersFilters
@@ -369,6 +401,16 @@ export default function UsersList() {
             onClose={() => setEditDialogOpen(false)}
           />
         )}
+      </AppDialog>
+
+      <AppDialog
+        open={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+        title=""
+        fullWidth
+        maxWidth="xs"
+      >
+        <CreateUserForm onClose={() => setCreateDialogOpen(false)} />
       </AppDialog>
 
       <AppSnackbar
