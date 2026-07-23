@@ -19,6 +19,10 @@ class UpdateUserRequest(BaseModel):
     email: str
     role: str
 
+class UpdateProfileRequest(BaseModel):
+    user_name: str
+    email: str
+
 class UserResponse(BaseModel):
     user_id: int
     user_name: str

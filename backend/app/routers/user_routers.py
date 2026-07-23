@@ -38,6 +38,7 @@ from app.schemas.user_schema import (
     ChangePasswordRequest,
     ResetPasswordRequest,
     UpdateUserRequest,
+    UpdateProfileRequest,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -268,8 +269,32 @@ def get_user(
     
     return UserResponse.from_user(user)
 
+# Update Profile Details (All users)
+@router.put("/me")
+def update_profile(
+    data: UpdateProfileRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    user = (
+        db.query(User)
+        .filter(
+            User.user_id == current_user["user_id"]
+        )
+        .first()
+    )
 
-# Edit User details
+    user.user_name = data.user_name
+    user.email = data.email
+
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Profile updated successfully"
+    }
+
+# Edit/Update User details (Admin Only)
 @router.put("/{user_id}")
 def update_user(
     user_id: int,
@@ -291,6 +316,7 @@ def update_user(
     return {
         "message": "User updated successfully"
     }
+
 
 # Delete user
 @router.delete("/{user_id}")
