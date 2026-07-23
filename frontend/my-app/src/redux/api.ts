@@ -129,6 +129,13 @@ type ResetUserPasswordRequest = {
   confirm_password: string;
 };
 
+type UpdateUserRequest = {
+  user_id: number;
+  user_name: string;
+  email: string;
+  role: string;
+};
+
 export type CurrentUser = {
   user_id: number;
   user_name: string;
@@ -213,6 +220,18 @@ export const api = createApi({
         { type: "Bookings", id: "LIST" },
         { type: "Rooms", id: "LIST" },
       ],
+    }),
+
+    updateUser: builder.mutation<{ message: string }, UpdateUserRequest>({
+      query: ({ user_id, user_name, email, role }) => ({
+        url: `/users/${user_id}`,
+        method: "PUT",
+        body: {
+          user_name,
+          email,
+          role,
+        },
+      }),
     }),
 
     deleteBooking: builder.mutation({
@@ -306,4 +325,5 @@ export const {
   useChangePasswordMutation,
   useDeleteUserMutation,
   useResetUserPasswordMutation,
+  useUpdateUserMutation,
 } = api;

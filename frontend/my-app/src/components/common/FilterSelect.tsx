@@ -19,6 +19,7 @@ type Props = {
   onChange: (event: SelectChangeEvent) => void;
   options: Option[];
   minWidth?: number;
+  fullWidth?: boolean;
 };
 
 export default function FilterSelect({
@@ -27,12 +28,14 @@ export default function FilterSelect({
   onChange,
   options,
   minWidth = 150,
+  fullWidth = false,
 }: Props) {
   return (
     <FormControl
+      fullWidth={fullWidth}
       variant="outlined"
       sx={{
-        minWidth,
+        ...(fullWidth ? {} : { minWidth }),
 
         "& .MuiOutlinedInput-root": {
           height: 40,

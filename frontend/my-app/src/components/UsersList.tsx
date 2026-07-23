@@ -4,7 +4,7 @@ import { useDeleteUserMutation } from "@/redux/api";
 
 import { useMemo, useState, useEffect } from "react";
 
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Tooltip } from "@mui/material";
 
 import { useGetUsersQuery, User } from "@/redux/api";
 
@@ -12,22 +12,28 @@ import UsersFilters from "./common/UsersFilters";
 import PaginationFooter from "./common/PaginationFooter";
 
 import { canViewUsers } from "@/utils/permissions";
+import { getCurrentUser } from "@/utils/currentUser";
 import PageError from "./common/PageError";
 
-import AppDialog from "./common/AppDialog";
 import ConfirmDialog from "./common/ConfirmDialog";
 import AppSnackbar from "./common/AppSnackbar";
 
-import LockResetIcon from "@mui/icons-material/LockReset";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Button from "@mui/material/Button";
 
-import ResetUserPasswordForm from "./ResetUserPasswordForm";
+import EditIcon from "@mui/icons-material/Edit";
+
+import AppDialog from "./common/AppDialog";
+import EditUserForm from "./EditUserForm";
 
 export default function UsersList() {
   const { data, isLoading, error } = useGetUsersQuery();
 
   console.log(data);
+
+  const currentUser = getCurrentUser();
+
+  const currentUserId = currentUser?.user_id ?? 0;
 
   const [search, setSearch] = useState("");
 
@@ -41,9 +47,11 @@ export default function UsersList() {
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -252,45 +260,68 @@ export default function UsersList() {
               </Typography>
 
               <Box display="flex" gap={1}>
-                <Button
-                  startIcon={<LockResetIcon />}
-                  size="small"
-                  variant="outlined"
-                  onClick={() => {
-                    setSelectedUserId(user.user_id);
-                    setResetDialogOpen(true);
-                  }}
-                  sx={{
-                    color: "#a674fd",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    minWidth: "auto",
-                  }}
-                >
-                  Reset
-                </Button>
+                <Tooltip title="Edit User">
+                  <Button
+                    startIcon={<EditIcon />}
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setEditDialogOpen(true);
+                    }}
+                    sx={{
+                      color: "#a674fd",
+                      borderColor: "#a674fd",
 
-                <Button
-                  startIcon={<DeleteOutlineIcon />}
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  onClick={() => {
-                    setSelectedUserId(user.user_id);
-                    setDeleteDialogOpen(true);
-                  }}
-                  sx={{
-                    fontWeight: 600,
-                    textTransform: "none",
-                    minWidth: "auto",
+                      fontWeight: 600,
+                      textTransform: "none",
+                      minWidth: "auto",
 
-                    "&:hover": {
-                      background: "rgba(255,107,107,.08)",
-                    },
-                  }}
+                      "&:hover": {
+                        background: "rgba(166,116,253,.08)",
+                        borderColor: "#a674fd",
+                      },
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </Tooltip>
+
+                <Tooltip
+                  title={
+                    user.user_id === currentUserId
+                      ? "You cannot delete your own account"
+                      : "Delete User"
+                  }
                 >
-                  Delete
-                </Button>
+                  <Button
+                    startIcon={<DeleteOutlineIcon />}
+                    size="small"
+                    variant="outlined"
+                    color="error"
+                    disabled={user.user_id === currentUserId}
+                    onClick={() => {
+                      setSelectedUserId(user.user_id);
+                      setDeleteDialogOpen(true);
+                    }}
+                    sx={{
+                      fontWeight: 600,
+                      textTransform: "none",
+                      minWidth: "auto",
+
+                      "&:disabled": {
+                        color: "#5b0b0b",
+                        borderColor: "#5b0b0b",
+                      },
+
+                      "&:hover": {
+                        background: "rgba(255,107,107,.08)",
+                      },
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Tooltip>
               </Box>
             </Box>
           ))
@@ -326,16 +357,16 @@ export default function UsersList() {
       />
 
       <AppDialog
-        open={resetDialogOpen}
-        onClose={() => setResetDialogOpen(false)}
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
         title=""
         fullWidth
         maxWidth="xs"
       >
-        {selectedUserId && (
-          <ResetUserPasswordForm
-            userId={selectedUserId}
-            onClose={() => setResetDialogOpen(false)}
+        {selectedUser && (
+          <EditUserForm
+            user={selectedUser}
+            onClose={() => setEditDialogOpen(false)}
           />
         )}
       </AppDialog>

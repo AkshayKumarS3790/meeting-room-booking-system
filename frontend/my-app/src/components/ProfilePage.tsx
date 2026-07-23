@@ -52,17 +52,11 @@ export default function ProfilePage() {
       >
         <Card
           sx={{
-            background: "linear-gradient(180deg,#252544,#1c1c32)",
+            background: "linear-gradient(180deg, #252544, #1c1c32)",
             borderRadius: 4,
             border: "1px solid rgba(255,255,255,.06)",
             color: "#fff",
-
             transition: "all .3s ease",
-
-            "&:hover": {
-              borderColor: "rgba(124,77,255,.25)",
-              boxShadow: "0 16px 45px rgba(124,77,255,.18)",
-            },
           }}
         >
           <CardContent
@@ -79,12 +73,12 @@ export default function ProfilePage() {
                 mx: "auto",
                 mb: 2,
 
-                background: "linear-gradient(135deg,#7c4dff,#a674fd)",
+                background: "linear-gradient(135deg, #7c4dff, #a674fd)",
 
                 fontSize: "3rem",
                 fontWeight: 700,
 
-                boxShadow: "0 12px 35px rgba(124,77,255,.35)",
+                boxShadow: "0 5px 30px rgba(124,77,255,.35)",
               }}
             >
               {user?.user_name?.[0] || "U"}
@@ -108,10 +102,10 @@ export default function ProfilePage() {
               label={user?.role}
               sx={{
                 textTransform: "capitalize",
-                background: "linear-gradient(90deg,#7c4dff,#a674fd)",
+                background: "linear-gradient(90deg, #7c4dff, #a674fd)",
                 color: "#fff",
                 fontWeight: 500,
-                px: 1,
+                px: 2,
                 mb: 2,
               }}
             />
@@ -147,7 +141,10 @@ export default function ProfilePage() {
                   sx={{
                     color: "#eee",
                     fontWeight: 500,
-                    fontSize: 15,
+                    fontSize: {
+                      xs: 14,
+                      md: 15,
+                    },
                   }}
                 >
                   Email Address
@@ -157,7 +154,10 @@ export default function ProfilePage() {
               <Typography
                 sx={{
                   fontWeight: 600,
-                  fontSize: "1.1rem",
+                  fontSize: {
+                    xs: "1rem",
+                    md: "1.1rem",
+                  },
                   wordBreak: "break-word",
                 }}
               >
