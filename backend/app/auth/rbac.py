@@ -1,6 +1,3 @@
-from app.models.role_permission import RolePermission
-from app.models.permission import Permission
-
 def get_user_permissions(user):
     permissions = []
 
@@ -12,8 +9,6 @@ def get_user_permissions(user):
         permission = role_permission.permission
 
         if permission:
-            permissions.append(
-                permission.permission_name
-            )
+            permissions.append(permission.permission_name)
 
     return permissions
