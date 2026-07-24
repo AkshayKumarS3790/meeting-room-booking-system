@@ -1,15 +1,12 @@
-from sqlalchemy.orm import Session
-from app.models.user import User
-from app.models.role import Role
-from app.schemas.user_schema import UserCreate
 from app.auth.auth import hash_password
+from app.models.role import Role
+from app.models.user import User
+from app.schemas.user_schema import UserCreate
+from sqlalchemy.orm import Session
+
 
 def create_user(db: Session, user: UserCreate):
-    employee_role = (
-        db.query(Role)
-        .filter(Role.role_name == "employee")
-        .first()
-    )
+    employee_role = db.query(Role).filter(Role.role_name == "employee").first()
 
     db_user = User(
         user_name=user.user_name,
@@ -40,6 +37,7 @@ def delete_user(db: Session, user_id: int):
         db.commit()
     return user
 
+
 def update_user(
     db: Session,
     user_id: int,
@@ -47,20 +45,12 @@ def update_user(
     email: str,
     role: str,
 ):
-    user = (
-        db.query(User)
-        .filter(User.user_id == user_id)
-        .first()
-    )
+    user = db.query(User).filter(User.user_id == user_id).first()
 
     if not user:
         return None
 
-    role_obj = (
-        db.query(Role)
-        .filter(Role.role_name == role)
-        .first()
-    )
+    role_obj = db.query(Role).filter(Role.role_name == role).first()
 
     if not role_obj:
         return None

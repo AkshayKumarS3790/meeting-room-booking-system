@@ -1,31 +1,30 @@
-# The file where the checks happen before booking a room (Basically core logic of project)
+# The file where the checks happen before booking a
+# room (Basically core logic of project)
 
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
+
 from datetime import datetime
-from sqlalchemy.orm import Session
-
-from app.schemas.booking_schema import BookingCreate
-from app.models.room import Room
-from app.models.booking import Booking
-from app.models.user import User
 
 from app.exc_handling.booking_exceptions import (
-    user_not_found,
-    room_not_found,
-    no_rooms_for_capacity,
     capacity_exceeded,
     invalid_time_range,
+    no_rooms_for_capacity,
     room_already_booked,
+    room_not_found,
+    user_not_found,
 )
+from app.models.booking import Booking
+from app.models.room import Room
+from app.models.user import User
+from app.schemas.booking_schema import BookingCreate
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
 
 def deactivate_past_bookings(db: Session):
     now = datetime.now()
 
     db.query(Booking).filter(
-        Booking.end_date_time < now,
-        Booking.is_active == True
+        Booking.end_date_time < now, Booking.is_active == True
     ).update({Booking.is_active: False}, synchronize_session=False)
 
     db.commit()
@@ -155,8 +154,9 @@ def get_booking(db: Session, booking_id: int):
         "required_capacity": booking.required_capacity,
     }
 
+
 def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
-    
+
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
 
     if not booking:
@@ -167,7 +167,6 @@ def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
 
     print(type(booking_data.end_date_time))
     print(booking_data.end_date_time)
-
 
     start_date_time = datetime.strptime(booking_data.start_date_time, "%Y-%m-%d %H:%M")
     end_date_time = datetime.strptime(booking_data.end_date_time, "%Y-%m-%d %H:%M")
@@ -183,7 +182,7 @@ def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
         db.query(Booking)
         .filter(
             Booking.room_name == booking_data.room_name,
-            Booking.booking_id != booking_id, 
+            Booking.booking_id != booking_id,
             Booking.start_date_time < end_date_time,
             Booking.end_date_time > start_date_time,
         )
@@ -217,6 +216,7 @@ def update_booking(db: Session, booking_id: int, booking_data: BookingCreate):
         "required_capacity": booking.required_capacity,
     }
 
+
 def filter_bookings(
     db: Session,
     room_name=None,
@@ -227,9 +227,9 @@ def filter_bookings(
     only_active: bool = True,
 ):
     deactivate_past_bookings(db)
-    
+
     query = db.query(Booking)
-    
+
     if only_active:
         query = query.filter(Booking.is_active == True)
 
@@ -279,6 +279,7 @@ def filter_bookings(
         )
 
     return result
+
 
 def delete_booking(db: Session, booking_id: int):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()

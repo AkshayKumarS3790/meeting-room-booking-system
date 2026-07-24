@@ -1,15 +1,14 @@
 # This file is the service layer/business logic
 
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from datetime import datetime
+from typing import Optional
+
+from app.models.booking import Booking  # importing booking table
 from app.models.room import Room  # importing room table
 from app.schemas.room_schema import RoomCreate
-from app.models.booking import Booking  # importing booking table
-from typing import Optional
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
-from datetime import datetime
-from fastapi import HTTPException
 
 def get_available_rooms(
     db: Session, start_date_time, end_date_time, required_capacity: int
@@ -108,20 +107,20 @@ def update_room(db: Session, room_name: str, updated_room: RoomCreate):
                         f"Please wait until the bookings expire before changing the location."
                     ),
                 )
-        
+
     room.capacity = updated_room.capacity
     room.location = updated_room.location  # Update all these values
 
     db.commit()  # Then save changes
     db.refresh(room)  # Then reload updated data
-    
+
     return room
 
 
 # def delete_room(db: Session, room_name: str):
-#     try: 
+#     try:
 #         room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
-        
+
 #         if room:  # If room exists
 #             db.query(Booking).filter(
 #                 Booking.room_name == room_name
@@ -135,11 +134,12 @@ def update_room(db: Session, room_name: str, updated_room: RoomCreate):
 #         db.rollback()
 #         raise
 
+
 def delete_room(db: Session, room_name: str):
     room = db.query(Room).filter(Room.room_name == room_name).first()
 
     if room:
-        db.delete(room)   # cascade handles bookings
+        db.delete(room)  # cascade handles bookings
         db.commit()
 
     return room
@@ -156,11 +156,11 @@ def filter_rooms(
 ):
     query = db.query(Room)
 
-    #Flexible search (partial match)
+    # Flexible search (partial match)
     if search:
         query = query.filter(
-                Room.room_name.ilike(f"%{search}%"),
-                # Room.location.ilike(f"%{search}%"),
+            Room.room_name.ilike(f"%{search}%"),
+            # Room.location.ilike(f"%{search}%"),
         )
 
         # if search.isdigit():
@@ -168,15 +168,12 @@ def filter_rooms(
 
         # query = query.filter(or_(*filters))
 
-
     # Filter by room_name (if given)
     if room_name:
         query = query.filter(Room.room_name == room_name)
 
-        
     if location:
         query = query.filter(Room.location == location)
-
 
     # Filter by capacity (if given)
     if required_capacity is not None:
