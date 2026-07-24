@@ -1,16 +1,16 @@
 "use client";
 
 import {
-  DialogContent,
-  Typography,
-  Tooltip,
   CircularProgress,
+  DialogContent,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
 import AppDialog from "./AppDialog";
 import AppDialogActions from "./AppDialogActions";
-import PrimaryButton from "./PrimaryButton";
 import DangerButton from "./DangerButton";
+import PrimaryButton from "./PrimaryButton";
 
 type Props = {
   open: boolean;

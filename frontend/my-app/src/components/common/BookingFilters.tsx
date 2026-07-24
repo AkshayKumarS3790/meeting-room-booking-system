@@ -2,8 +2,8 @@
 
 import { Box } from "@mui/material";
 
-import SearchField from "./SearchField";
 import FilterSelect from "./FilterSelect";
+import SearchField from "./SearchField";
 import SecondaryButton from "./SecondaryButton";
 
 import { datePickerFieldSx } from "@/utils/datePickerFieldSx";

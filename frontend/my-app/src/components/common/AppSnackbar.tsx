@@ -1,6 +1,6 @@
 "use client";
 
-import { Snackbar, Alert } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 
 type Props = {
   open: boolean;

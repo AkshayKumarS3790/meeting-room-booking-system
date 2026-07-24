@@ -2,9 +2,9 @@
 
 import { Box, Tooltip } from "@mui/material";
 
-import SearchField from "./SearchField";
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
+import SearchField from "./SearchField";
 import SecondaryButton from "./SecondaryButton";
 
 type Props = {

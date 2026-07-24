@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Typography, Select, MenuItem, Pagination } from "@mui/material";
+import { Box, MenuItem, Pagination, Select, Typography } from "@mui/material";
 
 type Props = {
   page: number;

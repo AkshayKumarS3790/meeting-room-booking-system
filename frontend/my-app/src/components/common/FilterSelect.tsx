@@ -3,9 +3,9 @@
 import {
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
   SelectChangeEvent,
-  MenuItem,
   SxProps,
   Theme,
 } from "@mui/material";

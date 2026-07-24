@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Box, Typography } from "@mui/material";
 
 export default function PageError({
   message = "Something went wrong",
