@@ -117,24 +117,6 @@ def update_room(db: Session, room_name: str, updated_room: RoomCreate):
     return room
 
 
-# def delete_room(db: Session, room_name: str):
-#     try:
-#         room = db.query(Room).filter(Room.room_name == room_name).first()  # Find room
-
-#         if room:  # If room exists
-#             db.query(Booking).filter(
-#                 Booking.room_name == room_name
-#             ).delete(synchronize_session=False) # Delete all bookings for this room
-#             db.delete(room)  # Delete the room
-#             db.commit()  # Then save changes
-#         return room
-
-#     except Exception as e:
-#         print(e)
-#         db.rollback()
-#         raise
-
-
 def delete_room(db: Session, room_name: str):
     room = db.query(Room).filter(Room.room_name == room_name).first()
 
@@ -160,13 +142,7 @@ def filter_rooms(
     if search:
         query = query.filter(
             Room.room_name.ilike(f"%{search}%"),
-            # Room.location.ilike(f"%{search}%"),
         )
-
-        # if search.isdigit():
-        #     filters. append(Room.capacity >= int(search))
-
-        # query = query.filter(or_(*filters))
 
     # Filter by room_name (if given)
     if room_name:

@@ -1,6 +1,12 @@
 # This file is the starting point of the application
 
 
+from app.models.booking import Booking
+from app.models.permission import Permission
+from app.models.role import Role
+from app.models.role_permission import RolePermission
+from app.models.room import Room
+from app.models.user import User
 from app.routers.booking_routers import router as booking_router  # handles /bookings
 from app.routers.room_routers import router as room_router  # handles /rooms
 from app.routers.user_routers import router as user_router

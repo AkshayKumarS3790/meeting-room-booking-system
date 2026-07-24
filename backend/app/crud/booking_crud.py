@@ -1,5 +1,4 @@
-# The file where the checks happen before booking a
-# room (Basically core logic of project)
+# The file where the checks happen before booking a room (Basically core logic of project)
 
 
 from datetime import datetime

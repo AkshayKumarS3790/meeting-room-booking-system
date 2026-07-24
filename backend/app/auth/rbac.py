@@ -1,3 +1,7 @@
+from app.models.permission import Permission
+from app.models.role_permission import RolePermission
+
+
 def get_user_permissions(user):
     permissions = []
 
