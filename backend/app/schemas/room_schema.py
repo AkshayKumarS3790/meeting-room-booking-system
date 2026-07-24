@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field  # pydantic is used for validation
 from typing import List
+
 from app.schemas.booking_schema import BookingResponse
+from pydantic import BaseModel, Field  # pydantic is used for validation
 
 
 # Defining what data user must send to create a room
@@ -24,6 +25,7 @@ class RoomWithBookings(RoomCreate):
 
     class Config:  # converts DB model to API output
         from_attributes = True
+
 
 class RoomUpdate(BaseModel):
     capacity: int
