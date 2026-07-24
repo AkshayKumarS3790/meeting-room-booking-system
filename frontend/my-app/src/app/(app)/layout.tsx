@@ -3,8 +3,8 @@
 "use client";
 
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();

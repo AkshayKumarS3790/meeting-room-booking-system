@@ -1,13 +1,13 @@
 "use client";
 
-import { Container, Typography, Box, Grid, Skeleton } from "@mui/material";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import EventIcon from "@mui/icons-material/Event";
+import { useGetBookingsQuery, useGetRoomsQuery } from "@/redux/api";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import EventIcon from "@mui/icons-material/Event";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import { Box, Container, Grid, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import { TypeAnimation } from "react-type-animation";
-import { useGetRoomsQuery, useGetBookingsQuery } from "@/redux/api";
 import { useEffect, useState } from "react";
+import { TypeAnimation } from "react-type-animation";
 
 export default function Home() {
   const { data: roomsData, isLoading: roomsLoading } = useGetRoomsQuery({});

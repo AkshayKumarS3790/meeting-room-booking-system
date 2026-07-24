@@ -2,12 +2,12 @@
 
 "use client";
 
-import { useState } from "react";
-import { Calendar, dateFnsLocalizer, Views, View } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
-import { enUS } from "date-fns/locale";
-import { Box, Typography, Skeleton } from "@mui/material";
 import { useGetBookingsQuery } from "@/redux/api";
+import { Box, Skeleton, Typography } from "@mui/material";
+import { format, getDay, parse, startOfWeek } from "date-fns";
+import { enUS } from "date-fns/locale";
+import { useState } from "react";
+import { Calendar, dateFnsLocalizer, View, Views } from "react-big-calendar";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
