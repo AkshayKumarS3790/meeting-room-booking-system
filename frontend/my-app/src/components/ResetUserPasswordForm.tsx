@@ -4,22 +4,22 @@ import { useState } from "react";
 
 import {
   Box,
-  Typography,
   CircularProgress,
   IconButton,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 
+import LockResetIcon from "@mui/icons-material/LockReset";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import LockResetIcon from "@mui/icons-material/LockReset";
 
 import { useResetUserPasswordMutation } from "@/redux/api";
 
+import AppSnackbar from "./common/AppSnackbar";
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
 import SecondaryButton from "./common/SecondaryButton";
-import AppSnackbar from "./common/AppSnackbar";
 
 type Props = {
   userId: number;

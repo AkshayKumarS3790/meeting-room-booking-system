@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -11,10 +11,10 @@ import { getCurrentUser } from "@/utils/currentUser";
 
 import { useUpdateProfileMutation } from "@/redux/api";
 
+import AppSnackbar from "./common/AppSnackbar";
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
 import SecondaryButton from "./common/SecondaryButton";
-import AppSnackbar from "./common/AppSnackbar";
 
 type Props = {
   onClose: () => void;

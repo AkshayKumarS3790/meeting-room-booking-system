@@ -1,20 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import {
   Box,
   Checkbox,
   CircularProgress,
   FormControlLabel,
 } from "@mui/material";
-import { useUpdateRoomMutation, useDeleteRoomMutation } from "../redux/api";
-import { Room } from "../redux/api";
+import { useState } from "react";
+import {
+  Room,
+  useDeleteRoomMutation,
+  useUpdateRoomMutation,
+} from "../redux/api";
 
+import AppSnackbar from "./common/AppSnackbar";
 import ConfirmDialog from "./common/ConfirmDialog";
 import DangerButton from "./common/DangerButton";
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
-import AppSnackbar from "./common/AppSnackbar";
 
 export default function EditRoomForm({
   room,

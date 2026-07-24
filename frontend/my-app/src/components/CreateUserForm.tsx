@@ -3,17 +3,17 @@
 
 import { useState } from "react";
 
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 
 import { useCreateUserMutation } from "@/redux/api";
 
+import AppSnackbar from "./common/AppSnackbar";
 import DarkTextField from "./common/DarkTextField";
 import FilterSelect from "./common/FilterSelect";
 import PrimaryButton from "./common/PrimaryButton";
 import SecondaryButton from "./common/SecondaryButton";
-import AppSnackbar from "./common/AppSnackbar";
 
 type Props = {
   onClose: () => void;

@@ -241,122 +241,146 @@ export default function UsersList() {
             <Typography color="#888">Loading users...</Typography>
           </Box>
         ) : (
-          paginatedUsers.map((user: User) => (
-            <Box
-              key={user.user_id}
-              sx={{
-                display: "grid",
+          paginatedUsers.map((user: User) => {
+            const isCurrentUser = user.user_id === currentUserId;
 
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  md: "2fr 2.5fr 1.5fr 1fr",
-                },
-
-                px: 3,
-                py: 2,
-                alignItems: "center",
-                borderBottom: "1px solid rgba(255,255,255,.05)",
-                transition: "all .2s ease",
-
-                "&:hover": {
-                  background: "rgba(124,77,255,.08)",
-                },
-              }}
-            >
-              <Typography
+            return (
+              <Box
+                key={user.user_id}
                 sx={{
-                  color: "#fff",
-                  fontWeight: 600,
+                  display: "grid",
+
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    md: "2fr 2.5fr 1.5fr 1fr",
+                  },
+
+                  px: 3,
+                  py: 2,
+                  alignItems: "center",
+                  borderBottom: "1px solid rgba(255,255,255,.05)",
+                  transition: "all .2s ease",
+
+                  "&:hover": {
+                    background: "rgba(124,77,255,.08)",
+                  },
                 }}
               >
-                {user.user_name}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#bbb",
-                }}
-              >
-                {user.email}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#fff",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  textTransform: "capitalize",
-                }}
-              >
-                {user.role}
-              </Typography>
-
-              <Box display="flex" gap={1}>
-                <Tooltip title="Edit User">
-                  <Button
-                    startIcon={<EditIcon />}
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      setSelectedUser(user);
-                      setEditDialogOpen(true);
-                    }}
-                    sx={{
-                      color: "#a674fd",
-                      borderColor: "#a674fd",
-
-                      fontWeight: 600,
-                      textTransform: "none",
-                      minWidth: "auto",
-
-                      "&:hover": {
-                        background: "rgba(166,116,253,.08)",
-                        borderColor: "#a674fd",
-                      },
-                    }}
-                  >
-                    Edit
-                  </Button>
-                </Tooltip>
-
-                <Tooltip
-                  title={
-                    user.user_id === currentUserId
-                      ? "You cannot delete your own account"
-                      : "Delete User"
-                  }
+                <Typography
+                  sx={{
+                    color: "#fff",
+                    fontWeight: 600,
+                  }}
                 >
-                  <Button
-                    startIcon={<DeleteOutlineIcon />}
-                    size="small"
-                    variant="outlined"
-                    color="error"
-                    disabled={user.user_id === currentUserId}
-                    onClick={() => {
-                      setSelectedUserId(user.user_id);
-                      setDeleteDialogOpen(true);
-                    }}
-                    sx={{
-                      fontWeight: 600,
-                      textTransform: "none",
-                      minWidth: "auto",
+                  {user.user_name}
+                </Typography>
 
-                      "&:disabled": {
-                        color: "#5b0b0b",
-                        borderColor: "#5b0b0b",
-                      },
+                <Typography
+                  sx={{
+                    color: "#bbb",
+                  }}
+                >
+                  {user.email}
+                </Typography>
 
-                      "&:hover": {
-                        background: "rgba(255,107,107,.08)",
-                      },
-                    }}
+                <Typography
+                  sx={{
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontSize: 16,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {user.role}
+                </Typography>
+
+                <Box display="flex" gap={1}>
+                  <Tooltip
+                    title={
+                      isCurrentUser
+                        ? "Use My Profile to update your account information"
+                        : "Edit User"
+                    }
                   >
-                    Delete
-                  </Button>
-                </Tooltip>
+                    <span>
+                      <Button
+                        startIcon={<EditIcon />}
+                        size="small"
+                        variant="outlined"
+                        disabled={isCurrentUser}
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setEditDialogOpen(true);
+                        }}
+                        sx={{
+                          color: "#a674fd",
+                          borderColor: "#a674fd",
+
+                          fontWeight: 600,
+                          textTransform: "none",
+                          minWidth: "auto",
+
+                          "&:disabled": {
+                            color: "#62557d",
+                            borderColor: "#4d4463",
+                            backgroundColor: "rgba(166,116,253,.04)",
+                            opacity: 0.5,
+                          },
+
+                          "&:hover": {
+                            background: "rgba(166,116,253,.08)",
+                            borderColor: "#a674fd",
+                          },
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </span>
+                  </Tooltip>
+
+                  <Tooltip
+                    title={
+                      isCurrentUser
+                        ? "You cannot delete your own account"
+                        : "Delete User"
+                    }
+                  >
+                    <span>
+                      <Button
+                        startIcon={<DeleteOutlineIcon />}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        disabled={isCurrentUser}
+                        onClick={() => {
+                          setSelectedUserId(user.user_id);
+                          setDeleteDialogOpen(true);
+                        }}
+                        sx={{
+                          fontWeight: 600,
+                          textTransform: "none",
+                          minWidth: "auto",
+
+                          "&:disabled": {
+                            color: "#7b4b4b",
+                            borderColor: "#5c3838",
+                            backgroundColor: "rgba(255,107,107,.04)",
+                            opacity: 0.8,
+                          },
+
+                          "&:hover": {
+                            background: "rgba(255,107,107,.08)",
+                          },
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </Box>
               </Box>
-            </Box>
-          ))
+            );
+          })
         )}
       </Card>
 

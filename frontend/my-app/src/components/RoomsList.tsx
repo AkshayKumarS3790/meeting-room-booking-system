@@ -1,10 +1,10 @@
 "use client";
 
-import { Box, Typography, Skeleton, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, Skeleton, Typography } from "@mui/material";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useGetRoomsQuery, useGetBookingsQuery, Room } from "@/redux/api";
+import { Room, useGetBookingsQuery, useGetRoomsQuery } from "@/redux/api";
 
 import { canAddRoom } from "@/utils/permissions";
 

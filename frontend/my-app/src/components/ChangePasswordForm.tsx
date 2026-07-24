@@ -4,19 +4,19 @@ import { useState } from "react";
 
 import {
   Box,
-  Typography,
   CircularProgress,
   IconButton,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 
+import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 
+import AppSnackbar from "./common/AppSnackbar";
 import DarkTextField from "./common/DarkTextField";
 import PrimaryButton from "./common/PrimaryButton";
-import AppSnackbar from "./common/AppSnackbar";
 
 import { useChangePasswordMutation } from "@/redux/api";
 
