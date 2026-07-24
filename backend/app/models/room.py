@@ -1,9 +1,9 @@
 # This file basically defines the Room table in database.
 
-from sqlalchemy import Column, Integer, String  # Importing different fields for table
-from app.base import (
+from app.base import (  # Importing the base class to connect model to SQLAlchemy system
     Base,
-)  # Importing the base class to connect model to SQLAlchemy system
+)
+from sqlalchemy import Column, Integer, String  # Importing different fields for table
 from sqlalchemy.orm import relationship
 
 

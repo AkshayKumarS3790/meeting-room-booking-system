@@ -1,16 +1,18 @@
 # This file basically defines the Bookings table in database.
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
 from app.base import Base
-from sqlalchemy import Boolean
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 
 # Creating the "Booking" table in database
 class Booking(Base):
     __tablename__ = "bookings"  # Tablename in PostgreSQL
 
     booking_id = Column(Integer, primary_key=True, index=True)
-    room_name = Column(String, ForeignKey("rooms.room_name", ondelete="CASCADE"), index=True)
+    room_name = Column(
+        String, ForeignKey("rooms.room_name", ondelete="CASCADE"), index=True
+    )
     user_id = Column(Integer, ForeignKey("users.user_id"))
     booked_by = Column(String)
     purpose = Column(String)
@@ -22,5 +24,5 @@ class Booking(Base):
 
     # This will connect back to Room model, basically allowing navigation b/w room and its bookings
     room = relationship("Room", back_populates="bookings")
-    
+
     user = relationship("User")
