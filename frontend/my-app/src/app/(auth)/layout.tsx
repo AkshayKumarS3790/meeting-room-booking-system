@@ -5,5 +5,5 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>; // ✅ no sidebar or topbar
+  return <>{children}</>; // no sidebar or topbar
 }
