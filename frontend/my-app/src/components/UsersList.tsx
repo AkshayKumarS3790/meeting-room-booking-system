@@ -32,7 +32,17 @@ import CreateUserForm from "./CreateUserForm";
 import EditUserForm from "./EditUserForm";
 
 export default function UsersList() {
-  const { data, isLoading, error } = useGetUsersQuery();
+  const [page, setPage] = useState(1);
+
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const { data, isLoading, error } = useGetUsersQuery(
+    {
+      page,
+      limit: itemsPerPage,
+    },
+    { refetchOnMountOrArgChange: true },
+  );
 
   console.log(data);
 
@@ -45,10 +55,6 @@ export default function UsersList() {
   const [roleFilter, setRoleFilter] = useState("all");
 
   const [sortOrder, setSortOrder] = useState("default");
-
-  const [page, setPage] = useState(1);
-
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
@@ -80,7 +86,7 @@ export default function UsersList() {
   }, [page, itemsPerPage]);
 
   const filteredUsers = useMemo(() => {
-    const users = Array.isArray(data) ? data : [];
+    const users = data?.items ?? [];
 
     const filtered = users.filter((user) => {
       const matchesSearch =
@@ -105,16 +111,16 @@ export default function UsersList() {
     return filtered;
   }, [data, search, roleFilter, sortOrder]);
 
-  const totalItems = filteredUsers.length;
+  const totalItems = data?.total ?? 0;
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const startIndex = (page - 1) * itemsPerPage;
 
-  const paginatedUsers = filteredUsers.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  // const paginatedUsers = filteredUsers.slice(
+  //   startIndex,
+  //   startIndex + itemsPerPage,
+  // );
 
   if (error) {
     return <PageError message="Unable to load users" />;
@@ -241,7 +247,7 @@ export default function UsersList() {
             <Typography color="#888">Loading users...</Typography>
           </Box>
         ) : (
-          paginatedUsers.map((user: User) => {
+          filteredUsers.map((user: User) => {
             const isCurrentUser = user.user_id === currentUserId;
 
             return (

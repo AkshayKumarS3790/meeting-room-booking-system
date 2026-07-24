@@ -158,6 +158,11 @@ export type CurrentUser = {
 
 export type RoomResponse = Room[] | { message: string };
 
+export type UsersResponse = {
+  items: User[];
+  total: number;
+};
+
 export const api = createApi({
   reducerPath: "api",
 
@@ -211,8 +216,20 @@ export const api = createApi({
       }),
     }),
 
-    getUsers: builder.query<User[], void>({
-      query: () => "users/",
+    getUsers: builder.query<
+      UsersResponse,
+      {
+        page?: number;
+        limit?: number;
+      }
+    >({
+      query: ({ page = 1, limit = 10 }) => ({
+        url: "/users",
+        params: {
+          page,
+          limit,
+        },
+      }),
     }),
 
     getCurrentUser: builder.query<CurrentUser, void>({
