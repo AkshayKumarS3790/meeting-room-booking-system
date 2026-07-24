@@ -1,10 +1,10 @@
 // main app folder's layout.tsx file
 
+import DateProvider from "@/components/providers/DateProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import ReduxProvider from "../redux/provider";
-import DateProvider from "@/components/providers/DateProvider";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

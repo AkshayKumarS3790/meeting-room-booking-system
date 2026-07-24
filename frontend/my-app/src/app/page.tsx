@@ -1,18 +1,18 @@
 "use client";
 
 import { Box } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
 import ParticlesBacground from "@/components/ui/ParticlesBackground";
 
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import HeroSection from "@/components/landing/HeroSection";
-import FeaturesSection from "@/components/landing/FeaturesSection";
-import WorkflowSection from "@/components/landing/WorkflowSection";
 import CTASection from "@/components/landing/CTASection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import HeroSection from "@/components/landing/HeroSection";
+import LandingNavbar from "@/components/landing/LandingNavbar";
+import WorkflowSection from "@/components/landing/WorkflowSection";
 
 export default function LandingPage() {
   const router = useRouter();
