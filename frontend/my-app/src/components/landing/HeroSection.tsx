@@ -3,8 +3,8 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
-import StatsSection from "./StatsSection";
 import { TypeAnimation } from "react-type-animation";
+import StatsSection from "./StatsSection";
 
 type HeroSectionProps = {
   onLogin: () => void;

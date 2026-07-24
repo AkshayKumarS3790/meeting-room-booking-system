@@ -1,8 +1,8 @@
 "use client";
 
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function WorkflowSection() {
   const steps = ["Login", "Choose Room", "Select Time", "Book Instantly"];
