@@ -1,22 +1,22 @@
 "use client";
 
 import {
-  Box,
-  Typography,
   Avatar,
-  Menu,
-  MenuItem,
+  Box,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
+  Typography,
 } from "@mui/material";
 
 import LogoutIcon from "@mui/icons-material/Logout";
-import ConfirmDialog from "../common/ConfirmDialog";
 import PersonIcon from "@mui/icons-material/Person";
 import { useRouter } from "next/navigation";
+import ConfirmDialog from "../common/ConfirmDialog";
 
-import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/utils/currentUser";
+import { useEffect, useState } from "react";
 
 import { usePathname } from "next/navigation";
 
