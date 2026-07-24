@@ -1,18 +1,18 @@
 # This file handles all booking related requests
 
+from datetime import datetime
+from typing import List, Optional
+
+from app.auth.dependencies import get_current_user
+from app.crud import booking_crud  # import business logic functions
+from app.database import get_db
+from app.exc_handling.booking_exceptions import (
+    booking_deleted_successfully,
+    booking_not_found,
+)
+from app.schemas.booking_schema import BookingCreate, BookingResponse
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.schemas.booking_schema import BookingCreate, BookingResponse
-from app.crud import booking_crud  # import business logic functions
-from app.auth.dependencies import get_current_user
-from typing import List, Optional
-from datetime import datetime
-
-from app.exc_handling.booking_exceptions import (
-    booking_not_found,
-    booking_deleted_successfully,
-)
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
@@ -23,8 +23,8 @@ router = APIRouter(prefix="/bookings", tags=["Bookings"])
 def create_booking(
     booking: BookingCreate,
     current_user=Depends(get_current_user),
-    db: Session = Depends(get_db)
-    ):
+    db: Session = Depends(get_db),
+):
 
     booking.user_id = current_user["user_id"]
 
@@ -39,9 +39,9 @@ def get_bookings(
     limit: int = 10,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
-    ):
+):
     bookings = booking_crud.get_bookings(db)  # Fetches all bookings
-    
+
     filtered_bookings = [b for b in bookings if b.get("room_name") is not None]
 
     return filtered_bookings
@@ -58,7 +58,7 @@ def filter_bookings(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    
+
     # validation (at least one filter required)
     if (
         not room_name
@@ -81,26 +81,25 @@ def filter_bookings(
 
     return bookings
 
+
 # API 4 - Post or Update booking
 @router.put("/{booking_id}", response_model=BookingResponse)
 def update_booking(
     booking_id: int,
     booking: BookingCreate,
     current_user=Depends(get_current_user),
-    db: Session = Depends(get_db)
-    ):
+    db: Session = Depends(get_db),
+):
     existing_booking = booking_crud.get_booking(db, booking_id)
 
     if not existing_booking:
         raise booking_not_found(booking_id)
-    
-    if (
-        existing_booking["user_id"] != current_user.get("user_id")
-        and "edit_any_booking" not in current_user.get("permissions", [])
-    ):
+
+    if existing_booking["user_id"] != current_user.get(
+        "user_id"
+    ) and "edit_any_booking" not in current_user.get("permissions", []):
         raise HTTPException(
-            status_code=403,
-            detail="You can edit only your own booking"
+            status_code=403, detail="You can edit only your own booking"
         )
 
     booking.user_id = existing_booking["user_id"]
@@ -109,29 +108,27 @@ def update_booking(
 
     return updated_booking
 
+
 # API 5 - Delete booking
 # This API delete a booking from the database
 @router.delete("/{booking_id}")
 def delete_booking(
     booking_id: int,
     current_user=Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     existing_booking = booking_crud.get_booking(db, booking_id)
 
     if not existing_booking:
         raise booking_not_found(booking_id)
-    
-    if (
-        existing_booking["user_id"] != current_user.get("user_id")
-        and "delete_any_booking"
-            not in current_user.get("permissions", [])
-    ):
+
+    if existing_booking["user_id"] != current_user.get(
+        "user_id"
+    ) and "delete_any_booking" not in current_user.get("permissions", []):
         raise HTTPException(
-            status_code=403,
-            detail="You can delete only your own booking"
+            status_code=403, detail="You can delete only your own booking"
         )
-    
+
     booking_crud.delete_booking(db, booking_id)
-    
+
     return booking_deleted_successfully()

@@ -1,18 +1,19 @@
 # This file defines all HTTP requests related to rooms
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.schemas.room_schema import RoomCreate, RoomResponse
-from app.crud import room_crud
 from datetime import datetime
 from typing import Optional
-from app.models.booking import Booking
 
-from app.exc_handling.room_exceptions import *
 from app.auth.dependencies import require_permission
+from app.crud import room_crud
+from app.database import get_db
+from app.exc_handling.room_exceptions import *
+from app.models.booking import Booking
+from app.schemas.room_schema import RoomCreate, RoomResponse
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])  # Creates router group
+
 
 # API 1 - Create Room
 # This API creates a new room in DB
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/rooms", tags=["Rooms"])  # Creates router group
 def create_room(
     room: RoomCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(require_permission("create_room"))
+    current_user=Depends(require_permission("create_room")),
 ):
     return room_crud.create_room(db, room)
 
@@ -98,8 +99,13 @@ def filter_rooms(
         return room_not_booked(room_name)
 
     rooms = room_crud.filter_rooms(
-        db, start_date_time, end_date_time, room_name,
-        required_capacity, search, location
+        db,
+        start_date_time,
+        end_date_time,
+        room_name,
+        required_capacity,
+        search,
+        location,
     )
 
     # Case 2: capacity filter + no rooms
@@ -124,7 +130,7 @@ def update_room(
     room_name: str,
     updated_room: RoomCreate,
     db: Session = Depends(get_db),
-    current_user = Depends(require_permission("update_room"))
+    current_user=Depends(require_permission("update_room")),
 ):
     room = room_crud.update_room(db, room_name, updated_room)
     if not room:
@@ -138,7 +144,7 @@ def update_room(
 def delete_room(
     room_name: str,
     db: Session = Depends(get_db),
-    current_user = Depends(require_permission("delete_room"))  
+    current_user=Depends(require_permission("delete_room")),
 ):
     room = room_crud.delete_room(db, room_name)
     if not room:

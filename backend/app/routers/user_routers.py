@@ -1,56 +1,44 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models.user import User
 from app.auth.auth import (
-    verify_password, 
     create_access_token,
-    create_refresh_token, 
-    decode_token
-)
-from app.auth.dependencies import require_permission
-from pydantic import BaseModel
-from app.schemas.user_schema import UserCreate, UserResponse, ChangePasswordRequest
-from app.crud import user_crud
-from typing import Union
-
-from app.auth.rbac import get_user_permissions
-
-from app.exc_handling.user_exceptions import (
-    user_not_found,
-    no_users_available,
-    user_deleted_successfully,
-)
-
-from app.auth.dependencies import (
-    get_current_user,
-    require_permission
-)
-
-from app.auth.auth import (
-    verify_password,
+    create_refresh_token,
+    decode_token,
     hash_password,
+    verify_password,
 )
-
+from app.auth.dependencies import get_current_user, require_permission
+from app.auth.rbac import get_user_permissions
+from app.crud import user_crud
+from app.database import get_db
+from app.exc_handling.user_exceptions import (
+    user_deleted_successfully,
+    user_not_found,
+)
+from app.models.user import User
 from app.schemas.user_schema import (
-    UserCreate,
-    UserResponse,
     ChangePasswordRequest,
     ResetPasswordRequest,
-    UpdateUserRequest,
     UpdateProfileRequest,
+    UpdateUserRequest,
+    UserCreate,
+    UserResponse,
 )
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
 
 class LoginRequest(BaseModel):
     email: str
     password: str
 
+
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
-#Register User
+
+# Register User
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user.email).first()
@@ -62,7 +50,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     return {"message": "User created successfully", "user_id": new_user.user_id}
 
-#User Login
+
+# User Login
 @router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
@@ -98,7 +87,8 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
         "refresh_token": refresh_token,
     }
 
-#Token refresh
+
+# Token refresh
 @router.post("/refresh")
 def refresh_access_token(data: RefreshTokenRequest):
 
@@ -119,57 +109,41 @@ def refresh_access_token(data: RefreshTokenRequest):
         }
     )
 
-    return {
-        "access_token": access_token
-    }
+    return {"access_token": access_token}
 
-# Change Password 
+
+# Change Password
 @router.post("/change-password")
 def change_password(
     data: ChangePasswordRequest,
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    user = db.query(User).filter(
-        User.user_id == current_user["user_id"]
-    ).first()
+    user = db.query(User).filter(User.user_id == current_user["user_id"]).first()
 
-    if not verify_password(
-        data.current_password,
-        user.password
-    ):
-        raise HTTPException(
-            status_code=400,
-            detail="Current password is incorrect"
-        )
-    
+    if not verify_password(data.current_password, user.password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
     if data.new_password != data.confirm_password:
-        raise HTTPException(
-            status_code=400,
-            detail="Passwords do not match"
-        )
-    
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+
     if len(data.new_password) < 8:
         raise HTTPException(
-            status_code=400,
-            detail="Password must be at least 8 characters long"
+            status_code=400, detail="Password must be at least 8 characters long"
         )
 
     if data.current_password == data.new_password:
         raise HTTPException(
             status_code=400,
-            detail="New password must be different from current password"
+            detail="New password must be different from current password",
         )
 
-    user.password = hash_password(
-        data.new_password
-    )
+    user.password = hash_password(data.new_password)
 
     db.commit()
 
-    return {
-        "message": "Password changed successfully"
-    }
+    return {"message": "Password changed successfully"}
+
 
 # Reset User Password
 @router.post("/{user_id}/reset-password")
@@ -179,9 +153,7 @@ def reset_user_password(
     db: Session = Depends(get_db),
     current_user=Depends(require_permission("delete_users")),
 ):
-    user = db.query(User).filter(
-        User.user_id == user_id
-    ).first()
+    user = db.query(User).filter(User.user_id == user_id).first()
 
     if user_id == current_user["user_id"]:
         raise HTTPException(
@@ -210,15 +182,12 @@ def reset_user_password(
             detail="Use change password for your own account",
         )
 
-    user.password = hash_password(
-        data.new_password
-    )
+    user.password = hash_password(data.new_password)
 
     db.commit()
 
-    return {
-        "message": "Password reset successfully"
-    }
+    return {"message": "Password reset successfully"}
+
 
 # Current Logged-in User
 @router.get("/me")
@@ -226,9 +195,7 @@ def get_me(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(
-        User.user_id == current_user["user_id"]
-    ).first()
+    user = db.query(User).filter(User.user_id == current_user["user_id"]).first()
 
     return {
         "user_id": user.user_id,
@@ -240,20 +207,23 @@ def get_me(
 
 
 # Get all users
-@router.get("/", response_model=Union[list[UserResponse], dict])
+@router.get("/")
 def get_users(
+    page: int = 1,
+    limit: int = 10,
     db: Session = Depends(get_db),
-    current_user=Depends(require_permission("view_users"))
+    current_user=Depends(require_permission("view_users")),
 ):
-    users = user_crud.get_users(db)
+    query = db.query(User)
 
-    if not users:
-        return no_users_available()
-    
-    return [
-        UserResponse.from_user(user)
-        for user in users
-    ]
+    total = query.count()
+
+    users = query.offset((page - 1) * limit).limit(limit).all()
+
+    return {
+        "items": [UserResponse.from_user(user) for user in users],
+        "total": total,
+    }
 
 
 # Get one user
@@ -261,13 +231,14 @@ def get_users(
 def get_user(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(require_permission("view_users"))
+    current_user=Depends(require_permission("view_users")),
 ):
     user = user_crud.get_user(db, user_id)
     if not user:
         raise user_not_found(user_id)
-    
+
     return UserResponse.from_user(user)
+
 
 # Update Profile Details (All users)
 @router.put("/me")
@@ -276,13 +247,7 @@ def update_profile(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    user = (
-        db.query(User)
-        .filter(
-            User.user_id == current_user["user_id"]
-        )
-        .first()
-    )
+    user = db.query(User).filter(User.user_id == current_user["user_id"]).first()
 
     user.user_name = data.user_name
     user.email = data.email
@@ -290,9 +255,8 @@ def update_profile(
     db.commit()
     db.refresh(user)
 
-    return {
-        "message": "Profile updated successfully"
-    }
+    return {"message": "Profile updated successfully"}
+
 
 # Edit/Update User details (Admin Only)
 @router.put("/{user_id}")
@@ -313,9 +277,7 @@ def update_user(
     if not user:
         raise user_not_found(user_id)
 
-    return {
-        "message": "User updated successfully"
-    }
+    return {"message": "User updated successfully"}
 
 
 # Delete user
@@ -323,16 +285,15 @@ def update_user(
 def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(require_permission("delete_users"))
+    current_user=Depends(require_permission("delete_users")),
 ):
     if user_id == current_user["user_id"]:
         raise HTTPException(
             status_code=400,
             detail="You cannot delete your own account",
         )
-    
+
     user = user_crud.delete_user(db, user_id)
     if not user:
         raise user_not_found(user_id)
     return user_deleted_successfully()
-
