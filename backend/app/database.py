@@ -1,10 +1,10 @@
 # This file is a bridge between FastAPI app and Database
 
 import os
+
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.base import Base
 
 # sessionmaker - Creates DB sessions(used to talk to DB)
 # base - Used to create base class for all models
